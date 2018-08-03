@@ -1,6 +1,7 @@
 <template>
     <div class="input-box">
-        <img :src="logo">
+        <Aside></Aside>
+        <img src="../../assets/images/logo.png">
         <div>已输入: {{test}}</div>
         <input type="text" v-model="test">
     </div>
@@ -30,13 +31,15 @@
 </style>
 
 <script>
-import logo from "../assets/images/logo.png";
+import Aside from "../aside";
 export default {
     data() {
         return {
-            test: "",
-            logo
+            test: ""
         }
+    },
+    components: {
+        Aside
     }
 }
 </script>

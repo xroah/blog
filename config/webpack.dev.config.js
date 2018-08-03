@@ -1,7 +1,7 @@
 let baseConf = require("./base.config");
 const webpack = require("webpack");
 
-baseConf.module.rules.push({
+let rules = baseConf.module.rules.concat({
     test: /.s?css$/,
     use: [
         "vue-style-loader",
@@ -10,10 +10,14 @@ baseConf.module.rules.push({
     ]
 });
 
-baseConf.plugins.push(new webpack.HotModuleReplacementPlugin());
+let plugins = baseConf.plugins.concat(new webpack.HotModuleReplacementPlugin());
 
 module.exports = {
     ...baseConf,
+    module: {
+        rules
+    },
+    plugins,
     mode: "development",
     devServer: {
         contentBase: baseConf.output.path,

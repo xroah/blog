@@ -1,6 +1,7 @@
 const path = require("path");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+
 let context = path.resolve(__dirname, "..");
 let dist = path.join(context, "dist");
 
@@ -48,6 +49,7 @@ module.exports = {
             hash: true,
             template: "index.html",
             filename: "index.html",
+            favicon: "src/assets/images/favicon.png",
             inject: "body"
         })
     ]
