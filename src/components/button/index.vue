@@ -13,11 +13,6 @@ export default {
         type: String,
         htmlType: String,
         click: Function
-    },
-    methods: {
-        click() {
-            this.$emit("click");
-        }
     }
 }
 </script>
