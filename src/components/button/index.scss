@@ -1,0 +1,41 @@
+$defaultColor: #d9d9d9;
+$defaultBg: #fff;
+$defaultTextColor: #333;
+$primaryColor: #1890ff;
+$primaryHoverColor: #40a9ff;
+$primaryActiveColor: #3a8ee6;
+$textColor: #fff;
+.v-btn {
+    padding: 0 10px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid $defaultColor;
+    border-radius: 3px;
+    color: $defaultTextColor;
+    background-color: $defaultBg;
+    transition: all .3s;
+    cursor: pointer;
+    &:hover,
+    &:focus {
+        border-color: $primaryHoverColor;
+        color: $primaryHoverColor;
+    }
+    &:active {
+        border-color: $primaryActiveColor;
+        color: $primaryActiveColor;
+    }
+    &.v-btn-primary {
+        border-color: $primaryColor;
+        color: #fff;
+        background-color: $primaryColor;
+        &:hover,
+        &:focus {
+            border-color: $primaryHoverColor;
+            background-color: $primaryHoverColor;
+        }
+        &:active {
+            border-color: $primaryActiveColor;
+            background-color: $primaryActiveColor;
+        }
+    }
+}

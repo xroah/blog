@@ -4,7 +4,12 @@
 
 body {
     font: 14px/1.5 Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
+    color: #333;
     background-color: #f6f6f6;
+}
+
+p {
+    margin: 0;
 }
 
 .list-unstyled {
@@ -17,7 +22,12 @@ a {
     text-decoration: none;
 }
 
-.content-width {
+input, button, select {
+    outline: none;
+}
+
+.container {
     max-width: 1000px;
+    padding: 15px;
     margin: auto;
 }

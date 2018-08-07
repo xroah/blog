@@ -1,22 +1,21 @@
 header {
     color: #fff;
     background-color: rgba(24, 144, 255, .6);
-    font-size: 16px;
-}
-
-.nav {
-    justify-content: flex-end;
-    &,
-    .nav-menu {
-        display: flex;
-    }
-    .nav-link {
-        display: block;
-        padding: 12px 15px;
-        color: #fff;
-        transition: all .3s;
-    }
-    .active {
-        background-color: rgba(24, 144, 255, .65);
+    .nav {
+        padding: 0;
+        justify-content: flex-end;
+        &,
+        .nav-menu {
+            display: flex;
+        }
+        .nav-link {
+            display: block;
+            padding: 12px 15px;
+            color: #fff;
+            transition: all .3s;
+        }
+        .active {
+            background-color: rgba(24, 144, 255, .65);
+        }
     }
 }

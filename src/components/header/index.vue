@@ -1,6 +1,6 @@
 <template>
     <header>
-        <nav class="nav content-width">
+        <nav class="nav container">
             <ul class="nav-menu list-unstyled">
                 <li>
                     <router-link class="nav-link" exact active-class="active" to="/">首页</router-link>

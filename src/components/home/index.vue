@@ -1,7 +1,17 @@
 <template>
-    <section class="main content-width">
-        
+    <section class="main container">
+        <Item></Item>
     </section>
 </template>
 <style lang="scss" src="./index.scss">
 </style>
+<script>
+import Item from "./item";
+export default {
+    components: {
+        Item
+    }
+}
+</script>
+
+
