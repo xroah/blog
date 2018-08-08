@@ -4,8 +4,6 @@
     border-radius: 5px;
     box-shadow: 0 0 5px 0 rgba(120, 120, 120, .3),  0 3px 5px 0 rgba(120, 120, 120, .3);
     transition: all .2s;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
 
     .v-btn {
         margin-left: 5px;
@@ -17,7 +15,51 @@
         }
     }
 
-    .operate-btns {
+    .item-footer {
         display: flex;
+        margin-top: 10px;
+        color: #666;
+
+        .left, .right {
+            flex-grow: 1;
+        }
+
+        svg {
+            width: 1.5em;
+            height: 1.5em;
+            vertical-align: top;
+        }
+
+        path {
+            fill: #666;
+            transition: all .3s;
+        }
+
+        .right {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .article-info {
+            display: inline-block;
+            padding: 5px;
+            margin-right: 10px;
+            cursor: default;
+            transition: all .3s;
+
+            &.clickable:hover {
+                color: #40a9ff;
+                cursor: pointer;
+                path {
+                    fill: #40a9ff;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .xs-hide {
+        display: none;
     }
 }
