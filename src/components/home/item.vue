@@ -27,6 +27,9 @@ export default {
     methods: {
         click() {
             
+        },
+        touchStart() {
+
         }
     }
 }

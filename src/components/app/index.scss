@@ -8,6 +8,12 @@ body {
     background-color: #f6f6f6;
 }
 
+@media screen and (max-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+}
+
 p {
     margin: 0;
 }
@@ -24,6 +30,11 @@ a {
 
 input, button, select {
     outline: none;
+}
+
+button {
+    //remove click shadow on mobile phone
+    -webkit-tap-highlight-color:transparent;
 }
 
 .container {
