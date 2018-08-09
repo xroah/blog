@@ -2,12 +2,20 @@
     <section>
         <div class="login-box">
             <div class="input-wrapper">
-                <input type="text" placeholder="用户名">
+                <input 
+                    type="text" 
+                    @focus="focusHandler($event)"
+                    @blur="focusHandler($event)"
+                    placeholder="用户名">
             </div>
             <div class="input-wrapper">
-                <input type="password" placeholder="密码">
+                <input
+                    type="password"
+                    @focus="focusHandler($event)"
+                    @blur="focusHandler($event)"
+                    placeholder="密码">
             </div>
-            <v-button type="primary" text="登录"></v-button>
+            <v-button type="primary" :click="login" text="登录"></v-button>
         </div>
     </section>
 </template>
@@ -17,6 +25,23 @@ import VButton from "../button";
 export default {
     components: {
         VButton
+    },
+    created() {
+        
+    },
+    methods: {
+        focusHandler($evt) {
+            let target = $evt.target;
+            let parent = target.parentNode;
+            if ($evt.type === "focus") {
+                parent.classList.add("focused");
+            } else {
+                parent.classList.remove("focused");
+            }
+        },
+        login() {
+console.log("login")
+        }
     }
 }
 </script>

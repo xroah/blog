@@ -6,16 +6,58 @@
    border-radius: 5px;
    background-color: #fff;
    transform: translate(-50%, -90%);
-   box-shadow: 0 0 5px 2px rgba(24, 144, 255, 0.3);
    opacity: .9;
 
    .input-wrapper {
+       position: relative;
        border: 1px solid #d9d9d9;
        margin-bottom: 30px;
+       height: 36px;
+       transition: box-shadow .3s ease, border-color .3s ease .3s;
+       &::after, 
+       &::before {
+           content: '';
+           display: block;
+           position: absolute;
+           width: 0;
+           height: 0;
+           border: 1px solid #62aaee;
+           //border is 1px, when not focused, input has two point at top left and bottom right
+           //set when blur set opacity tansition 0s and delay .5s(after width and height transition)
+           transition: width .5s ease, height .5s ease, opacity 0s ease .5s;
+           z-index: -1;
+           opacity: 0;
+       }
+       &::before {
+           left: 0;
+           top: 0;
+           border-right: none;
+           border-bottom: none;
+       }
+       &::after {
+           right: 0;
+           bottom: 0;
+           border-left: none;
+           border-top: none;
+       }
+       &.focused {
+           border-color: transparent;
+           box-shadow: 0 0 5px 1px rgba(24, 144, 255, 0.2);
+           transition-delay: .5s;
+           &::before,
+           &::after {
+               width: 100%;
+               height: 100%;
+               opacity: 1;
+               transition: width .5s ease, height .5s ease;
+           }
+       }
        input {
            width: 260px;
-           padding: 8px 10px;
+           height: 100%;
+           padding: 0 10px;
            border: none;
+           background-color: transparent;
        }
    }
    .v-btn {
