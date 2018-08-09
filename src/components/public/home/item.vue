@@ -19,7 +19,7 @@
     </div>
 </template>
 <script>
-import VButton from "../button";
+import VButton from "../../common/button";
 export default {
     components: {
         VButton

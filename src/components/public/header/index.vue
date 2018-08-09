@@ -10,10 +10,8 @@
                 </li>
             </ul>
         </nav>
-    
     </header>
 </template>
 
 <style lang="scss" src="./index.scss">
-    
 </style>

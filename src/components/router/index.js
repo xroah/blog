@@ -1,7 +1,27 @@
-import Home from "../home";
-import About from "../about";
+import PublicMain from "../public/main";
+import PublicHome from "../public/home";
+import About from "../public/about";
 
-export default [
-    {path: "/", component: Home},
-    {path: "/about", component: About}
-];
+import AdminLogin from "../admin/login";
+import AdminMain from "../admin/main";
+
+export default [{
+    path: "/",
+    component: PublicMain,
+    children: [{
+        path: "/",
+        component: PublicHome
+    }, {
+        path: "/about",
+        component: About
+    }]
+}, {
+    path: "/xsys/login",
+    component: AdminLogin
+}, {
+    path: "/xsys",
+    component: AdminMain,
+    children: [
+
+    ]
+}];

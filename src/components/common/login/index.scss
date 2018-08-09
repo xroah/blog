@@ -1,0 +1,39 @@
+.login-box {
+   position: absolute;
+   left: 50%;
+   top: 50%;
+   padding: 30px;
+   border-radius: 5px;
+   background-color: #fff;
+   transform: translate(-50%, -90%);
+   box-shadow: 0 0 5px 2px rgba(24, 144, 255, 0.3);
+   opacity: .9;
+
+   .input-wrapper {
+       border: 1px solid #d9d9d9;
+       margin-bottom: 30px;
+       input {
+           width: 260px;
+           padding: 8px 10px;
+           border: none;
+       }
+   }
+   .v-btn {
+       width: 100%;
+       height: 36px;
+       line-height: 36px;
+   }
+}
+
+@media screen and (max-width: 500px) {
+    .login-box {
+        width: 96%;
+        padding: 15px;
+        .input-wrapper {
+            margin-bottom: 15px;
+            input {
+                width: 100%;
+            }
+        }
+    }
+}
