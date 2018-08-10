@@ -1,6 +1,7 @@
 <template>
     <section>
         <div class="login-box">
+            <p class="daily-sentence" :title="note" v-text="sentence"></p>
             <div class="input-wrapper">
                 <input 
                     type="text" 
@@ -15,7 +16,7 @@
                     @blur="focusHandler($event)"
                     placeholder="密码">
             </div>
-            <v-button type="primary" :click="login" text="登录"></v-button>
+            <v-button type="primary" :click="click" text="登录"></v-button>
         </div>
     </section>
 </template>
@@ -23,26 +24,40 @@
 <script>
 import VButton from "../button";
 export default {
-    components: {
-        VButton
-    },
-    created() {
-        
-    },
-    methods: {
-        focusHandler($evt) {
-            let target = $evt.target;
-            let parent = target.parentNode;
-            if ($evt.type === "focus") {
-                parent.classList.add("focused");
-            } else {
-                parent.classList.remove("focused");
-            }
-        },
-        login() {
-console.log("login")
+  props: ["click"],
+  data() {
+      return {
+          sentence: "",
+          note: ""
+      }
+  },
+  components: {
+    VButton
+  },
+  created() {
+    fetch("/api/thirdParty/daliySentence", {
+      method: "get"
+    }).then(res => {
+        if (res.ok) {
+            return res.json();
         }
+        return Promise.reject(res);
+    }).then(data => {
+        this.sentence = data.content;
+        this.note = `${data.note}(来自金山词霸每日一句。)`;
+    }).catch(() => {});
+  },
+  methods: {
+    focusHandler($evt) {
+      let target = $evt.target;
+      let parent = target.parentNode;
+      if ($evt.type === "focus") {
+        parent.classList.add("focused");
+      } else {
+        parent.classList.remove("focused");
+      }
     }
-}
+  }
+};
 </script>
 
