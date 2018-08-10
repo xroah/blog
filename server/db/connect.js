@@ -9,10 +9,5 @@ MongoClient.connect(url, {
         throw err;
     }
     let db = client.db("blog");
-    let collec = db.collection("articles");
-    collec.insert({
-        test: "hhhhs"
-    });
-    console.log("connected success");
     client.close();
 });

@@ -1,9 +1,9 @@
-import PublicMain from "../public/main";
-import PublicHome from "../public/home";
-import About from "../public/about";
+const PublicMain = () => import("../public/main");
+const PublicHome = () => import("../public/home");
+const About = () => import("../public/about");
 
-import AdminLogin from "../admin/login";
-import AdminMain from "../admin/main";
+const AdminLogin = () => import("../admin/login");
+const AdminMain = () => import("../admin/main");
 
 export default [{
     path: "/",
