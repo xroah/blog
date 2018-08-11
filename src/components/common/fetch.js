@@ -44,6 +44,7 @@ export default function _fetch(url, config) {
             }
             reject(response);
         }).catch((err) => {
+            //catch other error
             if (err instanceof Error) {
                 console.error(err);
                 return;

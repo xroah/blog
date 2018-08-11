@@ -1,7 +1,7 @@
 <template>
     <button 
     :type="htmlType" 
-    :class="[type ? `v-btn-${type}` : '']" 
+    :class="type ? `v-btn-${type}` : ''" 
     class="v-btn"
     @click="click()">{{text}}</button>
 </template>

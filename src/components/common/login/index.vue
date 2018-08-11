@@ -72,10 +72,10 @@ export default {
             let bg = this.$refs.bg;
             if ($evt.type === "focus") {
                 parent.classList.add("focused");
-                bg.classList.add("focused");
+                this.show && bg.classList.add("focused");
             } else {
                 parent.classList.remove("focused");
-                bg.classList.remove("focused");
+                this.show && bg.classList.remove("focused");
             }
         },
         clickHandler() {
