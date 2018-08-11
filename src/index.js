@@ -16,3 +16,5 @@ new Vue({
     render: createElement => createElement(App)
 });
 
+//make :active work nomally on mobile phone
+document.body.addEventListener("touchstart", () => {});
