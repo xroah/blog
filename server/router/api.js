@@ -9,7 +9,7 @@ router.post("/login", (req, res) => {
     let body = req.body;
     let userName = body.userName;
     let password = body.password;
-    connect(db => {
+    connect((db, client) => {
         let collec = db.collection("users");
         collec.findOne({
             userName,
@@ -23,7 +23,7 @@ router.post("/login", (req, res) => {
                 resData.errCode = 0;
                 resData.errMsg = "登录成功!"
             }
-            db.close();
+            client.close();
             res.send(resData);
         });
     });

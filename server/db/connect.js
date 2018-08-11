@@ -11,7 +11,7 @@ module.exports = function connect (callback) {
         }
         let db = client.db("blog");
         if (typeof callback === "function") {
-            callback(db);
+        callback(db, client);
         }
     });
 }
