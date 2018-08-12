@@ -21,6 +21,7 @@ $infoColor: #1890ff;
     border-radius: 5px;
     background-color: #fff;
     animation: enter .3s;
+    font-size: 14px;
 
     &.leave {
         animation-name: leave;
@@ -29,7 +30,7 @@ $infoColor: #1890ff;
 
     svg {
         margin-right: 5px;
-        vertical-align: middle;
+        vertical-align: top;
     }
     &.success {
         color: $successColor;

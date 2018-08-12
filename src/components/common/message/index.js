@@ -1,7 +1,11 @@
 import Message from "./message";
 import Vue from "vue";
 
-const DELAY = 3000;
+const DELAY = 3; //default delay(s)
+//interval between two items when items dismiss
+//prevent the items from dismissing too fast
+//make sure first item can back to top
+const INTERVAL = 300;
 let _Message = Vue.extend(Message);
 let wrapper;
 
@@ -23,32 +27,41 @@ let message = {
         wrapper.appendChild(item);
         return item;
     },
-    destroyInstance(ins, anim) {
-        if (!(ins instanceof _Message)) ret
+    destroyInstance(ins, anim, onClose) {
+        if (!(ins instanceof _Message)) return;
+        //.3s, default duration
         let duration = anim ? 300 : 0; //getComputedStyle(el).getPropertyValue("animation-duration")
         let el = ins.$el.parentNode;
         if (ins.timer) {
             clearTimeout(ins.timer);
         }
         ins.$el.classList.add("leave");
+
         function _destroy() {
             ins.$destroy();
             el.parentNode.removeChild(el);
+            if (typeof onClose === "function") {
+                onClose();
+            }
         }
         if (duration) {
+            //destroy after animation finished
             setTimeout(_destroy, duration);
         } else {
             _destroy();
         }
     },
-    destroy(ins) {
+    destroy(ins, onClose) {
+        let {
+            items
+        } = this;
         if (ins) {
-            let index = this.items.findIndex(item => item.guid === ins.guid);
-            this.items.splice(index, 1);
-            this.destroyInstance(ins, true);
+            let index = items.findIndex(item => item.guid === ins.guid);
+            items.splice(index, 1);
+            this.destroyInstance(ins, true, onClose);
         } else {
-            for (let item of this.items) {
-                this.destroyInstance(item, false);
+            for (let item of items) {
+                this.destroyInstance(item, false, onClose);
             }
             this.items = [];
         }
@@ -57,40 +70,57 @@ let message = {
              wrapper = null;
          } */
     },
-    show(type, msg, delay = DELAY, callback) {
+    show(type, msg, delay = DELAY, onClose) {
+        let {
+            items
+        } = this;
+        let len = items.length;
+        if (typeof delay === "function") {
+            //third param is a function
+            onClose = delay;
+            delay = DELAY;
+        }
+        delay *= 1000;
+        if (len) {
+            let prevDelay = items[len - 1].delay;
+            let itvl = delay - prevDelay;
+            //buffer time,make sure items back to top
+            //if user click too fast, the items will dismiss in a flash
+            if (itvl <= 0) {
+                delay = prevDelay + INTERVAL;
+            } else if (itvl < INTERVAL) {
+                delay += INTERVAL;
+            }
+        }
         let msgIns = new _Message({
             data() {
                 return {
                     guid: this.guid++,
-                    timer: null
+                    timer: null,
+                    delay,
+                    type,
+                    msg
                 }
-            },
-            propsData: {
-                type,
-                text: msg
             }
         });
         let parent = this.getParent();
-        let div = document.createElement("div");
-        parent.appendChild(div);
-        msgIns.$mount(div);
+        let mountDiv = document.createElement("div");
         this.items.push(msgIns);
-        if (typeof callback === "function") {
-            callback(msgIns);
-        }
+        parent.appendChild(mountDiv);
+        msgIns.$mount(mountDiv); //div will be replaced by the component
         msgIns.timer = setTimeout(() => {
-            this.destroy(msgIns);
+            this.destroy(msgIns, onClose);
         }, delay);
         return msgIns;
     },
-    success(msg, delay, callback) {
-        this.show("success", msg, delay, callback);
+    success(msg, delay, onClose) {
+        return this.show("success", msg, delay, onClose);
     },
-    error(msg, delay, callback) {
-        this.show("error", msg, delay, callback);
+    error(msg, delay, onClose) {
+        return this.show("error", msg, delay, onClose);
     },
-    info(msg, delay, callback) {
-        this.show("info", msg, delay, callback)
+    info(msg, delay, onClose) {
+        return this.show("info", msg, delay, onClose)
     }
 };
 
