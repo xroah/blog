@@ -6,9 +6,10 @@
             <div class="input-wrapper">
                 <input 
                     type="text" 
+                    v-model="userName"
                     @focus="focusHandler($event)"
                     @blur="focusHandler($event)"
-                    v-model="userName"
+                    @keypress.enter="keypress"
                     placeholder="用户名">
             </div>
             <div class="input-wrapper">
@@ -17,7 +18,11 @@
                     v-model="password"
                     @focus="focusHandler($event)"
                     @blur="focusHandler($event)"
+                    @keypress.enter="keypress"
                     placeholder="密码">
+            </div>
+            <div class="remember">
+                <checkbox text="记住我" :checked="remember" @onChange="rememberChange"></checkbox>
             </div>
             <v-button type="primary" :click="clickHandler" text="登录"></v-button>
         </div>
@@ -30,8 +35,16 @@
 <script>
 import VButton from "../button";
 import fetch from "../fetch.js";
+import message from "../message/index";
+import Checkbox from "../checkbox";
+import md5 from "blueimp-md5";
+import loading from "../loading/index";
+import { DAILY_SENTENCE, DAILY_PICTURE, USER_LOGIN } from "../api";
+
+const SAVE_USER_KEY = "userInfo";
+
 export default {
-    props: ["click"],
+    props: ["isAdmin"],
     data() {
         return {
             sentence: "",
@@ -39,31 +52,33 @@ export default {
             copyright: "",
             show: false,
             userName: "",
-            password: ""
+            password: "",
+            remember: false
         };
     },
     components: {
-        VButton
+        VButton,
+        Checkbox
     },
-    created() {
-        fetch("/api/thirdParty/daliySentence")
-            .then(data => {
-                this.sentence = data.content;
-                this.note = `${data.note}(来自金山词霸每日一句。)`;
-            })
-            .catch(() => {});
+    async created() {
+        this.getInfo();
+        try {
+            let data = await fetch(DAILY_SENTENCE);
+            this.sentence = data.content;
+            this.note = `${data.note}(金山词霸每日一句)`;
+        } catch (error) {}
     },
-    mounted() {
-        fetch("/api/thirdParty/dailyPicture")
-            .then(data => {
-                if (!data && !data.images && !data.images.length) return;
-                let img = data.images[0];
-                let url = img.url;
-                this.copyright = `${img.copyright}--Bing每日图片`;
-                this.$refs.bg.style.backgroundImage = `url(//cn.bing.com${url}),radial-gradient(circle at left top, #3c3b52 0%, #252233 80%)`;
-                this.show = true;
-            })
-            .catch(() => {});
+    async mounted() {
+        try {
+            let data = await fetch(DAILY_PICTURE);
+            if (!data && !data.images && !data.images.length) return;
+            let img = data.images[0];
+            let url = img.url;
+            this.copyright = `${img.copyright}--Bing每日图片`;
+            //the refs prop is available when mounted
+            this.$refs.bg.style.backgroundImage = `url(//cn.bing.com${url}),radial-gradient(circle at left top, #3c3b52 0%, #252233 80%)`;
+            this.show = true;
+        } catch (error) {}
     },
     methods: {
         focusHandler($evt) {
@@ -79,8 +94,64 @@ export default {
             }
         },
         clickHandler() {
-          let { click, userName, password } = this;
-            click(userName, password);
+            let { login, userName, password } = this;
+            login(userName, password);
+        },
+        keypress() {
+            this.clickHandler();
+        },
+        async login(userName, password) {
+            message.destroy();
+            if (!userName || !password) {
+                message.error("用户名和密码都不能为空!");
+                return;
+            }
+            let _password = md5(password);
+            loading.show();
+            try {
+                await fetch(USER_LOGIN, {
+                    method: "post",
+                    body: {
+                        userName,
+                        password: _password
+                    }
+                });
+                loading.hide();
+                message.success("登录成功", 1.5);
+                this.saveInfo(userName, password);
+                if (this.isAdmin) {
+                    this.$router.push({ name: "adminMain" });
+                }
+            } catch (error) {
+                loading.hide();
+            }
+        },
+        saveInfo(uname, pwd) {
+            if (!this.remember) {
+                localStorage.removeItem(SAVE_USER_KEY);
+                return;
+            }
+            let userName = btoa(uname);
+            let password = btoa(pwd);
+            localStorage.setItem(
+                SAVE_USER_KEY,
+                JSON.stringify({
+                    userName,
+                    password
+                })
+            );
+        },
+        getInfo() {
+            let info = localStorage.getItem(SAVE_USER_KEY);
+            if (info) {
+                info = JSON.parse(info);
+                this.userName = atob(info.userName);
+                this.password = atob(info.password);
+                this.remember = true;
+            }
+        },
+        rememberChange(checked) {
+            this.remember = checked;
         }
     }
 };

@@ -1,4 +1,5 @@
 .login-box {
+    $marginBottom: 20px;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -9,7 +10,7 @@
     opacity: .9;
     .daily-sentence {
         width: 260px;
-        margin-bottom: 30px;
+        margin-bottom: $marginBottom;
         text-shadow: 0 1px rgba(24, 144, 255, 0.1), 0 0 5px rgba(24, 144, 255, 0.2);
         font-size: 18px;
         text-align: justify;
@@ -17,7 +18,8 @@
     .input-wrapper {
         position: relative;
         border: 1px solid #d9d9d9;
-        margin-bottom: 30px;
+        border-radius: 3px;
+        margin-bottom: $marginBottom;
         height: 36px;
         transition: box-shadow .3s ease, border-color .3s ease .3s;
         &::after,
@@ -27,7 +29,9 @@
             position: absolute;
             width: 0;
             height: 0;
-            border: 1px solid #62aaee; //border is 1px, when not focused, pseudo element have two point at top left and bottom right,
+            border: 1px solid #62aaee; 
+            border-radius: inherit;
+            //border is 1px, when not focused, pseudo element have two point at top left and bottom right,
             //when blured set opacity tansition 0s and delay .5s(after width and height transition), make the points invisible
             transition: width .5s ease, height .5s ease, opacity 0s ease .5s;
             z-index: -1;
@@ -64,6 +68,9 @@
             border: none;
             background-color: transparent;
         }
+    }
+    .remember {
+        margin-bottom: $marginBottom;
     }
     .v-btn {
         width: 100%;
@@ -102,7 +109,7 @@
     &::after {
         content: "";
         position: absolute;
-        left: 0;
+        left: .5em;
         top: 50%;
         color: #fff;
         transition: all .3s;
@@ -119,7 +126,7 @@
         background-color: rgba(0, 0, 0, .6);
         padding: 5px;
         border-radius: 3px;
-        width: 16em;
+        width: 18em;
     }
 
     &:active {

@@ -1,4 +1,4 @@
-import { resolve } from "url";
+import message from "./message/index"
 
 const DEFAULT_CONFIG = {
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -14,10 +14,29 @@ function isObject(obj) {
     return Object.prototype.toString.call(obj) === "[object Object]";
 }
 
+function errorHint(err) {
+    err = err || {};
+    message.destroy();
+    message.error(
+        err.errMsg // error message from server
+        ||
+        err.statusText //network error
+        ||
+        err.message //other javascript error
+        ||
+        "未知错误",
+        1.5
+    );
+}
+
 export default function _fetch(url, config) {
-    let conf = {...DEFAULT_CONFIG, ...config};
+    let conf = { ...DEFAULT_CONFIG,
+        ...config
+    };
     if (config && config.headers) {
-        conf.headers = {...DEFAULT_CONFIG.headers, ...config.headers};
+        conf.headers = { ...DEFAULT_CONFIG.headers,
+            ...config.headers
+        };
     }
     if (isObject(conf.body)) {
         conf.body = JSON.stringify(conf.body);
@@ -36,14 +55,17 @@ export default function _fetch(url, config) {
                 let res = await response.json();
                 if (res.errCode === 0) {
                     resolve(res.data);
-                    
+
                 } else {
                     reject(res);
+                    errorHint(res);
                 }
                 return;
             }
             reject(response);
+            errorHint(Response);
         }).catch((err) => {
+            errorHint(err);
             //catch other error
             if (err instanceof Error) {
                 console.error(err);
@@ -52,4 +74,4 @@ export default function _fetch(url, config) {
             reject();
         });
     });
-} 
+}

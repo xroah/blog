@@ -86,7 +86,7 @@ let message = {
             let itvl = delay - prevDelay;
             //buffer time,make sure items back to top
             //if user click too fast, the items will dismiss in a flash
-            if (itvl <= 0) {
+            if (itvl <= 0 && Math.abs(itvl) >= INTERVAL) {
                 delay = prevDelay + INTERVAL;
             } else if (itvl < INTERVAL) {
                 delay += INTERVAL;
@@ -107,7 +107,7 @@ let message = {
         let mountDiv = document.createElement("div");
         this.items.push(msgIns);
         parent.appendChild(mountDiv);
-        msgIns.$mount(mountDiv); //div will be replaced by the component
+        msgIns.$mount(mountDiv); //div will be replaced by the vue component
         msgIns.timer = setTimeout(() => {
             this.destroy(msgIns, onClose);
         }, delay);

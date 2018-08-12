@@ -20,6 +20,7 @@ export default [{
     component: AdminLogin
 }, {
     path: "/xsys",
+    name: "adminMain",
     component: AdminMain,
     children: [
 
