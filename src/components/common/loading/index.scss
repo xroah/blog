@@ -22,7 +22,7 @@
         width: $size;
         height: $size;
         border-radius: 5px;
-        background-color: rgba(0, 0, 0, .3);
+        background-color: rgba(0, 0, 0, .36);
         .item {
             $width: 6px;
             $height: 20px;
@@ -34,7 +34,7 @@
             margin-left: -$width/2;
             margin-top: $size/2 - $height;
             border-radius: 10px;
-            background-color: rgba(0, 0, 0, .85);
+            background-color: #fff;
             transform-origin: bottom center;
         }
         $angle: 360/8;
