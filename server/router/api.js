@@ -1,32 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const thirdParty = require("./thirdParty");
-const connect = require("../db/connect");
+const user = require("./user");
 
 router.use("/thirdParty", thirdParty);
 
-router.post("/login", (req, res) => {
-    let body = req.body;
-    let userName = body.userName;
-    let password = body.password;
-    connect((db, client) => {
-        let collec = db.collection("users");
-        collec.findOne({
-            userName,
-            password
-        }).then(ret => {
-            let resData = {};
-            if (!ret) {
-                resData.errCode = 1;
-                resData.errMsg = "用户名或密码错误!"
-            } else {
-                resData.errCode = 0;
-                resData.errMsg = "登录成功!"
-            }
-            client.close();
-            res.send(resData);
-        });
-    });
-});
+router.use("/user", user);
 
 module.exports = router;
