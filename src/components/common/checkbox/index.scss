@@ -1,0 +1,50 @@
+$defaultColor: #d9d9d9;
+$checkedColor: #1890ff;
+.checkbox-wrapper {
+    cursor: pointer;
+    span {
+        display: inline-block;
+    }
+    .checkbox-outer {
+        position: relative;
+        overflow: hidden;
+        width: 16px;
+        height: 16px;
+        margin-right: 5px;
+        border: 1px solid $defaultColor;
+        border-radius: 2px;
+        vertical-align: middle;
+        transition: all .3s;
+        &::after {
+            content: "";
+            display: block;
+            position: absolute;
+            transition: all .3s;
+        }
+        &::after {
+            left: 50%;
+            top: 50%;
+            width: 70%;
+            height: 40%;
+            border: 2px solid #fff;
+            border-top: none;
+            border-right: none;
+            transform: translate(-50%, -70%) rotate(-45deg) scale(0);
+        }
+    }
+    &:hover .checkbox-outer {
+        border-color: $checkedColor;
+    }
+    .input-checkbox {
+        display: none;
+    }
+    .input-checkbox:checked {
+        &+.checkbox-outer {
+            border-color: $checkedColor;
+            background-color: $checkedColor;
+            &::after {
+                transform: translate(-50%, -70%) rotate(-45deg) scale(1);
+            }
+        }
+    }
+}
