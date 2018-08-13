@@ -44,3 +44,53 @@ button {
     padding: 15px;
     margin: auto;
 }
+
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: calc(50% - 500px + 20px);
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    border-color: #aaa;
+    transition: all .3s;
+
+    $defaultColor: #aaa;
+    $hoverColor: #999;
+    svg {
+        vertical-align: middle;
+        path {
+            fill: $defaultColor;
+        }
+    }
+
+    &:hover,
+    &:focus {
+        border-color: $hoverColor;
+        path {
+            fill: $hoverColor;
+        }
+    }
+    &:active {
+        background-color: #ccc;
+        border-color: $hoverColor;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .back-to-top {
+        right: 20px;
+    }
+}
+
+.slide-in-out-enter,
+.slide-in-out-leave-to {
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+.slide-in-out-enter-to,
+.slide-in-out-leave {
+    transform: translateY(0px);
+    opacity: 1;
+}
