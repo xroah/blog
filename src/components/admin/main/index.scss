@@ -1,25 +1,45 @@
-.articles-content {
-    
-}
+.articles-content {}
 
-.add-new-article {
+.add-new-wrapper {
     position: fixed;
     bottom: 30px;
     right: calc(50% - 500px + 80px);
     width: 50px;
-    height: 50px;
-    padding: 0;
-    border-radius: 50%;
-    svg {
-        vertical-align: middle;
-        path {
-            fill: #fff;
+    .v-btn {
+        width: 50px;
+        height: 50px;
+        padding: 0;
+        border-radius: 50%;
+        svg {
+            vertical-align: middle;
+            path {
+                fill: #fff;
+            }
+        }
+    }
+    .addition-type {
+        transform-origin: bottom center;
+        transition: all .3s;
+        .v-btn {
+            margin-bottom: 10px;
         }
     }
 }
 
 @media screen and (max-width: 1000px) {
-    .add-new-article {
+    .add-new-wrapper {
         right: 80px;
     }
+}
+
+.scale-fade-enter,
+.scale-fade-leave-to {
+    transform: scaleY(0);
+    opacity: 0;
+}
+
+.scale-fade-enter-to,
+.scale-fade-leave {
+    transform: scaleY(1);
+    opacity: 1;
 }
