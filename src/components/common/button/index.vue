@@ -3,7 +3,7 @@
     :type="htmlType" 
     :class="type ? `v-btn-${type}` : ''" 
     class="v-btn"
-    @click="_click">
+    @click="_click($event)">
         {{text}}
         <slot></slot>
     </button>
@@ -18,9 +18,9 @@ export default {
     click: Function
   },
   methods: {
-      _click() {
+      _click(evt) {
           if (typeof this.click === "function") {
-              this.click();
+              this.click(evt);
           }
       }
   }
