@@ -27,7 +27,7 @@ let message = {
         wrapper.appendChild(item);
         return item;
     },
-    destroyInstance(ins, anim, onClose) {
+    destroyInstance(ins, anim) {
         if (!(ins instanceof _Message)) return;
         //.3s, default duration
         let duration = anim ? 300 : 0; //getComputedStyle(el).getPropertyValue("animation-duration")
@@ -40,9 +40,6 @@ let message = {
         function _destroy() {
             ins.$destroy();
             el.parentNode.removeChild(el);
-            if (typeof onClose === "function") {
-                onClose();
-            }
         }
         if (duration) {
             //destroy after animation finished
@@ -51,17 +48,17 @@ let message = {
             _destroy();
         }
     },
-    destroy(ins, onClose) {
+    destroy(ins) {
         let {
             items
         } = this;
         if (ins) {
             let index = items.findIndex(item => item.guid === ins.guid);
             items.splice(index, 1);
-            this.destroyInstance(ins, true, onClose);
+            this.destroyInstance(ins, true);
         } else {
             for (let item of items) {
-                this.destroyInstance(item, false, onClose);
+                this.destroyInstance(item, false);
             }
             this.items = [];
         }
@@ -100,6 +97,11 @@ let message = {
                     delay,
                     type,
                     msg
+                }
+            },
+            destroyed() {
+                if (typeof onClose === "function") {
+                    onClose();
                 }
             }
         });
