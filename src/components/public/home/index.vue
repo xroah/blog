@@ -1,6 +1,6 @@
 <template>
-    <section>
-        <section class="main container">
+    <section class="container">
+        <section class="main">
             <Item></Item>
         </section> 
     </section>
