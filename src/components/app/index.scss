@@ -1,3 +1,4 @@
+@import "../common/minxinVariable";
 *,
 *::after,
 *::before {
@@ -8,12 +9,6 @@ body {
     font: 14px/1.5 Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
     color: #333;
     background-color: #f6f6f6;
-}
-
-@media screen and (max-width: 768px) {
-    body {
-        font-size: 16px;
-    }
 }
 
 p {
@@ -43,6 +38,44 @@ button {
     max-width: 1000px;
     padding: 15px;
     margin: auto;
+}
+
+.v-input {
+    height: $inputHeight;
+    border: 1px solid $defaultColor;
+    border-radius: 3px;
+    padding: 0 10px;
+    transition: all .3s;
+    &:focus {
+        border-color: $primaryColor;
+        box-shadow: $inputFocusBoxShadow;
+    }
+}
+
+.form-flex {
+    display: flex;
+    align-items: center;
+}
+
+.form-control {
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+
+@media screen and (max-width: 640px) {
+    body {
+        font-size: 16px;
+    }
+    .form-flex {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .form-control {
+        margin-left: 0;
+        margin-top: 5px;
+        width: 100%;
+    }
 }
 
 .back-to-top {

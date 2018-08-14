@@ -1,10 +1,4 @@
-$defaultColor: #d9d9d9;
-$defaultBg: #fff;
-$defaultTextColor: #666;
-$primaryColor: #1890ff;
-$primaryHoverColor: #40a9ff;
-$primaryActiveColor: #3a8ee6;
-$textColor: #fff;
+@import "../minxinVariable";
 .v-btn {
     padding: 0 10px;
     height: 30px;
