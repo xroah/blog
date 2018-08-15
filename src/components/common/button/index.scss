@@ -1,8 +1,8 @@
 @import "../minxinVariable";
 .v-btn {
     padding: 0 10px;
-    height: 30px;
-    line-height: 30px;
+    height: $inputHeight;
+    line-height: $inputHeight;
     border: 1px solid $defaultColor;
     border-radius: 3px;
     color: $defaultTextColor;

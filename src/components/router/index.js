@@ -5,7 +5,8 @@ const About = () => import("../public/about");
 const AdminLogin = () => import("../admin/login");
 const AdminMain = () => import("../admin/main");
 const AdminHOme = () => import("../admin/home");
-const addArticle = () => import("../admin/addEditArticle");
+const AddArticle = () => import("../admin/addEditArticle");
+const ArticleClassify = () => import("../admin/classify");
 
 export default [{
     path: "/",
@@ -28,8 +29,11 @@ export default [{
         path: "/xsys",
         component: AdminHOme
     },{
-        path: "/article/add",
+        path: "article/add",
         name: "addArticle",
-        component: addArticle
+        component: AddArticle
+    },{
+        path: "article/classify",
+        component: ArticleClassify
     }]
 }];

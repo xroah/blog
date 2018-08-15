@@ -1,0 +1,52 @@
+@import "../../common/minxinVariable";
+.classify-container {
+    display: flex;
+    flex-wrap: wrap;
+    .classify-item-wrapper {
+        position: relative;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        padding: 0 10px;
+        border-radius: 3px;
+        height: $inputHeight;
+        line-height: $inputHeight;
+        border: 1px solid $defaultColor;
+
+        &.editing {
+            border: none;
+            padding: 0;
+        }
+
+        .del-item {
+            display: block;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            border-radius: 50%;
+            color: $textColor;
+            background-color: $dangerColor;
+            text-align: center;
+            font-size: 20px;
+            opacity: 0;
+            transition: all .3s;
+
+            &:hover {
+                background-color: $dangerHoverColor;
+                cursor: pointer;
+            }
+        }
+
+        &:hover {
+            .del-item {
+                opacity: 1;
+            }
+        }
+    }
+    .v-btn {
+        border-style: dashed;
+        width: 75px;
+    }
+}
