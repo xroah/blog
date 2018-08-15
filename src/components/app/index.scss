@@ -35,7 +35,7 @@ button {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: $maxWidth;
     padding: 15px;
     margin: auto;
 }

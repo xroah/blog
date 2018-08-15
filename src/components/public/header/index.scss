@@ -1,12 +1,15 @@
-header {
+@import "../../common/minxinVariable";
+.public-nav-bar {
     color: #fff;
     background-color: rgba(24, 144, 255, .6);
     .nav {
         padding: 0;
-        justify-content: flex-end;
         &,
         .nav-menu {
             display: flex;
+            flex-grow: 1;
+            justify-content: flex-end;
+            max-width: $maxWidth;
         }
         .nav-link {
             display: block;

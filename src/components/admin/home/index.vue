@@ -23,11 +23,13 @@
 
 <script>
 import VButton from "../../common/button";
+import NavBar from "../nav";
 import fetch from "../../common/fetch";
 
 export default {
     components: {
-        VButton
+        VButton,
+        NavBar
     },
     data() {
         return {
