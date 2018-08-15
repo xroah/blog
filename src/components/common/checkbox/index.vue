@@ -2,13 +2,12 @@
     <label class="checkbox-wrapper">
         <input
          type="checkbox" 
-        :checked="checked"
-        v-model="check"
-        value="1"
+         :checked="checked"
+         v-model="check"
          class="input-checkbox"
          @change="change"/>
         <span class="checkbox-outer"></span>
-        <span>{{text}}</span>
+        <slot></slot>
     </label>
 </template>
 <style lang="scss" src="./index.scss"></style>
@@ -19,7 +18,7 @@ export default {
             check: this.checked
         }
     },
-    props: ["text", "checked"],
+    props: ["checked"],
     methods: {
         change() {
             this.$emit("onChange", this.check);

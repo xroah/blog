@@ -2,8 +2,8 @@
     <label class="radio-wrapper">
         <input 
             type="radio"
-            v-model="check"
             :value="value"
+            :checked="checked"
             class="input-radio"
             :name="name"
             @change="change($event)">
@@ -18,14 +18,10 @@
 <script>
 export default {
     props: ["name", "onChange", "checked", "value"],
-    data() {
-        return {
-            check: this.checked
-        }
-    },
     methods: {
         change() {
-            this.$emit("onChange", this.check);
+            this.$emit("onChange", this.value);
+            console.log(this.value)
         }
     }
 }

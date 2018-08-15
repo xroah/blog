@@ -11,8 +11,8 @@
                 {{msg}}
             </div>
             <div class="message-box-footer">
-                <v-button v-if="showCancel" text="取消" style="margin-right: 10px;" :click="cancel"></v-button>
-                <v-button type="primary" text="确定" :click="ok"></v-button>
+                <v-button v-if="showCancel" style="margin-right: 10px;" :click="cancel">确定</v-button>
+                <v-button type="primary"  :click="ok">取消</v-button>
             </div>
         </div>
     </div>
