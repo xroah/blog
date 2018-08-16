@@ -22,7 +22,7 @@
                     placeholder="密码">
             </div>
             <div class="remember">
-                <checkbox :checked="remember" @onChange="rememberChange">记住我</checkbox>
+                <checkbox v-model="remember">记住我</checkbox>
             </div>
             <v-button type="primary" :click="clickHandler">登录</v-button>
         </div>
@@ -149,9 +149,6 @@ export default {
                 this.password = atob(info.password);
                 this.remember = true;
             }
-        },
-        rememberChange(checked) {
-            this.remember = checked;
         }
     }
 };

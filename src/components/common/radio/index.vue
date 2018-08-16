@@ -3,13 +3,12 @@
         <input 
             type="radio"
             :value="value"
-            :checked="checked"
             class="input-radio"
             :name="name"
-            @change="change($event)">
-        <span class="radio-border">
-
-        </span><slot></slot>
+            :checked="val === value"
+            @change="change">
+        <span class="radio-border"></span>
+        <span><slot></slot></span>
     </label>
 </template>
 
@@ -17,11 +16,18 @@
 
 <script>
 export default {
-    props: ["name", "onChange", "checked", "value"],
+    model: {
+        prop: "val",
+        event: "change"
+    },
+    props: {
+        name: String,
+        val: String,
+        value: String
+    },
     methods: {
-        change() {
-            this.$emit("onChange", this.value);
-            console.log(this.value)
+        change(evt) {
+            this.$emit("change", evt.target.value);
         }
     }
 }

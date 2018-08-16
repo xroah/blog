@@ -55,11 +55,15 @@ button {
 .form-flex {
     display: flex;
     align-items: center;
+    margin-bottom: 10px;
 }
 
 .form-control {
     flex-grow: 1;
-    margin-left: 10px;
+}
+
+.form-label {
+    margin-right: 10px;
 }
 
 

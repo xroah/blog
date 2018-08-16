@@ -28,13 +28,13 @@ export default {
         return {
             content: this.value,
             prevValue: this.value, //previos value, when edit fail, rollback
-            showInput: this.add,
-            _add: this.add, //add or edit
-            _id: this.id
+            showInput: false,
+            addMode: this.add, //add or edit
+            cid: this.id
         };
     },
     mounted() {
-        if (this._add) {
+        if (this.addMode) {
             this.edit();
         }
     },
@@ -67,19 +67,19 @@ export default {
                     await fetch(ARTICLE_CLASSIFY, {
                         method: "delete",
                         body: {
-                            id: this._id
+                            id: this.cid
                         }
                     });
                     message.success("删除成功");
                     //emit origianl id prop just for remove the item
-                    //if added successfully, the _id will change
+                    //if added successfully, the cid will change
                     this.$emit("onBlur", true, this.id); 
                 }catch(err){}
             });
         },
         async blur() {
             this.showInput = false;
-            if (this._add) {
+            if (this.addMode) {
                 if (!this.content) {
                     //when add, if no value was inputed, just destroy the item
                     this.$emit("onBlur", true);
@@ -92,11 +92,11 @@ export default {
                             }
                         });
                         message.success("保存成功!");
-                        //when added successfully, change _add to false
-                        //and replace the _id to the id that from server
+                        //when added successfully, change addMode to false
+                        //and replace the cid to the id that from server
                         //otherwise when edit the item will add new one
-                        this._add = false;
-                        this._id = res.id;
+                        this.addMode = false;
+                        this.cid = res.id;
                         this.$emit("onBlur"); //emit blur, the parent component show the add button
                     } catch (er) {
                         this.edit();
@@ -114,7 +114,7 @@ export default {
                     await fetch(ARTICLE_CLASSIFY, {
                         method: "put",
                         body: {
-                            id: this._id,
+                            id: this.cid,
                             name: this.content
                         }
                     });

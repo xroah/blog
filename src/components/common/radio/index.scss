@@ -6,6 +6,10 @@
         display: none;
     }
 
+    & + .radio-wrapper {
+        margin-left: 15px;
+    }
+
     &:hover {
         .radio-border {
             border-color: $primaryColor;
@@ -20,7 +24,7 @@
         margin-right: 5px;
         border: 1px solid $defaultColor;
         border-radius: 50%;
-        vertical-align: middle;
+        vertical-align: text-bottom;
         transition: all .3s;
 
         &::after {
