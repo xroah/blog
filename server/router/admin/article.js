@@ -28,11 +28,12 @@ router.route("/classify").get((req, res) => {
         return 0;
     }).then(num => {
         if (num) return;
-        query.insertOne("classify", {
+        query.insertOne(collec, {
             name: req.body.name
         }).then(ret => {
             res.send({
-                errCode: 0
+                errCode: 0,
+                data: {id: ret.insertedId}
             });
         });
     })

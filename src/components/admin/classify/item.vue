@@ -28,24 +28,29 @@ export default {
         return {
             content: this.value,
             prevValue: this.value, //previos value, when edit fail, rollback
-            showInput: this.add
+            showInput: this.add,
+            _add: this.add, //add or edit
+            _id: this.id
         };
     },
     mounted() {
-        if (this.add) {
-            this.$refs.input.focus();
+        if (this._add) {
+            this.edit();
         }
     },
     methods: {
         edit() {
             this.showInput = true;
             setTimeout(() => {
+                //the refs will have value when mounted
+                //or when the input has shown, the input can be focused
                 this.$refs.input.focus();
             });
         },
         keyDown(evt) {
             let key = evt.key.toLowerCase();
             let { input } = this.$refs;
+            //handle enter key or esc key
             if (key === "enter") {
                 if (this.content) {
                     input.blur();
@@ -62,28 +67,36 @@ export default {
                     await fetch(ARTICLE_CLASSIFY, {
                         method: "delete",
                         body: {
-                            id: this.id
+                            id: this._id
                         }
                     });
                     message.success("删除成功");
-                    this.$emit("onBlur", true, this.id);
+                    //emit origianl id prop just for remove the item
+                    //if added successfully, the _id will change
+                    this.$emit("onBlur", true, this.id); 
                 }catch(err){}
             });
         },
         async blur() {
             this.showInput = false;
-            if (this.add) {
+            if (this._add) {
                 if (!this.content) {
+                    //when add, if no value was inputed, just destroy the item
                     this.$emit("onBlur", true);
                 } else {
                     try {
-                        await fetch(ARTICLE_CLASSIFY, {
+                        let res = await fetch(ARTICLE_CLASSIFY, {
                             method: "post",
                             body: {
                                 name: this.content
                             }
                         });
                         message.success("保存成功!");
+                        //when added successfully, change _add to false
+                        //and replace the _id to the id that from server
+                        //otherwise when edit the item will add new one
+                        this._add = false;
+                        this._id = res.id;
                         this.$emit("onBlur"); //emit blur, the parent component show the add button
                     } catch (er) {
                         this.edit();
@@ -92,6 +105,7 @@ export default {
                 return;
             }
             if (this.prevValue !== this.content) {
+                //if empty the input
                 if (!this.content) {
                     this.content = this.prevValue;
                     return;
@@ -100,12 +114,13 @@ export default {
                     await fetch(ARTICLE_CLASSIFY, {
                         method: "put",
                         body: {
-                            id: this.id,
+                            id: this._id,
                             name: this.content
                         }
                     });
                     message.success("保存成功!");
                     this.$emit("onBlur");
+                    //when sucess, set the changed value, otherwise reset
                     this.prevValue = this.content;
                 } catch (er) {
                     this.content = this.prevValue;
