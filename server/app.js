@@ -1,7 +1,10 @@
-const express = require("express");
 const fs = require("fs");
+
+const express = require("express");
 const bodyParser = require("body-parser");
+
 const session = require("express-session");
+const MongoStore = require('connect-mongo')(session);
 
 let app = express();
 
@@ -13,7 +16,8 @@ app.use(session({
         maxAge: 30 * 60 * 1000 //default half an hour
     },
     saveUninitialized: false,
-    resave: false
+    resave: false,
+    store: new MongoStore({ url: "mongodb://localhost/blog" })
 }));
 
 app.use(express.static("../dist"));
@@ -29,13 +33,13 @@ app.use(bodyParser.json())
 
 app.all("/api/admin/*", (req, res, next) => {
    //if current user have no permission then response error
-    /* if (!req.session.isAdmin) {
+    if (!req.session.isAdmin) {
         res.send({
             errCode: 2,
             errMsg: "对不起，您没有权限访问"
         });
         return;
-    }  */
+    } 
     next();
 });
 app.use("/api", router);
@@ -49,6 +53,14 @@ app.use((req, res) => {
         }
         res.setHeader("Content-Type", "text/html");
         res.send(data);
+    });
+});
+
+//handle errors
+app.use((err, req, res, next) => {
+    res.send({
+        errCode: 9,
+        errMsg: err.mesage || "出错啦!"
     });
 });
 

@@ -6,16 +6,14 @@ router.get("/list", (req, res) => {
     res.send("list");
 });
 
-router.get("/classify", (req, res) => {
+router.route("/classify").get((req, res) => {
     query.find("classify", {}).then(ret => {
         res.send({
             errCode: 0,
             data: ret || []
         });
     });
-});
-
-router.post("/classify", (req, res) => {
+}).post((req, res) => {
     let collec = "classify";
     query.findOne(collec, {
         name: req.body.name
@@ -38,9 +36,7 @@ router.post("/classify", (req, res) => {
             });
         });
     })
-});
-
-router.put("/classify", (req, res) => {
+}).put((req, res) => {
     query.updateOne("classify", {
         _id: ObjectID(req.body.id)
     }, {
@@ -52,9 +48,7 @@ router.put("/classify", (req, res) => {
             errCode: 0
         });
     });
-});
-
-router.delete("/classify", (req, res) => {
+}).delete((req, res) => {
     query.deleteOne("classify", {
         _id: ObjectID(req.body.id)
     }).then(ret => {
