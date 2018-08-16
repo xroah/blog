@@ -20,8 +20,8 @@
         .del-item {
             display: block;
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: -8px;
+            right: -8px;
             width: 16px;
             height: 16px;
             line-height: 16px;
@@ -29,7 +29,7 @@
             color: $textColor;
             background-color: $dangerColor;
             text-align: center;
-            font-size: 20px;
+            font-size: 18px;
             opacity: 0;
             transition: all .3s;
 

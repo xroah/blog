@@ -29,13 +29,13 @@ app.use(bodyParser.json())
 
 app.all("/api/admin/*", (req, res, next) => {
    //if current user have no permission then response error
-    if (!req.session.isAdmin) {
+    /* if (!req.session.isAdmin) {
         res.send({
             errCode: 2,
             errMsg: "对不起，您没有权限访问"
         });
         return;
-    } 
+    }  */
     next();
 });
 app.use("/api", router);
