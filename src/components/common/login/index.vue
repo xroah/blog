@@ -120,7 +120,7 @@ export default {
                 message.success("登录成功", 1.5);
                 this.saveInfo(userName, password);
                 if (this.isAdmin) {
-                    this.$router.push({ name: "adminMain" });
+                    this.$router.push({ name: "adminHome" });
                 }
             } catch (error) {
                 loading.hide();

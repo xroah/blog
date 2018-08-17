@@ -4,7 +4,7 @@ const About = () => import("../public/about");
 
 const AdminLogin = () => import("../admin/login");
 const AdminMain = () => import("../admin/main");
-const AdminHOme = () => import("../admin/home");
+const AdminHome = () => import("../admin/home");
 const AddArticle = () => import("../admin/addEditArticle");
 const ArticleClassify = () => import("../admin/classify");
 
@@ -23,11 +23,11 @@ export default [{
     component: AdminLogin
 }, {
     path: "/xsys",
-    name: "adminMain",
     component: AdminMain,
     children: [{
         path: "/xsys",
-        component: AdminHOme
+        component: AdminHome,
+        name: "adminHome"
     },{
         path: "article/add",
         name: "addArticle",
