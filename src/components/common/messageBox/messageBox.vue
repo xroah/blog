@@ -4,7 +4,7 @@
             <div class="message-box-header">
                 <strong>提示</strong>
                 <span class="message-box-close" @click="cancel">
-                    <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2194" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20"><path d="M156.067114 217.937163l61.86318-61.86318 649.988128 649.988128-61.86318 61.86318-649.988128-649.988128Z"></path><path d="M806.062428 156.067114l61.86318 61.86318-649.988128 649.988128-61.86318-61.86318 649.988128-649.988128Z"></path></svg>
+                    <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2194" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16"><path d="M156.067114 217.937163l61.86318-61.86318 649.988128 649.988128-61.86318 61.86318-649.988128-649.988128Z"></path><path d="M806.062428 156.067114l61.86318 61.86318-649.988128 649.988128-61.86318-61.86318 649.988128-649.988128Z"></path></svg>
                 </span>
             </div>
             <div class="message-box-content">

@@ -29,7 +29,8 @@ router.route("/classify").get((req, res) => {
     }).then(num => {
         if (num) return;
         query.insertOne(collec, {
-            name: req.body.name
+            name: req.body.name,
+            createTime: new Date()
         }).then(ret => {
             res.send({
                 errCode: 0,
