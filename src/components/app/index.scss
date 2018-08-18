@@ -1,3 +1,6 @@
+/**
+global styles
+*/
 @import "../common/minxinVariable";
 *,
 *::after,
@@ -40,6 +43,7 @@ button {
     margin: auto;
 }
 
+//all input's(editable) style
 .v-input {
     height: $inputHeight;
     border: 1px solid $defaultColor;
@@ -51,7 +55,7 @@ button {
         box-shadow: $inputFocusBoxShadow;
     }
 }
-
+//form row
 .form-flex {
     display: flex;
     align-items: center;
@@ -74,6 +78,7 @@ button {
     body {
         font-size: 16px;
     }
+    //small screen, algin vertically
     .form-flex {
         flex-direction: column;
         align-items: flex-start;
@@ -85,10 +90,12 @@ button {
     }
 }
 
+//global back to top button
 .back-to-top {
     position: fixed;
     bottom: 30px;
-    right: calc(50% - 500px + 20px);
+    //make sure the button in the container and 20px from right border
+    right: calc(50% - #{$maxWidth / 2} + 20px);
     width: 50px;
     height: 50px;
     border-radius: 5px;
@@ -117,7 +124,7 @@ button {
     }
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: $maxWidth) {
     .back-to-top {
         right: 20px;
     }
