@@ -1,9 +1,7 @@
 <template>
-    <section class="container">
-        <section class="main">
-            <Item></Item>
-        </section> 
-    </section>
+    <section class="main">
+        <Item></Item>
+    </section> 
 </template>
 <style lang="scss" src="./index.scss">
     
@@ -16,5 +14,3 @@
         }
     };
 </script>
-
-

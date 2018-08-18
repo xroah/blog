@@ -1,15 +1,17 @@
 <template>
     <section>
         <app-header></app-header>
-        <router-view></router-view>
+        <section class="container">
+            <router-view></router-view>
+        </section>
     </section>
 </template>
 <script>
 import AppHeader from "../header";
 export default {
     components: {
-        AppHeader,
+        AppHeader
     }
-}
+};
 </script>
 
