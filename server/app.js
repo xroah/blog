@@ -15,8 +15,9 @@ app.use(session({
     cookie: {
         maxAge: 30 * 60 * 1000 //default half an hour
     },
+    rolling: true,
     saveUninitialized: false,
-    resave: false,
+    resave: true,
     store: new MongoStore({ url: "mongodb://localhost/blog" })
 }));
 
