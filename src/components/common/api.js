@@ -4,3 +4,4 @@ export const DAILY_PICTURE = "/api/thirdParty/dailyPicture";
 export const USER_LOGIN = "/api/user/login";
 
 export const ARTICLE_CLASSIFY = "/api/admin/article/classify";
+export const ARTICLE = "/api/admin/article/"

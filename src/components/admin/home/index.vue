@@ -1,6 +1,32 @@
 <template>
     <section>
-        <section class="article-list">home article list</section>
+        <section class="article-summary">
+            <ul class="list-unstyled article-list">
+                <li>
+                    <span>文章标题</span>
+                    <span>文章分类</span>
+                    <span>是否公开</span>
+                    <span>创建时间</span>
+                    <span>查看次数</span>
+                    <span>操作</span>
+                </li>
+                <li v-for="a in articles" :key="a._id">
+                    <span class="text-ellipsis">{{a.title}}</span>
+                    <span class="text-ellipsis">{{a.classification}}</span>
+                    <span>{{a.secret === "0" ? "是" : "否"}}</span>
+                    <span>{{a.createTime | date}}</span>
+                    <span>{{a.totalViewed}}</span>
+                    <span>
+                        <a href="#">详情</a>
+                        <a href="#">编辑</a>
+                        <a href="#" class="del">删除</a>
+                    </span>
+                </li>
+                <li v-if="!articles.length">
+                    <span>无数据</span>
+                </li>
+            </ul>
+        </section>
         <div class="add-new-wrapper" ref="addWrapper">
             <transition name="scale-fade">
                 <div class="addition-type" v-if="showType">
@@ -25,6 +51,7 @@
 import VButton from "../../common/button";
 import NavBar from "../nav";
 import fetch from "../../common/fetch";
+import { ARTICLE } from "../../common/api";
 
 export default {
     components: {
@@ -33,7 +60,8 @@ export default {
     },
     data() {
         return {
-            showType: false
+            showType: false,
+            articles: []
         };
     },
     created() {
@@ -41,6 +69,14 @@ export default {
     },
     destroyed() {
         document.removeEventListener("click", this.clickOutWrapper);
+    },
+    async created() {
+        try {
+           let ret = await fetch(ARTICLE);
+           this.articles = ret;
+        } catch (error) {
+            
+        }
     },
     methods: {
         clickOutWrapper(evt) {
@@ -63,6 +99,21 @@ export default {
         addNote() {
             console.log("add note")
             this.showType = false;
+        }
+    },
+    filters: {
+        date(value) {
+            let date = new Date(value);
+            let year = date.getFullYear();
+            let mon = date.getMonth() + 1;
+            let day = date.getDate();
+            let hour = date.getHours();
+            let min = date.getMinutes();
+            let sec = date.getSeconds();
+            function two(num) {
+                return num < 10 ? `0${num}` : num.toString();
+            }
+            return `${year}-${two(mon)}-${two(day)} ${two(hour)}:${two(min)}:${two(sec)}`;
         }
     }
 };

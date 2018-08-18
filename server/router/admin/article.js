@@ -2,8 +2,31 @@ const router = require("express").Router();
 const query = require("../../db/query");
 const ObjectID = require("mongodb").ObjectID;
 
-router.get("/list", (req, res) => {
-    res.send("list");
+router.route("/").get((req, res) => {
+    query.find("articles", {}).then(ret => {
+        res.json({
+            errCode: 0,
+            data: ret
+        });
+    });;
+}).post((req, res) => {
+    let {
+        body
+    } = req;
+    query.insertOne("articles", {
+        title: body.title,
+        content: body.content,
+        classification: body.classification,
+        secret: body.secret,
+        createTime: new Date(),
+        lastUpdate: new Date(),
+        totalViewed: 0,
+        todayViewed: 0
+    }).then(ret => {
+        res.json({
+            errCode: 0
+        });
+    });
 });
 
 router.route("/classify").get((req, res) => {
@@ -34,7 +57,9 @@ router.route("/classify").get((req, res) => {
         }).then(ret => {
             res.send({
                 errCode: 0,
-                data: {id: ret.insertedId}
+                data: {
+                    id: ret.insertedId
+                }
             });
         });
     })
@@ -59,4 +84,5 @@ router.route("/classify").get((req, res) => {
         });
     });
 });
+
 module.exports = router;
