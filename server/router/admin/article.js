@@ -27,6 +27,16 @@ router.route("/").get((req, res) => {
             errCode: 0
         });
     });
+}).put((req, res) => {
+
+}).delete((req, res) => {
+    query.deleteOne("articles", {
+        _id: ObjectID(req.body.id)
+    }).then(ret => {
+        res.json({
+            errCode: 0
+        });
+    });
 });
 
 router.route("/classify").get((req, res) => {

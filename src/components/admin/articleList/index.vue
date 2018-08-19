@@ -1,0 +1,105 @@
+<template>
+    <section class="article-summary">
+        <ul class="list-unstyled article-list">
+            <li>
+                <span>文章标题</span>
+                <span>文章分类</span>
+                <span>是否公开</span>
+                <span>创建时间</span>
+                <span>查看次数</span>
+                <span>操作</span>
+            </li>
+            <li v-for="a in articles" :key="a._id">
+                <span class="text-ellipsis" :title="a.title">{{a.title}}</span>
+                <span class="text-ellipsis" :title="a.title">{{a.classification}}</span>
+                <span>{{a.secret === "0" ? "是" : "否"}}</span>
+                <span>{{a.createTime | date}}</span>
+                <span>{{a.totalViewed}}</span>
+                <span>
+                    <a href="#">详情</a>
+                    <a href="#">编辑</a>
+                    <a href="#" class="del" @click="del($event, a._id)">删除</a>
+                </span>
+            </li>
+            <li v-if="loaded && !articles.length">
+                <span>无数据</span>
+            </li>
+            <li class="justify-center" v-if="!loaded">
+                <loading :fullscreen="false">正在加载...</loading>
+            </li>
+        </ul>
+    </section>
+</template>
+
+<style src="./index.scss"></style>
+
+<script>
+import fetch from "../../common/fetch";
+import { ARTICLE } from "../../common/api";
+import Loading from "../../common/loading/loading";
+import msgBox from "../../common/messageBox/index";
+import message from "../../common/message/index";
+import loadingFs from "../../common/loading/index";
+
+export default {
+    components: {
+        Loading
+    },
+    data() {
+        return {
+            showType: false,
+            articles: [],
+            loaded: false
+        };
+    },
+    created() {
+        this.fetchArticles();
+    },
+    methods: {
+        async fetchArticles() {
+            this.loaded = false;
+            this.articles = [];
+            try {
+                let ret = await fetch(ARTICLE);
+                this.articles = ret;
+            } catch (error) {}
+            this.loaded = true;
+        },
+        del(evt, id) {
+            evt.preventDefault();
+            msgBox.confirm("确定要删除这条记录吗?", async () => {
+                loadingFs.show();
+                try {
+                    await fetch(ARTICLE, {
+                        method: "delete",
+                        body: {
+                            id
+                        }
+                    });
+                    loadingFs.hide();
+                    message.success("删除成功");
+                    this.fetchArticles();
+                } catch (error) {}
+            });
+        }
+    },
+    filters: {
+        date(value) {
+            let date = new Date(value);
+            let year = date.getFullYear();
+            let mon = date.getMonth() + 1;
+            let day = date.getDate();
+            let hour = date.getHours();
+            let min = date.getMinutes();
+            let sec = date.getSeconds();
+            function two(num) {
+                return num < 10 ? `0${num}` : num.toString();
+            }
+            return `${year}-${two(mon)}-${two(day)} ${two(hour)}:${two(
+                min
+            )}:${two(sec)}`;
+        }
+    }
+};
+</script>
+
