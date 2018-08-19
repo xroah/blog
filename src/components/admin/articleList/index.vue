@@ -9,7 +9,7 @@
                 <span>查看次数</span>
                 <span>操作</span>
             </li>
-            <li v-for="a in articles" :key="a._id">
+            <li v-for="a in list" :key="a._id">
                 <span class="text-ellipsis" :title="a.title">{{a.title}}</span>
                 <span class="text-ellipsis" :title="a.title">{{a.classification}}</span>
                 <span>{{a.secret === "0" ? "是" : "否"}}</span>
@@ -17,11 +17,11 @@
                 <span>{{a.totalViewed}}</span>
                 <span>
                     <a href="#">详情</a>
-                    <a href="#">编辑</a>
+                    <a href="#" @click="edit($event, a._id)">编辑</a>
                     <a href="#" class="del" @click="del($event, a._id)">删除</a>
                 </span>
             </li>
-            <li v-if="loaded && !articles.length">
+            <li v-if="loaded && !list.length">
                 <span>无数据</span>
             </li>
             <li class="justify-center" v-if="!loaded">
@@ -40,6 +40,8 @@ import Loading from "../../common/loading/loading";
 import msgBox from "../../common/messageBox/index";
 import message from "../../common/message/index";
 import loadingFs from "../../common/loading/index";
+import { FETCH_ARTICLE_LIST } from "../../../stores/actions";
+import { mapState, mapActions } from "vuex";
 
 export default {
     components: {
@@ -48,23 +50,15 @@ export default {
     data() {
         return {
             showType: false,
-            articles: [],
-            loaded: false
         };
     },
     created() {
         this.fetchArticles();
     },
     methods: {
-        async fetchArticles() {
-            this.loaded = false;
-            this.articles = [];
-            try {
-                let ret = await fetch(ARTICLE);
-                this.articles = ret;
-            } catch (error) {}
-            this.loaded = true;
-        },
+        ...mapActions({
+            fetchArticles: FETCH_ARTICLE_LIST
+        }),
         del(evt, id) {
             evt.preventDefault();
             msgBox.confirm("确定要删除这条记录吗?", async () => {
@@ -78,10 +72,20 @@ export default {
                     });
                     loadingFs.hide();
                     message.success("删除成功");
-                    this.fetchArticles();
+                    this.fetchArticles(true);//force update
                 } catch (error) {}
             });
+        },
+        edit(evt, id) {
+            evt.preventDefault();
+            this.$router.push(`/xsys/article/edit/${id}`);
         }
+    },
+    computed: {
+        ...mapState({
+            list: state => state.article.list,
+            loaded: state => state.article.loaded
+        })
     },
     filters: {
         date(value) {

@@ -28,7 +28,24 @@ router.route("/").get((req, res) => {
         });
     });
 }).put((req, res) => {
-
+    let {
+        body
+    } = req;
+    query.updateOne("articles", {
+        _id: ObjectID(body.id)
+    }, {
+        $set: {
+            title: body.title,
+            content: body.content,
+            classification: body.classification,
+            secret: body.secret,
+            lastUpdate: new Date()
+        }
+    }).then(ret => {
+        res.json({
+            errCode: 0
+        });
+    });
 }).delete((req, res) => {
     query.deleteOne("articles", {
         _id: ObjectID(req.body.id)

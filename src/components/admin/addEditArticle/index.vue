@@ -1,5 +1,5 @@
 <template>
-    <section class="add-edit-article">
+    <section class="add-edit-article" v-if="!error">
         <div class="form-flex">
             <span class="form-label">文章标题:</span>
             <input type="text" class="v-input form-control" maxlength="20" v-model="title">
@@ -29,6 +29,7 @@
             </div>
         </div>
     </section>
+    <section class="text-center" v-else>文章不存在</section>
 </template>
 <style src="./index.scss"></style>
 
@@ -42,6 +43,8 @@ import VButton from "../../common/button";
 import message from "../../common/message";
 import Vue from "vue";
 import Loading from "../../common/loading/index";
+import { FETCH_ARTICLE_LIST, GET_ARTICLE_BY_ID } from "../../../stores/actions";
+import { mapState, mapActions, mapMutations } from "vuex";
 
 const _Editor = Vue.extend(Editor);
 
@@ -53,6 +56,7 @@ export default {
             classification: [],
             cls: "",
             saved: false,
+            error: false
         };
     },
     components: {
@@ -61,7 +65,7 @@ export default {
         VButton
     },
     beforeRouteLeave(to, from, next) {
-        if (this.saved) {
+        if (this.saved || this.error) {
             next();
             return;
         }
@@ -71,10 +75,17 @@ export default {
         });
     },
     async created() {
+        let { $route } = this;
+        this.editMode = $route.path.includes("edit");
+        this.id = $route.params.id;
+        if (this.editMode && !this.id) {
+            this.error = true;
+            return;
+        }
         try {
             let res = await fetch(ARTICLE_CLASSIFY);
             this.classification = res;
-            if (res.length) {
+            if (res.length && !this.cls) {
                 this.cls = res[0].name;
             }
         } catch (err) {}
@@ -82,8 +93,34 @@ export default {
     mounted() {
         const quill = new _Editor().$mount(this.$refs.editor);
         this.editor = quill.editor;
+        this.handleEdit();
+    },
+    computed: {
+        ...mapState({
+            list: state => state.article.list,
+            article: state => state.article.current
+        })
     },
     methods: {
+        //when page refresh article this will clear,
+        //so fetch first
+        ...mapActions({
+            fetchArticles: FETCH_ARTICLE_LIST
+        }),
+        ...mapMutations({
+            getById: GET_ARTICLE_BY_ID
+        }),
+        async handleEdit() {
+            if (!this.list.length) {
+                await this.fetchArticles();
+            }
+            this.getById({ id: this.id });
+            let { article } = this;
+            this.title = article.title;
+            this.cls = article.classification;
+            this.secret = article.secret;
+            this.editor.root.innerHTML = article.content;
+        },
         async save() {
             if (!this.title) {
                 message.error("标题不能为空", 1.5);
@@ -95,21 +132,28 @@ export default {
                 message.error("内容不能为空", 1.5);
                 return;
             }
-            let { title, cls, secret } = this;
+            let { title, cls, secret, editMode, id, editor } = this;
+            let method = "post";
+            let body = {
+                title,
+                classification: cls,
+                secret,
+                content: editor.root.innerHTML
+            };
+            if (editMode) {
+                body.id = id;
+                method = "put";
+            }
             try {
                 Loading.show();
                 await fetch(ARTICLE, {
-                    method: "post",
-                    body: {
-                        title,
-                        classification: cls,
-                        secret,
-                        content: this.editor.root.innerHTML
-                    }
+                    method,
+                    body
                 });
                 this.saved = true;
                 message.success("保存成功!");
                 this.cancel();
+                this.fetchArticles(true);
             } catch (error) {}
             Loading.hide();
         },
