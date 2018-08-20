@@ -25,7 +25,7 @@ new Vue({
     el: "#app",
     router,
     store,
-    render: createElement => createElement(App)
+    render: h => h(App)
 });
 
 //make :active work nomally on mobile phone
