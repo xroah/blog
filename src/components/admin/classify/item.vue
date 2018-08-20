@@ -79,26 +79,26 @@ export default {
             this.showInput = false;
             if (this.addMode) {
                 if (!this.content) {
-                    //when add, if no value was inputed, just destroy the item
-                    this.delFromList({});
-                    this.$emit("onBlur");
+                    //when add, if no value was inputed, emit onBlur event
+                    //the parent component delete the last
+                    this.$emit("onBlur", true);
                 } else {
                     try {
-                    let res = await this.updateNameFromServer({
-                        method: "post",
-                        body: {
-                            name: this.content
-                        }
-                    });
-                    message.success("保存成功!");
-                    //update the item
-                    //otherwise when edit the item will add new one
-                    this.updateFromList({
-                        prevId: this.cid,
-                        name: this.content,
-                        _id: res.id
-                    });
-                    this.$emit("onBlur"); //emit blur, the parent component show the add button
+                        let res = await this.updateNameFromServer({
+                            method: "post",
+                            body: {
+                                name: this.content
+                            }
+                        });
+                        message.success("保存成功!");
+                        //update the item
+                        //otherwise when edit the item will add new one
+                        this.updateFromList({
+                            prevId: this.cid,
+                            name: this.content,
+                            _id: res.id
+                        });
+                        this.$emit("onBlur");
                     } catch (er) {
                         this.edit();
                     }
@@ -124,6 +124,7 @@ export default {
                         name: this.content
                     });
                     message.success("保存成功!");
+                    this.$emit("onBlur");
                     this.prevValue = this.content;
                 } catch (er) {
                     //failed, focus and reedit

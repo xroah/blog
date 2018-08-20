@@ -67,8 +67,11 @@ export default {
                 } catch (err) {}
             });
         },
-        onBlur(destroyLast) {
+        onBlur(removeLast) {
            this.showAdd = true;
+           if (removeLast) {
+               this.delFromList();
+           }
         }
     }
 };

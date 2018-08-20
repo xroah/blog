@@ -47,7 +47,7 @@ const classification = {
             } = state;
             let index = -1;
             //when addition operation cancelled, pop the last item
-            if (!payload._id) {
+            if (!payload || !payload._id) {
                 list.pop();
                 return;
             }
