@@ -35,6 +35,7 @@ const classification = {
                     break;
                 }
             }
+            //update the item
             list.splice(index, 1, {
                 name: payload.name,
                 _id: payload._id,
@@ -90,6 +91,7 @@ const classification = {
                 }
             });
         },
+        //update or insert one
         [UPDATE_CLASSIFICATION_NAME_BY_ID](context, payload) {
             return fetch(ARTICLE_CLASSIFY, {
                 method: payload.method,

@@ -34,8 +34,6 @@
 <style src="./index.scss"></style>
 
 <script>
-import fetch from "../../common/fetch";
-import { ARTICLE } from "../../common/api";
 import Loading from "../../common/loading/loading";
 import msgBox from "../../common/messageBox/index";
 import message from "../../common/message/index";
