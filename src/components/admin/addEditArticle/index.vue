@@ -35,34 +35,42 @@
 
 <script>
 import Radio from "../../common/radio";
-import fetch from "../../common/fetch";
-import { ARTICLE_CLASSIFY, ARTICLE } from "../../common/api";
 import Editor from "../../common/editor";
 import msgBox from "../../common/messageBox/index";
 import VButton from "../../common/button";
 import message from "../../common/message";
 import Vue from "vue";
 import Loading from "../../common/loading/index";
-import { FETCH_ARTICLE_LIST, ADD_ARTICLE } from "../../../stores/actions";
+import {
+    FETCH_ARTICLE_LIST,
+    ADD_ARTICLE,
+    FETCH_CLASSIFICATION_LIST
+} from "../../../stores/actions";
 import { mapState, mapActions } from "vuex";
 
 const _Editor = Vue.extend(Editor);
 
 export default {
+    components: {
+        Radio,
+        Editor,
+        VButton
+    },
     data() {
         return {
             secret: "0",
             title: "",
-            classification: [],
             cls: "",
             saved: false,
             error: false
         };
     },
-    components: {
-        Radio,
-        Editor,
-        VButton
+    computed: {
+        ...mapState({
+            list: state => state.article.list,
+            article: state => state.article.current,
+            classification: state => state.classification.list
+        })
     },
     beforeRouteLeave(to, from, next) {
         if (this.saved || this.error) {
@@ -84,13 +92,11 @@ export default {
             this.error = true;
             return;
         }
-        try {
-            let res = await fetch(ARTICLE_CLASSIFY);
-            this.classification = res;
-            if (res.length && !this.cls) {
-                this.cls = res[0].name;
-            }
-        } catch (err) {}
+        await this.fetchCls();
+        let { classification } = this;
+        if (classification.length && !this.cls) {
+            this.cls = classification[0].name;
+        }
     },
     mounted() {
         //we can get $refs instance just when mounted
@@ -98,18 +104,13 @@ export default {
         this.editor = quill.editor;
         this.editMode && this.handleEdit();
     },
-    computed: {
-        ...mapState({
-            list: state => state.article.list,
-            article: state => state.article.current
-        })
-    },
     methods: {
         //when page refresh article list will be null,
         //so fetch first
         ...mapActions({
             fetchArticles: FETCH_ARTICLE_LIST,
-            addArticle: ADD_ARTICLE
+            addArticle: ADD_ARTICLE,
+            fetchCls: FETCH_CLASSIFICATION_LIST
         }),
         getArticleById(id) {
             let ret;

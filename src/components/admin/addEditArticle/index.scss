@@ -4,8 +4,17 @@
     }
     .form-label {
         flex-shrink: 0;
+        width: 60px;
     }
     .content-editor {
         flex-grow: 1;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .add-edit-article {
+        .form-label {
+            width: auto;
+        }
     }
 }

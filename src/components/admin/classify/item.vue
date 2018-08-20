@@ -11,7 +11,7 @@
             v-model="content">
         <span v-show="!showInput">
             <span title="点击编辑">{{content}}</span>
-            <span class="del-item" @click="del($event)">&times;</span>
+            <span class="del-item" v-if="!addMode" @click="del($event)">&times;</span>
         </span>
     </div>
 </template>
@@ -21,6 +21,14 @@ import fetch from "../../common/fetch";
 import { ARTICLE_CLASSIFY } from "../../common/api";
 import message from "../../common/message";
 import msgBox from "../../common/messageBox";
+import {
+    FETCH_CLASSIFICATION_LIST,
+    DELETE_CLASSIFICATION_BY_ID,
+    UPDATE_CLASSIFICATION_ITEM,
+    UPDATE_CLASSIFICATION_NAME_BY_ID,
+    UPDATE_CLASSFICATION_ID
+} from "../../../stores/actions";
+import { mapMutations, mapActions } from "vuex";
 
 export default {
     props: ["value", "id", "onBlur", "add"],
@@ -39,6 +47,14 @@ export default {
         }
     },
     methods: {
+        ...mapMutations({
+            delFromList: DELETE_CLASSIFICATION_BY_ID,
+            updateFromList: UPDATE_CLASSIFICATION_ITEM
+        }),
+        ...mapActions({
+            delFromServer: DELETE_CLASSIFICATION_BY_ID,
+            updateNameFromServer: UPDATE_CLASSIFICATION_NAME_BY_ID
+        }),
         edit() {
             this.showInput = true;
             setTimeout(() => {
@@ -64,17 +80,13 @@ export default {
             evt.stopPropagation();
             msgBox.confirm(`确定要将 ${this.content} 删除吗?`, async () => {
                 try {
-                    await fetch(ARTICLE_CLASSIFY, {
-                        method: "delete",
-                        body: {
-                            id: this.cid
-                        }
-                    });
+                    await this.delFromServer(this.cid);
+                    this.delFromList({id: this.cid});
                     message.success("删除成功");
                     //emit origianl id prop just for remove the item
                     //if added successfully, the cid will change
-                    this.$emit("onBlur", true, this.id); 
-                }catch(err){}
+                    this.$emit("onBlur", true, this.id);
+                } catch (err) {}
             });
         },
         async blur() {
@@ -82,25 +94,28 @@ export default {
             if (this.addMode) {
                 if (!this.content) {
                     //when add, if no value was inputed, just destroy the item
-                    this.$emit("onBlur", true);
+                    this.delFromList({});
+                    this.$emit("onBlur");
                 } else {
-                    try {
-                        let res = await fetch(ARTICLE_CLASSIFY, {
-                            method: "post",
-                            body: {
-                                name: this.content
-                            }
-                        });
-                        message.success("保存成功!");
-                        //when added successfully, change addMode to false
-                        //and replace the cid to the id that from server
-                        //otherwise when edit the item will add new one
-                        this.addMode = false;
-                        this.cid = res.id;
-                        this.$emit("onBlur"); //emit blur, the parent component show the add button
-                    } catch (er) {
-                        this.edit();
-                    }
+                    // try {
+                    let res = await this.updateNameFromServer({
+                        method: "post",
+                        body: {
+                            name: this.content
+                        }
+                    });
+                    message.success("保存成功!");
+                    //update the item
+                    //otherwise when edit the item will add new one
+                    this.updateFromList({
+                        prevId: this.cid,
+                        name: this.content,
+                        _id: res.id
+                    });
+                    this.$emit("onBlur"); //emit blur, the parent component show the add button
+                    //} catch (er) {
+                    //this.edit();
+                    // }
                 }
                 return;
             }
@@ -111,18 +126,20 @@ export default {
                     return;
                 }
                 try {
-                    await fetch(ARTICLE_CLASSIFY, {
+                    await this.updateNameFromServer({
                         method: "put",
                         body: {
                             id: this.cid,
                             name: this.content
                         }
                     });
+                    this.updateFromList({
+                        _id: this.cid,
+                        name: this.content
+                    });
                     message.success("保存成功!");
-                    this.$emit("onBlur");
-                    //when sucess, set the changed value, otherwise reset
-                    this.prevValue = this.content;
                 } catch (er) {
+                    //failed, reset the content
                     this.content = this.prevValue;
                 }
             }

@@ -52,6 +52,12 @@ export default {
             showType: false
         };
     },
+    computed: {
+        ...mapState({
+            list: state => state.article.list,
+            loaded: state => state.article.loaded
+        })
+    },
     created() {
         this.fetchArticles();
     },
@@ -75,12 +81,6 @@ export default {
             evt.preventDefault();
             this.$router.push(`/xsys/article/edit/${id}`);
         }
-    },
-    computed: {
-        ...mapState({
-            list: state => state.article.list,
-            loaded: state => state.article.loaded
-        })
     },
     filters: {
         date(value) {

@@ -57,7 +57,11 @@ router.route("/").get((req, res) => {
 });
 
 router.route("/classify").get((req, res) => {
-    query.find("classify", {}).then(ret => {
+    query.find("classify", {}, {
+        projection: {
+            createTime: 0
+        }
+    }).then(ret => {
         res.send({
             errCode: 0,
             data: ret || []

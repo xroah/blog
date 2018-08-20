@@ -1,7 +1,7 @@
 <template>
     <section class="classify-container">
         <item 
-        v-for="item in items"
+        v-for="item in list"
         :value="item.name"
         :add="!!item.add"
         :id="item._id"
@@ -16,18 +16,22 @@
 <script>
 import Item from "./item";
 import VButton from "../../common/button";
-import fetch from "../../common/fetch";
-import { ARTICLE_CLASSIFY } from "../../common/api";
 import loading from "../../common/loading";
+import { FETCH_CLASSIFICATION_LIST, ADD_CLASSIFICATION } from "../../../stores/actions";
+import { mapState, mapActions, mapMutations } from "vuex";
 
 let guid = 0;
 
 export default {
-    data(){
+    data() {
         return {
-            items: [],
             showAdd: true
-        }
+        };
+    },
+    computed: {
+        ...mapState({
+            list: state => state.classification.list
+        })
     },
     components: {
         Item,
@@ -35,33 +39,23 @@ export default {
     },
     async created() {
         loading.show();
-        try {
-            let ret = await fetch(ARTICLE_CLASSIFY);
-            this.items = ret;
-        }catch(err) {}
+        await this.fetchCls();
         loading.hide();
     },
     methods: {
+        ...mapActions({
+            fetchCls: FETCH_CLASSIFICATION_LIST
+        }),
+        ...mapMutations({
+            add: ADD_CLASSIFICATION
+        }),
         addItem() {
-            this.items.push({
-                _id: guid++,
-                value: "",
-                add: true
-            });
+            this.add();
             this.showAdd = false;
         },
-        onBlur(destroyLast, id) {
-            let { items } = this;
-            if (destroyLast) {
-                if (id) {
-                    let index = items.findIndex(item => item.id === id);
-                    items.splice(index, 1);
-                } else {
-                    items.pop();
-                }
-            }
-            this.showAdd = true;
+        onBlur(destroyLast) {
+           this.showAdd = true;
         }
     }
-}
+};
 </script>
