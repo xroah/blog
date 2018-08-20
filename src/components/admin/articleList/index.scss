@@ -11,7 +11,7 @@
         &:first-child {
             font-weight: bold;
         }
-        > span {
+        >span {
             flex-shrink: 0;
             &:nth-child(1),
             &:nth-child(2) {
@@ -45,7 +45,7 @@
 }
 
 @media screen and (max-width: 640px) {
-    .article-list li span {
+    .article-list li>span {
         display: none;
         &:first-child,
         &:last-child {
