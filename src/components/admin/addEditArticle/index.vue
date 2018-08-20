@@ -2,7 +2,7 @@
     <section class="add-edit-article" v-if="!error">
         <div class="form-flex">
             <span class="form-label">文章标题:</span>
-            <input type="text" class="v-input form-control" maxlength="20" v-model="title">
+            <input type="text" class="v-input form-control" maxlength="20" placeholder="最多20个字" v-model="title">
         </div>
         <div class="form-flex">
             <span class="form-label">文章分类:</span>

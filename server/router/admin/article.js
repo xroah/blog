@@ -56,6 +56,19 @@ router.route("/").get((req, res) => {
     });
 });
 
+router.get("/details", (req, res) => {
+    query.findOne("articles", {
+        _id: ObjectID(req.query.id)
+    }).then(ret => {
+        res.json({
+            errCode: 0,
+            data: {
+                article: ret
+            }
+        });
+    });
+});
+
 router.route("/classify").get((req, res) => {
     query.find("classify", {}, {
         projection: {

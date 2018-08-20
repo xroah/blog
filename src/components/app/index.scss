@@ -14,7 +14,7 @@ body {
     background-color: #f6f6f6;
 }
 
-p {
+p, h1, h2, h3, h4, h5, h6 {
     margin: 0;
 }
 
@@ -35,6 +35,12 @@ input, button, select {
 button {
     //remove click shadow on mobile phone
     -webkit-tap-highlight-color:transparent;
+}
+
+.article-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
 }
 
 .container {

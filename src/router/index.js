@@ -7,6 +7,7 @@ const AdminMain = () => import("../components/admin/main");
 const AdminHome = () => import("../components/admin/home");
 const AddArticle = () => import("../components/admin/addEditArticle");
 const ArticleClassify = () => import("../components/admin/classify");
+const ArticleDetails = () => import("../components/admin/articleDetails");
 
 export default [{
     path: "/",
@@ -35,6 +36,9 @@ export default [{
     },{
         path: "article/edit/:id?",
         component: AddArticle
+    },{
+        path: "article/details/:id?",
+        component: ArticleDetails
     },{
         path: "article/classify",
         component: ArticleClassify

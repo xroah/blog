@@ -16,9 +16,9 @@
                 <span>{{a.createTime | date}}</span>
                 <span>{{a.totalViewed}}</span>
                 <span>
-                    <a href="#">详情</a>
-                    <a href="#" @click="edit($event, a._id)">编辑</a>
-                    <a href="#" class="del" @click="del($event, a._id)">删除</a>
+                    <a href="#" @click="operate($event, 'details', a._id)">详情</a>
+                    <a href="#" @click="operate($event, 'edit', a._id)">编辑</a>
+                    <a href="#" class="del" @click="operate($event, 'del', a._id)">删除</a>
                 </span>
             </li>
             <li v-if="loaded && !list.length">
@@ -64,8 +64,21 @@ export default {
             fetchArticles: FETCH_ARTICLE_LIST,
             delArticle: DELETE_ARRTICLE
         }),
-        del(evt, id) {
+        operate(evt, type, id) {
+            switch (type) {
+                case "del":
+                    this.del(id);
+                    break;
+                case "details":
+                    this.$router.push(`/xsys/article/details/${id}`);
+                    break;
+                case "edit":
+                    this.$router.push(`/xsys/article/edit/${id}`);
+                    break;
+            }
             evt.preventDefault();
+        },
+        del(id) {
             msgBox.confirm("确定要删除这条记录吗?", async () => {
                 loadingFs.show();
                 try {
@@ -74,10 +87,6 @@ export default {
                 } catch (error) {}
                 loadingFs.hide();
             });
-        },
-        edit(evt, id) {
-            evt.preventDefault();
-            this.$router.push(`/xsys/article/edit/${id}`);
         }
     },
     filters: {
