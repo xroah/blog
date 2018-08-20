@@ -8,7 +8,7 @@
         @onBlur="onBlur"
         :delHandler="delItem"
         :key="item._id"></item>
-        <v-button :click="addItem" v-if="showAdd">新增</v-button>
+        <v-button @click="addItem" v-if="showAdd">新增</v-button>
     </section>
 </template>
 

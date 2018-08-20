@@ -24,8 +24,8 @@
         <div class="form-flex">
             <span class="form-label"></span>
             <div class="form-control">
-                <v-button type="primary" :click="save">保存</v-button>
-                <v-button style="margin-left: 10px;" :click="cancel">取消</v-button>
+                <v-button type="primary" @click="save">保存</v-button>
+                <v-button style="margin-left: 10px;" @click="cancel">取消</v-button>
             </div>
         </div>
     </section>
