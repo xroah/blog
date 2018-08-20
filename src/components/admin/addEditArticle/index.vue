@@ -43,8 +43,8 @@ import VButton from "../../common/button";
 import message from "../../common/message";
 import Vue from "vue";
 import Loading from "../../common/loading/index";
-import { FETCH_ARTICLE_LIST, GET_ARTICLE_BY_ID } from "../../../stores/actions";
-import { mapState, mapActions, mapMutations } from "vuex";
+import { FETCH_ARTICLE_LIST, ADD_ARTICLE } from "../../../stores/actions";
+import { mapState, mapActions } from "vuex";
 
 const _Editor = Vue.extend(Editor);
 
@@ -76,8 +76,10 @@ export default {
     },
     async created() {
         let { $route } = this;
+        //edit mode(if the path has 'edit')
         this.editMode = $route.path.includes("edit");
         this.id = $route.params.id;
+        //if edit mode and no id provided(input the url manually with no id)
         if (this.editMode && !this.id) {
             this.error = true;
             return;
@@ -91,9 +93,10 @@ export default {
         } catch (err) {}
     },
     mounted() {
+        //we can get $refs instance just when mounted
         const quill = new _Editor().$mount(this.$refs.editor);
         this.editor = quill.editor;
-        this.handleEdit();
+        this.editMode && this.handleEdit();
     },
     computed: {
         ...mapState({
@@ -102,20 +105,31 @@ export default {
         })
     },
     methods: {
-        //when page refresh article this will clear,
+        //when page refresh article list will be null,
         //so fetch first
         ...mapActions({
-            fetchArticles: FETCH_ARTICLE_LIST
+            fetchArticles: FETCH_ARTICLE_LIST,
+            addArticle: ADD_ARTICLE
         }),
-        ...mapMutations({
-            getById: GET_ARTICLE_BY_ID
-        }),
+        getArticleById(id) {
+            let ret;
+            for (let value of this.list) {
+                if (value._id === id) {
+                    ret = value;
+                    break;
+                }
+            }
+            return ret;
+        },
         async handleEdit() {
             if (!this.list.length) {
                 await this.fetchArticles();
             }
-            this.getById({ id: this.id });
-            let { article } = this;
+            let article = this.getArticleById(this.id);
+            if (!article) {
+                this.error = true;
+                return;
+            }
             this.title = article.title;
             this.cls = article.classification;
             this.secret = article.secret;
@@ -144,16 +158,15 @@ export default {
                 body.id = id;
                 method = "put";
             }
+            Loading.show();
             try {
-                Loading.show();
-                await fetch(ARTICLE, {
+                await this.addArticle({
                     method,
                     body
                 });
                 this.saved = true;
                 message.success("保存成功!");
                 this.cancel();
-                this.fetchArticles(true);
             } catch (error) {}
             Loading.hide();
         },

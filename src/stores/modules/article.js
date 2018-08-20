@@ -5,29 +5,19 @@ import {
 import {
     FETCH_ARTICLE_LIST,
     UPDATE_ARTICLE_LIST,
-    GET_ARTICLE_BY_ID,
-    CHANGE_ARTICLE_LOAD_STATE
+    CHANGE_ARTICLE_LOAD_STATE,
+    ADD_ARTICLE,
+    DELETE_ARRTICLE
 } from "../actions";
 
 const article = {
     state: {
         list: [],
-        loaded: true,
-        current: null,
+        loaded: true
     },
     mutations: {
         [UPDATE_ARTICLE_LIST](state, payload) {
             state.list = payload.list;
-        },
-        [GET_ARTICLE_BY_ID](state, payload) {
-            let ret;
-            for (let value of state.list) {
-                if (value._id === payload.id) {
-                    ret = value;
-                    break;
-                }
-            }
-            state.current = ret;
         },
         [CHANGE_ARTICLE_LOAD_STATE](state, payload) {
             state.loaded = payload.loaded;
@@ -61,6 +51,24 @@ const article = {
                 loaded: true
             });
         },
+        async [DELETE_ARRTICLE]({
+            dispatch
+        }, id) {
+            await fetch(ARTICLE, {
+                method: "delete",
+                body: {
+                    id
+                }
+            });
+            dispatch(FETCH_ARTICLE_LIST, true);
+        },
+        async [ADD_ARTICLE]({dispatch}, payload) {
+            await fetch(ARTICLE, {
+                method: payload.method,
+                body: payload.body
+            });
+            dispatch(FETCH_ARTICLE_LIST, true);
+        }
     }
 };
 

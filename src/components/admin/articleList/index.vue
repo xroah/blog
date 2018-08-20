@@ -40,7 +40,7 @@ import Loading from "../../common/loading/loading";
 import msgBox from "../../common/messageBox/index";
 import message from "../../common/message/index";
 import loadingFs from "../../common/loading/index";
-import { FETCH_ARTICLE_LIST } from "../../../stores/actions";
+import { FETCH_ARTICLE_LIST, DELETE_ARRTICLE } from "../../../stores/actions";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -49,7 +49,7 @@ export default {
     },
     data() {
         return {
-            showType: false,
+            showType: false
         };
     },
     created() {
@@ -57,23 +57,18 @@ export default {
     },
     methods: {
         ...mapActions({
-            fetchArticles: FETCH_ARTICLE_LIST
+            fetchArticles: FETCH_ARTICLE_LIST,
+            delArticle: DELETE_ARRTICLE
         }),
         del(evt, id) {
             evt.preventDefault();
             msgBox.confirm("确定要删除这条记录吗?", async () => {
                 loadingFs.show();
                 try {
-                    await fetch(ARTICLE, {
-                        method: "delete",
-                        body: {
-                            id
-                        }
-                    });
-                    loadingFs.hide();
+                    await this.delArticle(id);
                     message.success("删除成功");
-                    this.fetchArticles(true);//force update
                 } catch (error) {}
+                loadingFs.hide();
             });
         },
         edit(evt, id) {

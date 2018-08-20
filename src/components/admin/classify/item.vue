@@ -27,7 +27,7 @@ export default {
     data() {
         return {
             content: this.value,
-            prevValue: this.value, //previos value, when edit fail, rollback
+            prevValue: this.value, //previos value, when edit failed, rollback
             showInput: false,
             addMode: this.add, //add or edit
             cid: this.id
