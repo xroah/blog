@@ -21,7 +21,8 @@ router.route("/").get((req, res) => {
         createTime: new Date(),
         lastUpdate: new Date(),
         totalViewed: 0,
-        todayViewed: 0
+        todayViewed: 0,
+        tags: body.tags
     }).then(ret => {
         res.json({
             errCode: 0
@@ -39,7 +40,8 @@ router.route("/").get((req, res) => {
             content: body.content,
             classification: body.classification,
             secret: body.secret,
-            lastUpdate: new Date()
+            lastUpdate: new Date(),
+            tags: body.tags
         }
     }).then(ret => {
         res.json({

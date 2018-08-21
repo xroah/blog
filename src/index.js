@@ -4,7 +4,7 @@ import VueRouter from "vue-router";
 import routes from "./router";
 import "normalize.css";
 //quill eiditor's style should import globally
-//quill editor's content all attribute are based on class names
+//quill editor's all content attribute are based on class names
 import "quill/dist/quill.snow.css";
 import "./components/common/editor/index.scss";
 import Vuex from "vuex";

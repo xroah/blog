@@ -33,7 +33,6 @@
 import VButton from "../../common/button";
 import NavBar from "../nav";
 import ArticleList from "../articleList";
-
 export default {
     components: {
         VButton,
@@ -44,7 +43,7 @@ export default {
         return {
             showType: false,
             articles: [],
-            loaded: false
+            loaded: false,
         };
     },
     created() {

@@ -10,6 +10,10 @@
                 <option v-for="item in classification" :key="item._id" :value="item.name">{{item.name}}</option>
             </select>
         </div>
+        <div class="form-flex">
+            <span class="form-label">文章标签:</span>
+            <tags class="form-control" ref="articleTags" @addTag="addTag" @removeTag="removeTag" :tags="tags"></tags>
+        </div>
         <div class="form-flex row-always">
             <span class="form-label">是否公开:</span>
             <div>
@@ -41,6 +45,7 @@ import VButton from "../../common/button";
 import message from "../../common/message";
 import Vue from "vue";
 import Loading from "../../common/loading/index";
+import Tags from "../tags";
 import {
     FETCH_ARTICLE_LIST,
     ADD_ARTICLE,
@@ -54,7 +59,8 @@ export default {
     components: {
         Radio,
         Editor,
-        VButton
+        VButton,
+        Tags
     },
     data() {
         return {
@@ -62,7 +68,8 @@ export default {
             title: "",
             cls: "",
             saved: false,
-            error: false
+            error: false,
+            tags: []
         };
     },
     computed: {
@@ -135,6 +142,13 @@ export default {
             this.cls = article.classification;
             this.secret = article.secret;
             this.editor.root.innerHTML = article.content;
+            this.tags = article.tags || [];
+        },
+        addTag(tag) {
+            this.tags.push(tag);
+        },
+        removeTag(index) {
+            this.tags.splice(index, 1);
         },
         async save() {
             if (!this.title) {
@@ -147,12 +161,13 @@ export default {
                 message.error("内容不能为空", 1.5);
                 return;
             }
-            let { title, cls, secret, editMode, id, editor } = this;
+            let { title, cls, secret, editMode, id, editor, tags } = this;
             let method = "post";
             let body = {
                 title,
                 classification: cls,
                 secret,
+                tags,
                 content: editor.root.innerHTML
             };
             if (editMode) {
