@@ -1,17 +1,14 @@
 let baseConf = require("./base.config");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
+const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const UglifyjsPlugin = require("uglifyjs-webpack-plugin");
 
 let rules = baseConf.module.rules.concat({
     test: /.s?css$/,
     use: [
         MiniCssExtractPlugin.loader,
-        {
-            loader: "css-loader",
-            options: {
-                minimize: true, //压缩css
-            }
-        },
+        "css-loader",
         "sass-loader"
     ]
 });
@@ -34,6 +31,10 @@ module.exports = {
     //devtool: "source-map",
     plugins,
     optimization: {
+        minimizer: [
+            new UglifyjsPlugin(), //js压缩
+            new OptimizeCssAssetsPlugin() //css压缩
+        ],
         splitChunks: {
             maxSize: 100000,
             cacheGroups: {
