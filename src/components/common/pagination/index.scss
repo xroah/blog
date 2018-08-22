@@ -1,0 +1,38 @@
+@import "../minxinVariable";
+@mixin border-color($color) {
+    color: $color;
+    border-color: $color;
+}
+
+.pagination {
+    .page-items {
+        display: flex;
+        justify-content: flex-end;
+        list-style: none;
+        li {
+            .page-link {
+                display: inline-block;
+                padding: 0 10px;
+                height: 32px;
+                line-height: 32px;
+                border-radius: 5px;
+                border: 1px solid $defaultColor;
+                text-align: center;
+                transition: all .3s;
+            }
+            &:hover:not(.disabled) .page-link {
+                @include border-color($primaryHoverColor);
+            }
+            &.active .page-link {
+                @include border-color($primaryActiveColor);
+            }
+            &.disabled .page-link {
+                color: $disabledColor;
+                cursor: not-allowed;
+            }
+            +li {
+                margin-left: 10px;
+            }
+        }
+    }
+}

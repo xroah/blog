@@ -28,6 +28,7 @@
                 <loading :fullscreen="false">正在加载...</loading>
             </li>
         </ul>
+        <pagination></pagination>
     </section>
 </template>
 
@@ -40,10 +41,12 @@ import message from "../../common/message/index";
 import loadingFs from "../../common/loading/index";
 import { FETCH_ARTICLE_LIST, DELETE_ARRTICLE } from "../../../stores/actions";
 import { mapState, mapActions } from "vuex";
+import Pagination from "../../common/pagination";
 
 export default {
     components: {
-        Loading
+        Loading,
+        Pagination
     },
     data() {
         return {

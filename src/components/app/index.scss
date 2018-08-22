@@ -12,6 +12,10 @@ body {
     font: 14px/1.5 Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
     color: #333;
     background-color: #f6f6f6;
+
+    path {
+        fill: #333;
+    }
 }
 
 p, h1, h2, h3, h4, h5, h6 {
