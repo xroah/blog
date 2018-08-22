@@ -21,6 +21,7 @@ const classification = {
         [UPDATE_CLASSIFICATION_LIST](state, payload) {
             state.list = payload.list;
         },
+        //when sever responsed successfully, update the item by _id
         [UPDATE_CLASSIFICATION_ITEM](state, payload) {
             let {
                 list
@@ -41,6 +42,8 @@ const classification = {
                 _id: payload._id,
             });
         },
+        //when delete a item and the server responsed successfully,
+        //delet the item from the list
         [DELETE_CLASSIFICATION_BY_ID](state, payload) {
             let {
                 list
@@ -83,6 +86,7 @@ const classification = {
                 });
             } catch (err) {}
         },
+        //delete from server
         async [DELETE_CLASSIFICATION_BY_ID](context, id) {
             await fetch(ARTICLE_CLASSIFY, {
                 method: "delete",
@@ -92,7 +96,7 @@ const classification = {
             });
         },
         //update or insert one
-        [UPDATE_CLASSIFICATION_NAME_BY_ID](context, payload) {
+        [UPDATE_CLASSIFICATION_ITEM](context, payload) {
             return fetch(ARTICLE_CLASSIFY, {
                 method: payload.method,
                 body: payload.body

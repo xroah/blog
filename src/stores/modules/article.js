@@ -69,6 +69,12 @@ const article = {
             });
             dispatch(FETCH_ARTICLE_LIST, true);
         }
+    },
+    getters: {
+        getArticleById: state => id => {
+            //_id: from server
+            return state.list.find(item => item._id === id);
+        }
     }
 };
 

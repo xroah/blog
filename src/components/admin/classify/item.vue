@@ -1,14 +1,6 @@
 <template>
     <div class="classify-item-wrapper" @click="edit" :class="showInput ? 'editing' : ''">
-        <input 
-            type="text"
-            class="v-input"
-            maxlength="20"
-            @blur="blur"
-            @keydown="keyDown"
-            ref="input"
-            v-show="showInput"
-            v-model="content">
+        <input type="text" class="v-input" maxlength="20" @blur="blur" @keydown="keyDown" ref="input" v-show="showInput" v-model="content">
         <span v-show="!showInput">
             <span title="点击编辑">{{content}}</span>
             <span class="del-item" v-if="!addMode" @click="del($event, cid)">&times;</span>
@@ -18,10 +10,10 @@
 
 <script>
 import message from "../../common/message";
+import loading from "../../common/loading";
 import {
     FETCH_CLASSIFICATION_LIST,
     UPDATE_CLASSIFICATION_ITEM,
-    UPDATE_CLASSIFICATION_NAME_BY_ID,
     UPDATE_CLASSFICATION_ID
 } from "../../../stores/actions";
 import { mapMutations, mapActions } from "vuex";
@@ -47,7 +39,7 @@ export default {
             updateFromList: UPDATE_CLASSIFICATION_ITEM
         }),
         ...mapActions({
-            updateNameFromServer: UPDATE_CLASSIFICATION_NAME_BY_ID
+            updateNameFromServer: UPDATE_CLASSIFICATION_ITEM
         }),
         edit() {
             this.showInput = true;
@@ -83,6 +75,7 @@ export default {
                     //the parent component delete the last
                     this.$emit("onBlur", true);
                 } else {
+                    loading.show();
                     try {
                         let res = await this.updateNameFromServer({
                             method: "post",
@@ -103,6 +96,7 @@ export default {
                         this.edit();
                     }
                 }
+                loading.hide();
                 return;
             }
             if (this.prevValue !== this.content) {
@@ -111,6 +105,7 @@ export default {
                     this.content = this.prevValue;
                     return;
                 }
+                loading.show();
                 try {
                     await this.updateNameFromServer({
                         method: "put",
@@ -130,6 +125,7 @@ export default {
                     //failed, focus and reedit
                     this.edit();
                 }
+                loading.hide();
             }
         }
     }

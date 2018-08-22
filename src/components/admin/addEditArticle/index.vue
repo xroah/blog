@@ -51,7 +51,7 @@ import {
     ADD_ARTICLE,
     FETCH_CLASSIFICATION_LIST
 } from "../../../stores/actions";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 const _Editor = Vue.extend(Editor);
 
@@ -77,6 +77,9 @@ export default {
             list: state => state.article.list,
             article: state => state.article.current,
             classification: state => state.classification.list
+        }),
+        ...mapGetters({
+            getArticleById: "getArticleById"
         })
     },
     beforeRouteLeave(to, from, next) {
@@ -99,7 +102,10 @@ export default {
             this.error = true;
             return;
         }
+        Loading.show();
+        //fetch when refresh
         await this.fetchCls();
+        Loading.hide();
         let { classification } = this;
         if (classification.length && !this.cls) {
             this.cls = classification[0].name;
@@ -119,20 +125,11 @@ export default {
             addArticle: ADD_ARTICLE,
             fetchCls: FETCH_CLASSIFICATION_LIST
         }),
-        getArticleById(id) {
-            let ret;
-            for (let value of this.list) {
-                if (value._id === id) {
-                    ret = value;
-                    break;
-                }
-            }
-            return ret;
-        },
         async handleEdit() {
-            if (!this.list.length) {
-                await this.fetchArticles();
-            }
+            Loading.show();
+            //fetch when refresh
+            await this.fetchArticles();
+            Loading.hide();
             let article = this.getArticleById(this.id);
             if (!article) {
                 this.error = true;

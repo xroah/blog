@@ -60,11 +60,13 @@ export default {
         },
         async delItem(id) {
             msgBox.confirm(`确定要将 ${this.content} 删除吗?`, async () => {
+                loading.show();
                 try {
                     await this.delFromServer(id);
                     this.delFromList({id});
                     message.success("删除成功");
                 } catch (err) {}
+                loading.hide();
             });
         },
         onBlur(removeLast) {

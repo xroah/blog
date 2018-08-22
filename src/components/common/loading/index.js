@@ -6,6 +6,7 @@ let instance = null;
 
 export default {
     show() {
+        if (instance) return;
         let root = document.createElement("div");
         document.body.appendChild(root);
         instance = new _Loading();
