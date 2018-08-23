@@ -10,11 +10,11 @@ global styles
 
 body {
     font: 14px/1.5 Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
-    color: #333;
+    color: $defaultTextColor;
     background-color: #f6f6f6;
 
     path {
-        fill: #333;
+        fill: $defaultTextColor;
     }
 }
 
@@ -30,6 +30,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 a {
     text-decoration: none;
+    color: $defaultTextColor;
 }
 
 input, button, select {

@@ -28,7 +28,7 @@
                 <loading :fullscreen="false">正在加载...</loading>
             </li>
         </ul>
-        <pagination></pagination>
+        <pagination :total="2"></pagination>
     </section>
 </template>
 
