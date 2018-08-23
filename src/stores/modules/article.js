@@ -18,6 +18,7 @@ const article = {
     mutations: {
         [UPDATE_ARTICLE_LIST](state, payload) {
             state.list = payload.list;
+            state.count = payload.count;
         },
         [CHANGE_ARTICLE_LOAD_STATE](state, payload) {
             state.loaded = payload.loaded;
@@ -43,7 +44,8 @@ const article = {
                 let ret = await fetch(ARTICLE);
                 commit({
                     type: UPDATE_ARTICLE_LIST,
-                    list: ret
+                    list: ret.list,
+                    count: ret.count
                 });
             } catch (error) {}
             commit({

@@ -28,7 +28,7 @@
                 <loading :fullscreen="false">正在加载...</loading>
             </li>
         </ul>
-        <pagination :total="2"></pagination>
+        <pagination :total="40" :current="current" @pageChange="pageChange"></pagination>
     </section>
 </template>
 
@@ -43,6 +43,8 @@ import { FETCH_ARTICLE_LIST, DELETE_ARRTICLE } from "../../../stores/actions";
 import { mapState, mapActions } from "vuex";
 import Pagination from "../../common/pagination";
 
+const PAGE_SIZE = 10;//number of per page
+
 export default {
     components: {
         Loading,
@@ -50,14 +52,20 @@ export default {
     },
     data() {
         return {
-            showType: false
+            showType: false,
+            totalArticles: 0,
+            current: 1
         };
     },
     computed: {
         ...mapState({
             list: state => state.article.list,
+            count: state => state.article.count,
             loaded: state => state.article.loaded
-        })
+        }),
+        total() {
+            return this.count / PAGE_SIZE;
+        }
     },
     created() {
         this.fetchArticles();
@@ -90,6 +98,9 @@ export default {
                 } catch (error) {}
                 loadingFs.hide();
             });
+        },
+        pageChange(page) {
+            this.current = page;
         }
     },
     filters: {

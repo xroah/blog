@@ -19,11 +19,18 @@ module.exports = {
             });
         });
     },
-    find(collection, query, options) {
+    find(collection, query, options, pagination) {
         return new Promise(resolve => {
             connect((db, client) => {
                 let collec = db.collection(collection);
-                collec.find(query, options).toArray(mongoCallback(resolve, client));
+                let cursor = collec.find(query, options);
+                Promise.all([cursor.count(), cursor.toArray()]).then(([count, ret]) => {
+                    resolve({
+                        count,
+                        list: ret
+                    });
+                    client.close();
+                });
             });
         });
     },

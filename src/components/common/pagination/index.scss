@@ -1,6 +1,7 @@
 @import "../minxinVariable";
-@mixin border-color($color) {
-    color: $color;
+@mixin color($color) {
+    color: #fff;
+    background-color: $color;
     border-color: $color;
 }
 
@@ -16,24 +17,33 @@
                 min-width: 32px;
                 height: 32px;
                 line-height: 32px;
-                border-radius: 5px;
                 border: 1px solid $defaultColor;
                 text-align: center;
                 transition: all .3s;
             }
-            &:hover:not(.disabled) .page-link {
-                @include border-color($primaryHoverColor);
+            &:not(:first-child) .page-link {
+                border-left: none;
+            }
+            &:hover:not(.disabled):not(.active) .page-link {
+                @include color($primaryHoverColor);
             }
             &.active .page-link {
-                @include border-color($primaryActiveColor);
+                @include color($primaryActiveColor);
+                cursor: default;
             }
             &.disabled .page-link {
                 color: $disabledColor;
                 cursor: not-allowed;
             }
-            +li {
-                margin-left: 10px;
-            }
+        }
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .pagination .page-items {
+        justify-content: center;
+        li:not(:first-child):not(:last-child) {
+            display: none;
         }
     }
 }
