@@ -13,7 +13,8 @@ import {
 const article = {
     state: {
         list: [],
-        loaded: true
+        loaded: true,
+        count: 0
     },
     mutations: {
         [UPDATE_ARTICLE_LIST](state, payload) {

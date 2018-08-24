@@ -28,7 +28,7 @@
                 <loading :fullscreen="false">正在加载...</loading>
             </li>
         </ul>
-        <pagination :total="40" :current="current" @pageChange="pageChange"></pagination>
+        <pagination :total="total" :current.sync="current" ></pagination>
     </section>
 </template>
 
@@ -64,7 +64,7 @@ export default {
             loaded: state => state.article.loaded
         }),
         total() {
-            return this.count / PAGE_SIZE;
+            return Math.ceil(this.count / PAGE_SIZE);
         }
     },
     created() {
@@ -98,9 +98,6 @@ export default {
                 } catch (error) {}
                 loadingFs.hide();
             });
-        },
-        pageChange(page) {
-            this.current = page;
         }
     },
     filters: {

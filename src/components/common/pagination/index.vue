@@ -1,11 +1,11 @@
 <template>
     <div class="pagination">
-        <ul class="page-items">
+        <ul class="page-items" v-if="total">
             <li :class="{disabled: currentPage === 1}">
                 <a href="#" class="page-link" @click.prevent="prev()">上一页</a>
             </li>
             <li :class="{active: 1 === currentPage}">
-                <a href="#" class="page-link" @click="to(1)">1</a>
+                <a href="#" class="page-link" @click.prevent="to(1)">1</a>
             </li>
             <li class="disabled" v-if="currentPage > 4 && total > visiblePages">
                 <a href="#" class="page-link">&bull;&bull;&bull;</a>
@@ -36,20 +36,8 @@ export default {
             type: Number
         },
         current: {
-            type: Number
-        }
-    },
-    mounted() {
-        let { total, visiblePages } = this;
-        if (total <= visiblePages) {
-            let pages = [];
-            let start = 2;
-            for (let i = 0, l = total - 2; i < l; i++) {
-                pages.push(start++);
-            }
-            this.pages = pages;
-        } else {
-            this.renderPages();
+            type: Number,
+            default: 1
         }
     },
     data() {
@@ -59,14 +47,44 @@ export default {
             pages: []
         };
     },
+    watch: {
+        current(newVal) {
+            //the 'current' prop changed was not by pageChange or sync event
+            if (newVal !== this.currentPage) {
+                this.reset();
+                this.renderPages();
+            }
+        },
+        total() {
+            //total changed
+            this.reset();
+            this.renderPages();
+        }
+    },
     methods: {
         emitChangeEvent(page) {
             this.$emit("pageChange", page);
+            //for .sync
+            this.$emit("update:current", page);
             this.renderPages();
+        },
+        reset() {
+            let { current, total } = this;
+            if (current && total) {
+                this.currentPage = current > total ? total : current;
+            }
         },
         renderPages() {
             let { visiblePages, currentPage, total, pages } = this;
-            if (visiblePages > total) return;
+            if (visiblePages > total) {
+                let pages = [];
+                let start = 2;
+                for (let i = 0, l = total - 2; i < l; i++) {
+                    pages.push(start++);
+                }
+                this.pages = pages;
+                return;
+            }
             function loop5Times(start) {
                 let pages = [];
                 for (let i = 0; i < 5; i++) {
@@ -76,10 +94,10 @@ export default {
             }
             if (currentPage <= 4) {
                 this.pages = loop5Times(2);
-            } else if(currentPage >= total - 3) {
+            } else if (currentPage >= total - 3) {
                 this.pages = loop5Times(total - 5);
             } else {
-               this.pages = loop5Times(currentPage - 2);
+                this.pages = loop5Times(currentPage - 2);
             }
         },
         prev() {
