@@ -26,7 +26,7 @@ export default [{
     path: "/xsys",
     component: AdminMain,
     children: [{
-        path: "/xsys/:page?/:keywords?",
+        path: "/xsys",
         component: AdminHome,
         name: "adminHome"
     },{

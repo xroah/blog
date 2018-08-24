@@ -68,7 +68,7 @@ export default {
     },
     created() {
         let { $route } = this;
-        let { page = 1, keywords = "" } = $route.params;
+        let { page = 1, keywords = "" } = $route.query;
         this.page = +page || 1;
         this.keywords = keywords;
         this.fetchArticles({
@@ -105,23 +105,26 @@ export default {
                 loadingFs.hide();
             });
         },
-        pageChange(page) {
-            let { $router, keywords } = this;
-            $router.push(`/xsys/${page}/${keywords}`);
+        refresh(page, keywords) {
+            let { $router } = this;
+            $router.push({
+                path: "/xsys",
+                query: {
+                    page, 
+                    keywords
+                }
+            });
             this.fetchArticles({
                 page,
                 keywords,
                 force: true
             });
         },
+        pageChange(page) {
+           this.refresh(page, this.keywords);
+        },
         search(keywords) {
-            let { $router } = this;
-            $router.push(`/xsys/1/${keywords}`);
-            this.fetchArticles({
-                page: 1,
-                keywords,
-                force: true
-            });
+            this.refresh(1, keywords);
         }
     },
     filters: {

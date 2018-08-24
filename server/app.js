@@ -30,7 +30,15 @@ app.use(bodyParser.urlencoded({
 }))
 
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+
+app.all("/api/*", (req, res, next) => {
+    if (!req.xhr) {
+        res.send("");
+        return;
+    }
+    next();
+});
 
 app.all("/api/admin/*", (req, res, next) => {
    //if current user have no permission then response error

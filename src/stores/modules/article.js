@@ -29,6 +29,12 @@ const article = {
         },
         [CHANGE_ARTICLE_LOAD_STATE](state, payload) {
             state.loaded = payload.loaded;
+        },
+        updateCache(state, payload) {
+            //cache previos page and keywords
+            //if the page or keywords changed, refresh the list
+            state.current = payload.page;
+            state.keywords = payload.keywords;
         }
     },
     actions: {
@@ -37,7 +43,17 @@ const article = {
             commit
         }, payload = {}) {
             //if list has value and force param not passed, use original value
-            if (!payload.force && state.list.length) return;
+            let {page = 1, keywords = "", force}  = payload;
+            if (page !== state.current || keywords !== state.keywords) {
+                //changed page or keywords
+                //set force to true, for refshing the list
+                force = true;
+                commit("updateCache", {
+                    page, 
+                    keywords
+                });
+            }
+            if (!force && state.list.length) return;
             commit({
                 type: CHANGE_ARTICLE_LOAD_STATE,
                 loaded: false
@@ -48,7 +64,7 @@ const article = {
                 list: []
             });
             try {
-                let ret = await fetch(`${ARTICLE}/${payload.page}/${payload.keywords}`);
+                let ret = await fetch(`${ARTICLE}/${page}/${keywords}`);
                 commit({
                     type: UPDATE_ARTICLE_LIST,
                     list: ret.list,

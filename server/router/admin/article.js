@@ -82,24 +82,27 @@ router.route("/classify").get((req, res) => {
 
 router.route("/:page?/:keywords?").get((req, res) => {
     let {
-        params,
-        session
+        params
     } = req;
     let page = params.page || 1;
     let keywords = params.keywords;
     let filter = {};
-    let projection = {
-        content: 0
-    }
-    if (session.isAdmin) {
-        summary = 0; //admin do not need summary
-    }
     if (keywords) {
         filter.content = new RegExp(keywords, "ig");
     }
     query.find("articles", filter, {
         pagination: page,
-        projection
+        sort: {
+            createTime: -1
+        },
+        projection: {
+            title: 1,
+            classification: 1,
+            secret:1,
+            createTime: 1,
+            tags: 1, 
+            totalViewed: 1
+        }
     }).then(ret => {
         res.json({
             errCode: 0,

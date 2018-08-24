@@ -5,7 +5,7 @@ const DEFAULT_CONFIG = {
     credentials: 'same-origin', // include, same-origin, *omit, just for send cookie
     method: "get",
     headers: {
-        "X-Request-Width": "XMLHttpRequest",
+        "X-Requested-With": "XMLHttpRequest",
         "Content-Type": "application/x-www-form-urlencoded"
     }
 };
