@@ -58,8 +58,8 @@ export default {
             this.add();
             this.showAdd = false;
         },
-        async delItem(id) {
-            msgBox.confirm(`确定要将 ${this.content} 删除吗?`, async () => {
+        async delItem(id, content) {
+            msgBox.confirm(`确定要将 ${content} 删除吗?`, async () => {
                 loading.show();
                 try {
                     await this.delFromServer(id);

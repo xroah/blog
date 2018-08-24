@@ -105,7 +105,8 @@ export default {
             Loading.hide();
         }
         let { classification } = this;
-        if (!this.cls) {
+        //classifction may empty(no permissions)
+        if (classification.length && !this.cls) {
             this.cls = classification[0].name;
         }
     },

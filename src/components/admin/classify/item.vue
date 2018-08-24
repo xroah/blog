@@ -3,7 +3,7 @@
         <input type="text" class="v-input" maxlength="20" @blur="blur" @keydown="keyDown" ref="input" v-show="showInput" v-model="content">
         <span v-show="!showInput">
             <span title="点击编辑">{{content}}</span>
-            <span class="del-item" v-if="!addMode" @click="del($event, cid)">&times;</span>
+            <span class="del-item" v-if="!addMode" @click="del($event, cid, content)">&times;</span>
         </span>
     </div>
 </template>
@@ -19,7 +19,13 @@ import {
 import { mapMutations, mapActions } from "vuex";
 
 export default {
-    props: ["value", "id", "onBlur", "add", "delHandler"],
+    props: {
+        value: String,
+        id: String,
+        onBlur: Function,
+        delHandler: Function,
+        add: Boolean
+    },
     data() {
         return {
             content: this.value,
@@ -49,10 +55,11 @@ export default {
                 this.$refs.input.focus();
             });
         },
-        del(evt, id) {
+        del(evt, id, content) {
             //prevent click del button from triggering edit
             evt.stopPropagation();
-            this.delHandler(id);
+            //the parent component do real delete
+            this.delHandler(id, content);
         },
         keyDown(evt) {
             let key = evt.key.toLowerCase();

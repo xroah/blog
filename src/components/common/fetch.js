@@ -1,5 +1,7 @@
 import message from "./message/index"
 
+let supportFetch = "fetch" in window;
+
 const DEFAULT_CONFIG = {
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     credentials: 'same-origin', // include, same-origin, *omit, just for send cookie
@@ -29,7 +31,62 @@ function errorHint(err) {
     );
 }
 
-export default function _fetch(url, config) {
+function polyfill(url, config = {}) {
+    return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        let conf = {
+            ...DEFAULT_CONFIG,
+            ...config
+        }
+        setXhrFlag(conf);
+        let {
+            headers,
+            method,
+            body
+        } = conf;
+
+        if (method === "get" || method === "header") {
+            if (body) {
+                throw new Error("get或head请求不能设置body");
+            }
+        }
+        method = method.toLowerCase();
+        xhr.onload = () => {
+            let res = JSON.parse(xhr.responseText);
+            if (res.errCode === 0) {
+                resolve(res.data);
+
+            } else {
+                reject(res);
+                errorHint(res);
+            }
+        }
+        xhr.onerror = () => {
+            reject(xhr);
+            errorHint(xhr);
+        }
+        xhr.open(method, url, true);
+        if (isObject(body)) {
+            headers["Content-Type"] = "application/json";
+            body = JSON.stringify(body);
+        }
+        for (let key in headers) {
+            xhr.setRequestHeader(key, headers[key]);
+        }
+        xhr.send(body);
+    });
+}
+
+function setXhrFlag(conf) {
+    let {
+        headers
+    } = conf;
+    if (headers && !headers["X-Requested-With"]) {
+        headers["X-Requested-With"] = "XMLHttpRequest";
+    }
+}
+
+function _fetch(url, config) {
     let conf = { ...DEFAULT_CONFIG,
         ...config
     };
@@ -75,3 +132,5 @@ export default function _fetch(url, config) {
         });
     });
 }
+
+export default (supportFetch ? _fetch : polyfill);
