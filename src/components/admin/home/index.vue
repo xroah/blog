@@ -30,6 +30,8 @@ export default {
             loaded: false,
         };
     },
+    created() {
+    },
     methods: {
         add() {
             this.$router.push({

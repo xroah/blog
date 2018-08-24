@@ -7,9 +7,7 @@ import {
     UPDATE_ARTICLE_LIST,
     CHANGE_ARTICLE_LOAD_STATE,
     ADD_ARTICLE,
-    DELETE_ARRTICLE,
-    UPDATE_ARTICLE_PAGE,
-    UPDATE_KEYWORDS
+    DELETE_ARRTICLE
 } from "../actions";
 
 const PAGE_SIZE = 10; //number of per page
@@ -24,19 +22,13 @@ const article = {
     },
     mutations: {
         [UPDATE_ARTICLE_LIST](state, payload) {
-            if (payload.count) {
+            if (payload.count !== undefined) {
                 state.total = Math.ceil(payload.count / PAGE_SIZE);
             }
             state.list = payload.list; 
         },
         [CHANGE_ARTICLE_LOAD_STATE](state, payload) {
             state.loaded = payload.loaded;
-        },
-        [UPDATE_ARTICLE_PAGE](state, payload) {
-            state.current = payload.page;
-        },
-        [UPDATE_KEYWORDS](state, payload) {
-            state.keywords = payload.keywords;
         }
     },
     actions: {
@@ -56,7 +48,7 @@ const article = {
                 list: []
             });
             try {
-                let ret = await fetch(`${ARTICLE}?keywords=${state.keywords}&page=${state.current}`);
+                let ret = await fetch(`${ARTICLE}/${payload.page}/${payload.keywords}`);
                 commit({
                     type: UPDATE_ARTICLE_LIST,
                     list: ret.list,

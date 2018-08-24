@@ -2,71 +2,14 @@ const router = require("express").Router();
 const query = require("../../db/query");
 const ObjectID = require("mongodb").ObjectID;
 
-router.route("/").get((req, res) => {
-    let page = req.query.page || 1;
-    let keywords = req.query.keywords;
-    let filter = {};
-    if (keywords) {
-        filter.content = new RegExp(keywords, "ig");
-    }
-    query.find("articles", filter, {pagination: page}).then(ret => {
-        res.json({
-            errCode: 0,
-            data: ret
-        });
-    });;
-}).post((req, res) => {
-    let {
-        body
-    } = req;
-    query.insertOne("articles", {
-        title: body.title,
-        content: body.content,
-        classification: body.classification,
-        secret: body.secret,
-        createTime: new Date(),
-        lastUpdate: new Date(),
-        totalViewed: 0,
-        todayViewed: 0,
-        tags: body.tags
-    }).then(ret => {
-        res.json({
-            errCode: 0
-        });
-    });
-}).put((req, res) => {
-    let {
-        body
-    } = req;
-    query.updateOne("articles", {
-        _id: ObjectID(body.id)
-    }, {
-        $set: {
-            title: body.title,
-            content: body.content,
-            classification: body.classification,
-            secret: body.secret,
-            lastUpdate: new Date(),
-            tags: body.tags
-        }
-    }).then(ret => {
-        res.json({
-            errCode: 0
-        });
-    });
-}).delete((req, res) => {
-    query.deleteOne("articles", {
-        _id: ObjectID(req.body.id)
-    }).then(ret => {
-        res.json({
-            errCode: 0
-        });
-    });
-});
-
-router.get("/details", (req, res) => {
+router.get("/details/:id/:noComments?", (req, res) => {
     query.findOne("articles", {
-        _id: ObjectID(req.query.id)
+        _id: ObjectID(req.params.id)
+    }, {
+        noComments: !!typeof req.params.noComments, // the article details only
+        projection: {
+            summary: 0
+        }
     }).then(ret => {
         res.json({
             errCode: 0,
@@ -132,6 +75,83 @@ router.route("/classify").get((req, res) => {
         _id: ObjectID(req.body.id)
     }).then(ret => {
         res.send({
+            errCode: 0
+        });
+    });
+});
+
+router.route("/:page?/:keywords?").get((req, res) => {
+    let {
+        params,
+        session
+    } = req;
+    let page = params.page || 1;
+    let keywords = params.keywords;
+    let filter = {};
+    let projection = {
+        content: 0
+    }
+    if (session.isAdmin) {
+        summary = 0; //admin do not need summary
+    }
+    if (keywords) {
+        filter.content = new RegExp(keywords, "ig");
+    }
+    query.find("articles", filter, {
+        pagination: page,
+        projection
+    }).then(ret => {
+        res.json({
+            errCode: 0,
+            data: ret
+        });
+    });;
+}).post((req, res) => {
+    let {
+        body
+    } = req;
+    query.insertOne("articles", {
+        title: body.title,
+        content: body.content,
+        classification: body.classification,
+        secret: body.secret,
+        createTime: new Date(),
+        lastUpdate: new Date(),
+        totalViewed: 0,
+        todayViewed: 0,
+        tags: body.tags,
+        summary: body.summary
+    }).then(ret => {
+        res.json({
+            errCode: 0
+        });
+    });
+}).put((req, res) => {
+    let {
+        body
+    } = req;
+    query.updateOne("articles", {
+        _id: ObjectID(body.id)
+    }, {
+        $set: {
+            title: body.title,
+            content: body.content,
+            classification: body.classification,
+            secret: body.secret,
+            lastUpdate: new Date(),
+            tags: body.tags,
+            summary: body.summary
+        }
+    }).then(ret => {
+        res.json({
+            errCode: 0
+        });
+    });
+}).delete((req, res) => {
+    query.deleteOne("articles", {
+        _id: ObjectID(req.body.id)
+    }).then(ret => {
+        res.json({
             errCode: 0
         });
     });

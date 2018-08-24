@@ -26,7 +26,6 @@ module.exports = {
                 let cursor = collec.find(query, options);
                 if (options && options.pagination) {
                     let page = options.pagination;
-                    console.log(page)
                     Promise.all([
                         cursor.count(),
                         cursor.skip((page - 1) * 10).limit(10).toArray()

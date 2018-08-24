@@ -1,6 +1,6 @@
 <template>
     <div class="search-wrapper">
-        <input type="text" class="v-input" v-model="keywords" placeholder="输入关键字搜索">
+        <input type="text" class="v-input" @keydown.enter="handleClick" v-model="keywords" placeholder="输入关键字搜索">
         <v-button type="primary" @click="handleClick">搜索</v-button>
     </div>
 </template>

@@ -29,7 +29,7 @@
                 <loading :fullscreen="false">正在加载...</loading>
             </li>
         </ul>
-        <pagination :total="total" :current="current" @pageChange="pageChange"></pagination>
+        <pagination :total="total" :current="page" @pageChange="pageChange"></pagination>
     </section>
 </template>
 
@@ -41,13 +41,8 @@ import msgBox from "../../common/messageBox/index";
 import message from "../../common/message/index";
 import loadingFs from "../../common/loading/index";
 import Search from "../../common/search";
-import {
-    FETCH_ARTICLE_LIST,
-    DELETE_ARRTICLE,
-    UPDATE_ARTICLE_PAGE,
-    UPDATE_KEYWORDS
-} from "../../../stores/actions";
-import { mapState, mapActions, mapMutations } from "vuex";
+import { FETCH_ARTICLE_LIST, DELETE_ARRTICLE } from "../../../stores/actions";
+import { mapState, mapActions } from "vuex";
 import Pagination from "../../common/pagination";
 
 export default {
@@ -59,26 +54,29 @@ export default {
     data() {
         return {
             showType: false,
-            totalArticles: 0
+            totalArticles: 0,
+            page: 1,
+            keywords: ""
         };
     },
     computed: {
         ...mapState({
             list: state => state.article.list,
             total: state => state.article.total,
-            loaded: state => state.article.loaded,
-            current: state => state.article.current,
-            keywords: state => state.article.keywords
+            loaded: state => state.article.loaded
         })
     },
     created() {
-        this.fetchArticles();
+        let { $route } = this;
+        let { page = 1, keywords = "" } = $route.params;
+        this.page = +page || 1;
+        this.keywords = keywords;
+        this.fetchArticles({
+            page,
+            keywords
+        });
     },
     methods: {
-        ...mapMutations({
-            updatePage: UPDATE_ARTICLE_PAGE,
-            updateKeywords: UPDATE_KEYWORDS
-        }),
         ...mapActions({
             fetchArticles: FETCH_ARTICLE_LIST,
             delArticle: DELETE_ARRTICLE
@@ -108,18 +106,20 @@ export default {
             });
         },
         pageChange(page) {
-            this.updatePage({
-                page
-            });
+            let { $router, keywords } = this;
+            $router.push(`/xsys/${page}/${keywords}`);
             this.fetchArticles({
+                page,
+                keywords,
                 force: true
             });
         },
         search(keywords) {
-            this.updateKeywords({
-                keywords
-            });
+            let { $router } = this;
+            $router.push(`/xsys/1/${keywords}`);
             this.fetchArticles({
+                page: 1,
+                keywords,
                 force: true
             });
         }

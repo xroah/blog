@@ -46,12 +46,13 @@ import message from "../../common/message";
 import Vue from "vue";
 import Loading from "../../common/loading/index";
 import Tags from "../tags";
+import fetch from "../../common/fetch";
+import { ARTICLE_DETAILS } from "../../common/api";
 import {
-    FETCH_ARTICLE_LIST,
     ADD_ARTICLE,
     FETCH_CLASSIFICATION_LIST
 } from "../../../stores/actions";
-import { mapState, mapActions, mapGetters } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 const _Editor = Vue.extend(Editor);
 
@@ -74,12 +75,7 @@ export default {
     },
     computed: {
         ...mapState({
-            list: state => state.article.list,
-            article: state => state.article.current,
             classification: state => state.classification.list
-        }),
-        ...mapGetters({
-            getArticleById: "getArticleById"
         })
     },
     beforeRouteLeave(to, from, next) {
@@ -102,35 +98,39 @@ export default {
             this.error = true;
             return;
         }
-        Loading.show();
-        //fetch when refresh
-        await this.fetchCls();
-        Loading.hide();
+        if (!this.classification.length) {
+            Loading.show();
+            //fetch when refresh
+            await this.fetchCls();
+            Loading.hide();
+        }
         let { classification } = this;
-        if (classification.length && !this.cls) {
+        if (!this.cls) {
             this.cls = classification[0].name;
         }
     },
     mounted() {
+        if (this.error) return;
         //we can get $refs instance just when mounted
         const quill = new _Editor().$mount(this.$refs.editor);
         this.editor = quill.editor;
         this.editMode && this.handleEdit();
     },
     methods: {
-        //when page refresh article list will be null,
+        //when page refresh classification list will be null,
         //so fetch first
         ...mapActions({
-            fetchArticles: FETCH_ARTICLE_LIST,
             addArticle: ADD_ARTICLE,
             fetchCls: FETCH_CLASSIFICATION_LIST
         }),
         async handleEdit() {
+            let article;
             Loading.show();
-            //fetch when refresh
-            await this.fetchArticles();
+            try {
+                let ret = await fetch(`${ARTICLE_DETAILS}/${this.id}/true`);
+                article = ret.article;
+            } catch (err) {}
             Loading.hide();
-            let article = this.getArticleById(this.id);
             if (!article) {
                 this.error = true;
                 return;
@@ -165,7 +165,8 @@ export default {
                 classification: cls,
                 secret,
                 tags,
-                content: editor.root.innerHTML
+                content: editor.root.innerHTML,
+                summary: editor.getText().substr(0, 100)
             };
             if (editMode) {
                 body.id = id;

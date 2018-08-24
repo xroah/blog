@@ -11,8 +11,7 @@
 import fetch from "../../common/fetch";
 import ArticleInfo from "../../common/articleInfo";
 import Loading from "../../common/loading/index";
-import { mapGetters, mapState, mapActions } from "vuex";
-import { FETCH_ARTICLE_LIST } from "../../../stores/actions";
+import { ARTICLE_DETAILS } from "../../common/api";
 
 export default {
     data() {
@@ -20,14 +19,6 @@ export default {
             error: false,
             article: null
         };
-    },
-    computed: {
-        ...mapState({
-            list: state => state.article.list
-        }),
-        ...mapGetters({
-            getArticleById: "getArticleById"
-        })
     },
     components: {
         ArticleInfo
@@ -39,14 +30,14 @@ export default {
             return;
         }
         Loading.show();
-        await this.fethList();
+        try{
+            let ret = await fetch(`${ARTICLE_DETAILS}/${id}`);
+            this.article = ret.article;
+        }catch(err){}
         Loading.hide();
-        this.article = this.getArticleById(id);
     },
     methods: {
-        ...mapActions({
-            fethList: FETCH_ARTICLE_LIST
-        })
+        
     }
 };
 </script>

@@ -2,7 +2,7 @@
     <section class="root">
         <router-view></router-view>
         <transition name="slide-in-out">
-            <v-button class="back-to-top" v-if="showToTop" :click="toTop">
+            <v-button class="back-to-top" v-if="showToTop" @click="toTop">
             <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30"><path d="M472.064 272.448l-399.232 399.232c-22.08 22.08-22.08 57.792 0 79.872 22.016 22.016 57.792 22.08 79.872 0L512 392.256l359.296 359.296c22.016 22.016 57.792 22.08 79.872 0 22.08-22.08 22.016-57.792 0-79.872L551.936 272.448C529.856 250.432 494.144 250.432 472.064 272.448z"></path></svg>   
         </v-button>
         </transition>
@@ -53,6 +53,7 @@ export default {
             let body = document.body;
             let html = document.documentElement;
             let _this = this;
+            console.log(111)
             function _toTop() {
                 let top = body.scrollTop || html.scrollTop;
                 top -= top / 12;
