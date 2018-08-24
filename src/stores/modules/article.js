@@ -7,31 +7,40 @@ import {
     UPDATE_ARTICLE_LIST,
     CHANGE_ARTICLE_LOAD_STATE,
     ADD_ARTICLE,
-    DELETE_ARRTICLE
+    DELETE_ARRTICLE,
+    UPDATE_ARTICLE_PAGE
 } from "../actions";
+
+const PAGE_SIZE = 10; //number of per page
 
 const article = {
     state: {
         list: [],
         loaded: true,
-        count: 0
+        total: 0,
+        current: 1
     },
     mutations: {
         [UPDATE_ARTICLE_LIST](state, payload) {
-            state.list = payload.list;
-            state.count = payload.count;
+            if (payload.count) {
+                state.total = Math.ceil(payload.count / PAGE_SIZE);
+            }
+            state.list = payload.list; 
         },
         [CHANGE_ARTICLE_LOAD_STATE](state, payload) {
             state.loaded = payload.loaded;
+        },
+        [UPDATE_ARTICLE_PAGE](state, payload) {
+            state.current = payload.page;
         }
     },
     actions: {
         async [FETCH_ARTICLE_LIST]({
             state,
             commit
-        }, force) {
+        }, payload = {}) {
             //if list has value and force param not passed, use original value
-            if (!force && state.list.length) return;
+            if (!payload.force && state.list.length) return;
             commit({
                 type: CHANGE_ARTICLE_LOAD_STATE,
                 loaded: false
@@ -42,7 +51,7 @@ const article = {
                 list: []
             });
             try {
-                let ret = await fetch(ARTICLE);
+                let ret = await fetch(`${ARTICLE}?page=${state.current}`);
                 commit({
                     type: UPDATE_ARTICLE_LIST,
                     list: ret.list,
@@ -63,14 +72,20 @@ const article = {
                     id
                 }
             });
-            dispatch(FETCH_ARTICLE_LIST, true);
+            dispatch(FETCH_ARTICLE_LIST, {
+                force: true
+            });
         },
-        async [ADD_ARTICLE]({dispatch}, payload) {
+        async [ADD_ARTICLE]({
+            dispatch
+        }, payload) {
             await fetch(ARTICLE, {
                 method: payload.method,
                 body: payload.body
             });
-            dispatch(FETCH_ARTICLE_LIST, true);
+            dispatch(FETCH_ARTICLE_LIST, {
+                force: true
+            });
         }
     },
     getters: {

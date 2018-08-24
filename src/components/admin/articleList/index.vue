@@ -28,7 +28,7 @@
                 <loading :fullscreen="false">正在加载...</loading>
             </li>
         </ul>
-        <pagination :total="total" :current.sync="current" ></pagination>
+        <pagination :total="total" :current="current" @pageChange="pageChange"></pagination>
     </section>
 </template>
 
@@ -39,11 +39,13 @@ import Loading from "../../common/loading/loading";
 import msgBox from "../../common/messageBox/index";
 import message from "../../common/message/index";
 import loadingFs from "../../common/loading/index";
-import { FETCH_ARTICLE_LIST, DELETE_ARRTICLE } from "../../../stores/actions";
-import { mapState, mapActions } from "vuex";
+import {
+    FETCH_ARTICLE_LIST,
+    DELETE_ARRTICLE,
+    UPDATE_ARTICLE_PAGE
+} from "../../../stores/actions";
+import { mapState, mapActions, mapMutations } from "vuex";
 import Pagination from "../../common/pagination";
-
-const PAGE_SIZE = 10;//number of per page
 
 export default {
     components: {
@@ -53,24 +55,24 @@ export default {
     data() {
         return {
             showType: false,
-            totalArticles: 0,
-            current: 1
+            totalArticles: 0
         };
     },
     computed: {
         ...mapState({
             list: state => state.article.list,
-            count: state => state.article.count,
-            loaded: state => state.article.loaded
-        }),
-        total() {
-            return Math.ceil(this.count / PAGE_SIZE);
-        }
+            total: state => state.article.total,
+            loaded: state => state.article.loaded,
+            current: state => state.article.current
+        })
     },
     created() {
         this.fetchArticles();
     },
     methods: {
+        ...mapMutations({
+            updatePage: UPDATE_ARTICLE_PAGE
+        }),
         ...mapActions({
             fetchArticles: FETCH_ARTICLE_LIST,
             delArticle: DELETE_ARRTICLE
@@ -97,6 +99,14 @@ export default {
                     message.success("删除成功");
                 } catch (error) {}
                 loadingFs.hide();
+            });
+        },
+        pageChange(page) {
+            this.updatePage({
+                page
+            });
+            this.fetchArticles({
+                force: true
             });
         }
     },

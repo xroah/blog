@@ -55,7 +55,7 @@ export default {
                 this.renderPages();
             }
         },
-        total() {
+        total(newVal, oldVal) {
             //total changed
             this.reset();
             this.renderPages();

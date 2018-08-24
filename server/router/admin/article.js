@@ -3,7 +3,8 @@ const query = require("../../db/query");
 const ObjectID = require("mongodb").ObjectID;
 
 router.route("/").get((req, res) => {
-    query.find("articles", {}).then(ret => {
+    let page = req.query.page || 1;
+    query.find("articles", {}, {pagination: page}).then(ret => {
         res.json({
             errCode: 0,
             data: ret

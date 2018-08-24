@@ -19,18 +19,27 @@ module.exports = {
             });
         });
     },
-    find(collection, query, options, pagination) {
+    find(collection, query, options) {
         return new Promise(resolve => {
             connect((db, client) => {
                 let collec = db.collection(collection);
                 let cursor = collec.find(query, options);
-                Promise.all([cursor.count(), cursor.toArray()]).then(([count, ret]) => {
-                    resolve({
-                        count,
-                        list: ret
+                if (options && options.pagination) {
+                    let page = options.pagination;
+                    console.log(page)
+                    Promise.all([
+                        cursor.count(),
+                        cursor.skip((page - 1) * 10).limit(10).toArray()
+                    ]).then(([count, ret]) => {
+                        resolve({
+                            count,
+                            list: ret
+                        });
+                        client.close();
                     });
-                    client.close();
-                });
+                } else {
+                    cursor.toArray(mongoCallback(resolve, client));
+                }
             });
         });
     },
@@ -46,7 +55,7 @@ module.exports = {
         return new Promise(resolve => {
             connect((db, client) => {
                 let collec = db.collection(collection);
-                collec.update(filter, update, options,mongoCallback(resolve, client));
+                collec.update(filter, update, options, mongoCallback(resolve, client));
             });
         });
     },
