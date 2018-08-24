@@ -8,7 +8,8 @@ import {
     CHANGE_ARTICLE_LOAD_STATE,
     ADD_ARTICLE,
     DELETE_ARRTICLE,
-    UPDATE_ARTICLE_PAGE
+    UPDATE_ARTICLE_PAGE,
+    UPDATE_KEYWORDS
 } from "../actions";
 
 const PAGE_SIZE = 10; //number of per page
@@ -18,7 +19,8 @@ const article = {
         list: [],
         loaded: true,
         total: 0,
-        current: 1
+        current: 1,
+        keywords: ""
     },
     mutations: {
         [UPDATE_ARTICLE_LIST](state, payload) {
@@ -32,6 +34,9 @@ const article = {
         },
         [UPDATE_ARTICLE_PAGE](state, payload) {
             state.current = payload.page;
+        },
+        [UPDATE_KEYWORDS](state, payload) {
+            state.keywords = payload.keywords;
         }
     },
     actions: {
@@ -51,7 +56,7 @@ const article = {
                 list: []
             });
             try {
-                let ret = await fetch(`${ARTICLE}?page=${state.current}`);
+                let ret = await fetch(`${ARTICLE}?keywords=${state.keywords}&page=${state.current}`);
                 commit({
                     type: UPDATE_ARTICLE_LIST,
                     list: ret.list,

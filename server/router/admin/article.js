@@ -4,7 +4,12 @@ const ObjectID = require("mongodb").ObjectID;
 
 router.route("/").get((req, res) => {
     let page = req.query.page || 1;
-    query.find("articles", {}, {pagination: page}).then(ret => {
+    let keywords = req.query.keywords;
+    let filter = {};
+    if (keywords) {
+        filter.content = new RegExp(keywords, "ig");
+    }
+    query.find("articles", filter, {pagination: page}).then(ret => {
         res.json({
             errCode: 0,
             data: ret

@@ -1,0 +1,20 @@
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    margin:10px 0;
+    .v-input {
+        width: 200px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    .v-btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .search-wrapper .v-input {
+        flex-grow: 1;
+    }
+}

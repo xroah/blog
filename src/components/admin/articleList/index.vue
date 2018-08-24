@@ -1,5 +1,6 @@
 <template>
     <section class="article-summary">
+        <search :defaultValue="keywords" @onSearch="search"></search>
         <ul class="list-unstyled article-list">
             <li>
                 <span>文章标题</span>
@@ -39,10 +40,12 @@ import Loading from "../../common/loading/loading";
 import msgBox from "../../common/messageBox/index";
 import message from "../../common/message/index";
 import loadingFs from "../../common/loading/index";
+import Search from "../../common/search";
 import {
     FETCH_ARTICLE_LIST,
     DELETE_ARRTICLE,
-    UPDATE_ARTICLE_PAGE
+    UPDATE_ARTICLE_PAGE,
+    UPDATE_KEYWORDS
 } from "../../../stores/actions";
 import { mapState, mapActions, mapMutations } from "vuex";
 import Pagination from "../../common/pagination";
@@ -50,7 +53,8 @@ import Pagination from "../../common/pagination";
 export default {
     components: {
         Loading,
-        Pagination
+        Pagination,
+        Search
     },
     data() {
         return {
@@ -63,7 +67,8 @@ export default {
             list: state => state.article.list,
             total: state => state.article.total,
             loaded: state => state.article.loaded,
-            current: state => state.article.current
+            current: state => state.article.current,
+            keywords: state => state.article.keywords
         })
     },
     created() {
@@ -71,7 +76,8 @@ export default {
     },
     methods: {
         ...mapMutations({
-            updatePage: UPDATE_ARTICLE_PAGE
+            updatePage: UPDATE_ARTICLE_PAGE,
+            updateKeywords: UPDATE_KEYWORDS
         }),
         ...mapActions({
             fetchArticles: FETCH_ARTICLE_LIST,
@@ -104,6 +110,14 @@ export default {
         pageChange(page) {
             this.updatePage({
                 page
+            });
+            this.fetchArticles({
+                force: true
+            });
+        },
+        search(keywords) {
+            this.updateKeywords({
+                keywords
             });
             this.fetchArticles({
                 force: true
