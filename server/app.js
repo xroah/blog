@@ -4,7 +4,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const session = require("express-session");
-const MongoStore = require('connect-mongo')(session);
+const MongoStore = require("connect-mongo")(session);
+
+const history = require("connect-history-api-fallback");
 
 let app = express();
 
@@ -18,7 +20,35 @@ app.use(session({
     rolling: true,
     saveUninitialized: false,
     resave: true,
-    store: new MongoStore({ url: "mongodb://localhost/blog" })
+    store: new MongoStore({
+        url: "mongodb://localhost/blog"
+    })
+}));
+
+
+app.use("/xsys", (req, res, next) => {
+    if (!req.session.isAdmin && req.path !== "/login") {
+        res.sendFile("static/error/404.html", {
+            root: __dirname
+        }, err => {
+            err && res.send({
+                errCode: 500,
+                errMsg: err.mesage,
+                data: err
+            });
+        });
+        return;
+    }
+    next();
+});
+
+app.use(history({
+    rewrites: [{
+        from: /^\/api\/.*$/,
+        to: function (context) {
+            return context.parsedUrl.path
+        }
+    }]
 }));
 
 app.use(express.static("../dist"));
@@ -41,32 +71,34 @@ app.all("/api/*", (req, res, next) => {
 });
 
 app.all("/api/admin/*", (req, res, next) => {
-   //if current user have no permission then response error
+    //if current user have no permission then response error
     if (!req.session.isAdmin) {
         res.send({
             errCode: 2,
             errMsg: "对不起，您没有权限访问"
         });
         return;
-    } 
+    }
     next();
 });
 app.use("/api", router);
 
 //404
 app.use((req, res) => {
-    fs.readFile("./static/error/404.html", (err, data) => {
-        if (err) {
-            res.send(err);
-            return;
-        }
-        res.setHeader("Content-Type", "text/html");
-        res.send(data);
+    res.sendFile("static/error/404.html", {
+        root: __dirname
+    }, err => {
+        err && res.send({
+            errCode: 500,
+            errMsg: err.mesage,
+            data: err
+        });
     });
 });
 
 //handle errors
 app.use((err, req, res, next) => {
+    console.log(err)
     res.send({
         errCode: 9,
         errMsg: err.mesage || "出错啦!"
