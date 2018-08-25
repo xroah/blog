@@ -28,7 +28,7 @@
                 @include color($primaryHoverColor);
             }
             &.active .page-link {
-                @include color($primaryActiveColor);
+                @include color($primaryHoverColor);
                 cursor: default;
             }
             &.disabled .page-link {

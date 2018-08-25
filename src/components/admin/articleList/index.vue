@@ -108,7 +108,7 @@ export default {
         refresh(page, keywords) {
             let { $router } = this;
             $router.push({
-                path: "/xsys",
+                name: "adminHome",
                 query: {
                     page, 
                     keywords

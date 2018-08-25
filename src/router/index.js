@@ -26,7 +26,7 @@ export default [{
     path: "/xsys",
     component: AdminMain,
     children: [{
-        path: "/xsys",
+        path: "article",
         component: AdminHome,
         name: "adminHome"
     },{
@@ -40,7 +40,7 @@ export default [{
         path: "article/details/:id?",
         component: ArticleDetails
     },{
-        path: "article/classify",
+        path: "classify",
         component: ArticleClassify
     }]
 }];

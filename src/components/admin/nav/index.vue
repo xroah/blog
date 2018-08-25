@@ -2,10 +2,10 @@
     <nav class="admin-nav-bar">
         <ul class="admin-nav list-unstyled">
             <li>
-                <router-link exact to="/xsys" active-class="active">文章</router-link>
+                <router-link to="/xsys/article" active-class="active">文章</router-link>
             </li>
             <li>
-                <router-link exact to="/xsys/article/classify" active-class="active">分类管理</router-link>
+                <router-link exact to="/xsys/classify" active-class="active">分类管理</router-link>
             </li>
         </ul>
     </nav>

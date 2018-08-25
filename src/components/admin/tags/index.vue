@@ -51,7 +51,7 @@ export default {
             //delay, the input can be focused when it has shown
             setTimeout(() => {
                 this.$refs.input.focus();
-            });
+            }, 50);
         },
         removeTag(text) {
             let { tags } = this;

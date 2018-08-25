@@ -186,7 +186,7 @@ export default {
             Loading.hide();
         },
         cancel() {
-            this.$router.push("/xsys");
+            this.$router.push({name: "adminHome"});
         }
     }
 };

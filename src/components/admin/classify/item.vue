@@ -21,7 +21,7 @@ import { mapMutations, mapActions } from "vuex";
 export default {
     props: {
         value: String,
-        id: String,
+        id: [String, Number],
         onBlur: Function,
         delHandler: Function,
         add: Boolean
@@ -52,8 +52,9 @@ export default {
             setTimeout(() => {
                 //the refs will have value when mounted
                 //or when the input has shown, the input can be focused
-                this.$refs.input.focus();
-            });
+                let { input } = this.$refs;
+                input.focus();
+            }, 50);
         },
         del(evt, id, content) {
             //prevent click del button from triggering edit

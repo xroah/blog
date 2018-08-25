@@ -30,3 +30,11 @@ new Vue({
 
 //make :active work nomally on mobile phone
 document.body.addEventListener("touchstart", () => {});
+//for ios input, click out of input do not blur
+document.addEventListener("touchend", evt => {
+    let nodeName = evt.target.nodeName.toLowerCase();
+    if (nodeName !== "input") {
+        let activeEl = document.activeElement;
+        if (activeEl.blur) activeEl.blur();
+    }
+});

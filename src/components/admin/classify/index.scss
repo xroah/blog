@@ -11,12 +11,10 @@
         height: $inputHeight;
         line-height: $inputHeight;
         border: 1px solid $defaultColor;
-
         &.editing {
             border: none;
             padding: 0;
         }
-
         .del-item {
             display: block;
             position: absolute;
@@ -30,18 +28,16 @@
             background-color: $dangerColor;
             text-align: center;
             font-size: 18px;
-            opacity: 0;
+            transform: scale(0);
             transition: all .3s;
-
             &:hover {
                 background-color: $dangerHoverColor;
                 cursor: pointer;
             }
         }
-
         &:hover {
             .del-item {
-                opacity: 1;
+                transform: scale(1);
             }
         }
     }
