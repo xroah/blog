@@ -25,3 +25,9 @@ $maxWidth: 1000px;
     left: 0;
     bottom: 0;
 }
+
+@mixin  ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

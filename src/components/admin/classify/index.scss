@@ -1,48 +1,62 @@
 @import "../../common/minxinVariable";
 .classify-container {
-    display: flex;
-    flex-wrap: wrap;
-    .classify-item-wrapper {
-        position: relative;
-        margin-right: 10px;
-        margin-bottom: 10px;
-        padding: 0 10px;
-        border-radius: 3px;
-        height: $inputHeight;
-        line-height: $inputHeight;
-        border: 1px solid $defaultColor;
-        &.editing {
-            border: none;
-            padding: 0;
-        }
-        .del-item {
-            display: block;
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            width: 16px;
-            height: 16px;
-            line-height: 16px;
-            border-radius: 50%;
-            color: $textColor;
-            background-color: $dangerColor;
-            text-align: center;
-            font-size: 18px;
-            transform: scale(0);
-            transition: all .3s;
-            &:hover {
-                background-color: $dangerHoverColor;
-                cursor: pointer;
+    $border: 1px solid #dfe6ec;
+    .cls-list {
+        border: $border;
+        $bg: #eef1f6;
+        > li {
+            div {
+                display: flex;
+                line-height: 50px;
+            }
+            &:first-child {
+                font-weight: bold;
+                background-color: $bg;
+                ~li {
+                    border-top: $border;
+                    &:hover {
+                        background-color: $bg;
+                    }
+                }
+            }
+            ul {
+                background-color: #dfe6ec;
+            }
+            span {
+                padding: 0 5px;
+                &:first-child {
+                    width: 40%;
+                    @include ellipsis;
+                }
+                &:nth-child(2) {
+                    width: 20%;
+                }
+                &:nth-child(3) {
+                    width: 25%;
+                }
+                &:last-child {
+                    width: 15%;
+                }
+            }
+            .expand {
+                display: inline-block;
+                width: 32px;
+                text-align: center;
+                svg {
+                    transition: all .3s;
+                    vertical-align: middle;
+                }
+            }
+            &.expanded {
+                > div {
+                    position: relative;
+                    box-shadow: 0 1px 3px 0 #ccc;
+                    z-index: 2;
+                }
+                .expand svg {
+                    transform: rotate(90deg);
+                }
             }
         }
-        &:hover {
-            .del-item {
-                transform: scale(1);
-            }
-        }
-    }
-    .v-btn {
-        border-style: dashed;
-        width: 75px;
     }
 }
