@@ -9,8 +9,8 @@ const AdminLogin = () =>
     import ("../components/admin/login");
 const AdminMain = () =>
     import ("../components/admin/main");
-const AdminHome = () =>
-    import ("../components/admin/home");
+const AdminArticles = () =>
+    import ("../components/admin/articles");
 const AddArticle = () =>
     import ("../components/admin/addEditArticle");
 const ArticleClassify = () =>
@@ -38,8 +38,8 @@ export default [{
     component: AdminMain,
     children: [{
         path: "article",
-        component: AdminHome,
-        name: "adminHome"
+        component: AdminArticles,
+        name: "adminArticles"
     }, {
         path: "article/add",
         name: "addArticle",

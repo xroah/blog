@@ -105,10 +105,10 @@ export default {
                 loadingFs.hide();
             });
         },
-        refresh(page, keywords) {
+        queryChange(page, keywords) {
             let { $router } = this;
             $router.push({
-                name: "adminHome",
+                name: "adminArticles",
                 query: {
                     page, 
                     keywords
@@ -121,10 +121,10 @@ export default {
             });
         },
         pageChange(page) {
-           this.refresh(page, this.keywords);
+           this.queryChange(page, this.keywords);
         },
         search(keywords) {
-            this.refresh(1, keywords);
+            this.queryChange(1, keywords);
         }
     },
     filters: {

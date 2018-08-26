@@ -1,17 +1,21 @@
 <template>
-    <header class="public-nav-bar">
-        <nav class="nav">
-            <ul class="nav-menu list-unstyled">
-                <li>
-                    <router-link class="nav-link" exact active-class="active" to="/">首页</router-link>
-                </li>
-                <li>
-                    <router-link class="nav-link" exact active-class="active" to="/about">关于我</router-link>
-                </li>
-            </ul>
-        </nav>
-    </header>
+    <v-nav>
+        <li>
+            <router-link class="nav-link" exact active-class="active" to="/">首页</router-link>
+        </li>
+        <li>
+            <router-link class="nav-link" exact active-class="active" to="/about">关于我</router-link>
+        </li>
+    </v-nav>
 </template>
 
-<style lang="scss" src="./index.scss">
-</style>
+<script>
+import VNav from "../../common/nav";
+export default {
+    components: {
+        VNav
+    }
+};
+</script>
+
+

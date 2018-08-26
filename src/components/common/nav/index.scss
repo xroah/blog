@@ -1,0 +1,88 @@
+@import "../minxinVariable";
+.nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    padding: 0 10px;
+    line-height: 50px;
+    color: #fff;
+    background-color: #20232a;
+    .nav-menu {
+        display: flex;
+        flex-grow: 1;
+        max-width: $maxWidth;
+    }
+    .nav-link {
+        display: block;
+        padding: 0 10px;
+        color: #fff;
+        transition: all .3s;
+    }
+    .active {
+        color: $primaryColor;
+    }
+    .show-nav {
+        position: absolute;
+        display: none;
+        width: 20px;
+        height: 2px;
+        background-color: #fff;
+        transition: all .3s;
+        z-index: 10;
+        $translate: 6px;
+        &::after,
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            display: block;
+            width: 100%;
+            height: inherit;
+            background-color: inherit;
+            transition: all .3s;
+        }
+        &::after {
+            transform: translateY($translate);
+        }
+        &::before {
+            transform: translateY(-$translate);
+        }
+        &.active {
+            margin-left: 50vw;
+            transform: rotate(45deg);
+            &::after {
+                display: none;
+            }
+            &::before {
+                transform: rotate(90deg)
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .nav {
+        position: relative;
+        justify-content: flex-start;
+        .nav-menu {
+            position: absolute;
+            top: 0;
+            left:0;
+            flex-direction: column;
+            width: 50%;
+            height: 100vh;
+            transform: translateX(-100%);
+            background-color: #20232a;
+            z-index: 10;
+            transition: all.3s;
+            &.visible {
+                transform: translate(0);
+                box-shadow: 2px 0 5px #333;
+            }
+        }
+        .show-nav {
+            display: block;
+        }
+    }
+}
