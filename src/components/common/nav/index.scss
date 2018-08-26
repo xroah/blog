@@ -65,6 +65,10 @@
     .nav {
         position: relative;
         justify-content: flex-start;
+        .backdrop {
+            @include fixed_fullscreen();
+            z-index: 5;
+        }
         .nav-menu {
             position: absolute;
             top: 0;

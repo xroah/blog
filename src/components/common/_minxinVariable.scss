@@ -17,3 +17,11 @@ $inputFocusBoxShadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 $inputHeight: 30px;
 
 $maxWidth: 1000px;
+
+@mixin fixed_fullscreen {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
