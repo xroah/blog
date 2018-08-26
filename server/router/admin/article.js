@@ -26,7 +26,7 @@ router.route("/classify").get((req, res) => {
             createTime: 0
         }
     }).then(ret => {
-        res.send({
+        res.json({
             errCode: 0,
             data: ret || []
         });

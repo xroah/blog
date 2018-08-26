@@ -28,7 +28,7 @@ app.use(session({
 
 app.use("/xsys", (req, res, next) => {
     if (!req.session.isAdmin && req.path !== "/login") {
-        res.sendFile("static/error/404.html", {
+        res.sendFile("static/error/403.html", {
             root: __dirname
         }, err => {
             err && res.send({
