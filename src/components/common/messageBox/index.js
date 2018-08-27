@@ -17,7 +17,8 @@ export default {
                 return {
                     type: options.type,
                     msg: options.msg,
-                    title: options.title || "提示"
+                    title: options.title || "提示",
+                    promptText: options.defaultValue || ""
                 }
             },
             destroyed() {

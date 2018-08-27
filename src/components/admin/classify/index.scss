@@ -23,6 +23,7 @@
                 padding: 0 5px;
                 &:first-child {
                     width: 40%;
+                    @include ellipsis();
                 }
                 &:nth-child(2) {
                     width: 20%;
@@ -67,6 +68,9 @@
             transform-origin: top center;
             li ~ li {
                 border-top: 1px solid $defaultColor;;
+            }
+            li span:first-child {
+                padding-left: 50px;
             }
         }
         .v-input {

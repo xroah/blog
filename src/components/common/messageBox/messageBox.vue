@@ -9,7 +9,7 @@
             </div>
             <div class="message-box-content">
                 <span v-if="type !== 'prompt'">{{msg}}</span>
-                <input type="text" class="v-input" ref="input" v-model="promptText" v-else>
+                <input type="text" class="v-input" @keydown.enter="ok" ref="input" v-model="promptText" v-else>
             </div>
             <div class="message-box-footer">
                 <v-button v-if="type !== 'alert'" style="margin-right: 10px;" @click="cancel">取消</v-button>

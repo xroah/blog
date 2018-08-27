@@ -33,8 +33,8 @@
                     <span>{{cls.createTime}}</span>
                     <span>
                         <a href="#" class="add" @click.prevent="addItem(cls._id)">新增</a>
-                        <a href="#" class="edit">编辑</a>
-                        <a href="#" class="del" @click.prevent="del(id, cls.name)">删除</a>
+                        <a href="#" class="edit" @click.prevent="editItem(cls)">编辑</a>
+                        <a href="#" class="del" @click.prevent="delItem(cls)">删除</a>
                     </span>
                 </div>
                 <transition name="scale-in">
@@ -45,18 +45,20 @@
                                 <span>二级分类</span>
                                 <span>{{sub.createTime}}</span>
                                 <span>
-                                    <a href="#" class="del">删除</a>
+                                    <a href="#" class="edit" @click.prevent="editItem(sub, cls._id)">编辑</a>
+                                    <a href="#" class="del" @click.prevent="delItem(sub, cls._id)">删除</a>
                                 </span>
                             </div>
                         </li>
                         <!-- when added new first level, subList has no corresponding value -->
-                        <li v-if="!subList || !subList[cls._id].length" class="text-center">无数据</li>
+                        <li v-if="!subList[cls._id] || !subList[cls._id].length" class="text-center">无数据</li>
                     </ul>
                 </transition>
             </li>
         </ul>
         <div class="add-btn text-center">
-            <v-button @click="addItem">+新增</v-button>
+            <!-- addItem default param is event object -->
+            <v-button @click="addItem(null)">+新增</v-button>
         </div>
     </section>
 </template>
@@ -106,11 +108,11 @@ export default {
         }),
         addItem(pid) {
             msgBox.prompt({
-                onOk: value => {
+                onOk: async value => {
                     if (!value.trim()) return;
                     loading.show();
                     try {
-                        await this.updateFromServer({
+                        let ret = await this.updateFromServer({
                             method: "post",
                             body: {
                                 name: value,
@@ -118,18 +120,51 @@ export default {
                             }
                         });
                         message.success("保存成功!");
+                        ret.expanded = false;
+                        this.add({
+                            pid,
+                            newItem: ret
+                        });
                     } catch (error) {}
                     loading.hide();
                 },
                 title: "请输入"
             });
         },
-        async delItem(pid, item) {
+        editItem(item, pid) {
+            msgBox.prompt({
+                onOk: async value => {
+                    if (!value.trim() || value === item.name) return;
+                    loading.show();
+                   try {
+                        let ret = await this.updateFromServer({
+                            method: "put",
+                            body: {
+                                id: item._id,
+                                name: value
+                            }
+                        });
+                        message.success("保存成功!");
+                        this.updateFromList({
+                            pid,
+                            _id: item._id,
+                            name: value
+                        });
+                   } catch (error) {}
+                    loading.hide();
+                },
+                title: "请输入",
+                defaultValue: item.name
+            });
+        },
+        async delItem(item, pid) {
             msgBox.confirm(`确定要将 ${item.name} 删除吗?`, async () => {
                 loading.show();
                 try {
                     await this.delFromServer({
-                        _id: item._id
+                        body: {
+                            id: item._id
+                        }
                     });
                     this.delFromList({
                         pid,
@@ -139,23 +174,6 @@ export default {
                 } catch (err) {}
                 loading.hide();
             });
-        },
-        onBlur(evt, obj) {
-            let { add, name } = obj;
-            let value = evt.target.value.trim();
-            //add a item
-            if (add) {
-                if (!value) {
-                    this.delFromList();
-                } else {
-                    this.updateItem({
-                        method: "post",
-                        body: {
-                            name: model
-                        }
-                    });
-                }
-            }
         },
         toggleExpand(obj) {
             obj.expanded = !obj.expanded;

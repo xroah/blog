@@ -6,9 +6,14 @@
         </div>
         <div class="form-flex">
             <span class="form-label">文章分类:</span>
-            <select type="text" class="v-input form-control" v-model="cls">
-                <option v-for="item in classification" :key="item._id" :value="item.name">{{item.name}}</option>
-            </select>
+            <div class="form-control classification">
+                <select class="v-input" v-model="cls">
+                    <option v-for="item in classification" :key="item._id" :value="item._id">{{item.name}}</option>
+                </select>
+                <select class="v-input" v-model="subCls">
+                    <option v-for="item in subClass[cls]" :key="item._id" :value="item._id">{{item.name}}</option>
+                </select>
+            </div>
         </div>
         <div class="form-flex">
             <span class="form-label">文章标签:</span>
@@ -68,6 +73,7 @@ export default {
             secret: "0",
             title: "",
             cls: "",
+            subCls: "",
             saved: false,
             error: false,
             tags: []
@@ -75,7 +81,8 @@ export default {
     },
     computed: {
         ...mapState({
-            classification: state => state.classification.list
+            classification: state => state.classification.list,
+            subClass: state => state.classification.subList
         })
     },
     beforeRouteLeave(to, from, next) {
@@ -104,10 +111,14 @@ export default {
             await this.fetchCls();
             Loading.hide();
         }
-        let { classification } = this;
+        let { classification, subClass } = this;
         //classifction may empty(no permissions)
         if (classification.length && !this.cls) {
-            this.cls = classification[0].name;
+            this.cls = classification[0]._id;
+            console.log(subClass)
+            if (Object.keys(subClass).length) {
+                this.subCls = subClass[this.cls][0]._id;
+            }
         }
     },
     mounted() {
@@ -186,7 +197,7 @@ export default {
             Loading.hide();
         },
         cancel() {
-            this.$router.push({name: "adminArticles"});
+            this.$router.push({ name: "adminArticles" });
         }
     }
 };

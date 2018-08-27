@@ -6,26 +6,22 @@ router.get("/details/:id/:noComments?", (req, res) => {
     query.findOne("articles", {
         _id: ObjectID(req.params.id)
     }, {
-        noComments: !!typeof req.params.noComments, // the article details only
-        projection: {
-            summary: 0
-        }
-    }).then(ret => {
-        res.json({
-            errCode: 0,
-            data: {
-                article: ret
+            noComments: !!typeof req.params.noComments, // the article details only
+            projection: {
+                summary: 0
             }
+        }).then(ret => {
+            res.json({
+                errCode: 0,
+                data: {
+                    article: ret
+                }
+            });
         });
-    });
 });
 
 router.route("/classify").get((req, res) => {
-    query.find("classify", {}, {
-        projection: {
-            createTime: 0
-        }
-    }).then(ret => {
+    query.find("classify", {}).then(ret => {
         res.json({
             errCode: 0,
             data: ret || []
@@ -33,8 +29,10 @@ router.route("/classify").get((req, res) => {
     });
 }).post((req, res) => {
     let collec = "classify";
+    let { name, pid } = req.body;
     query.findOne(collec, {
-        name: req.body.name
+        name,
+        pid
     }).then(ret => {
         if (ret) {
             res.send({
@@ -43,18 +41,17 @@ router.route("/classify").get((req, res) => {
             });
             return 1;
         }
-        return 0;
     }).then(num => {
         if (num) return;
-        query.insertOne(collec, {
-            name: req.body.name,
+        let doc = {
+            name,
+            pid, //it seems that we can not set ObjectId manually
             createTime: new Date()
-        }).then(ret => {
+        }
+        query.insertOne(collec, ).then(ret => {
             res.send({
                 errCode: 0,
-                data: {
-                    id: ret.insertedId
-                }
+                data: ret.ops[0]
             });
         });
     })
@@ -62,22 +59,62 @@ router.route("/classify").get((req, res) => {
     query.updateOne("classify", {
         _id: ObjectID(req.body.id)
     }, {
-        $set: {
-            name: req.body.name
-        }
-    }).then(ret => {
-        res.send({
-            errCode: 0
+            $set: {
+                name: req.body.name
+            }
+        }).then(ret => {
+            res.send({
+                errCode: 0
+            });
         });
-    });
 }).delete((req, res) => {
-    query.deleteOne("classify", {
-        _id: ObjectID(req.body.id)
+    query.find("classify", {
+        pid: req.body.id //pid is string , not ObjectId
     }).then(ret => {
-        res.send({
-            errCode: 0
-        });
+        if (ret.length) {
+            res.send({
+                errCode: 1,
+                errMsg: "该分类下有子分类，不能删除!"
+            });
+            return 1;
+        }
+    }).then(num => {
+        /* return new Promise(resolve => {
+            if (!num) {
+                query.find("articles", {
+                    clsId: req.body._id
+                }, {
+                    projection: {
+                        _id: 1
+                    }
+                }).then(ret => {
+                    if (ret.length) {
+                        res.send({
+                            errCode: 2,
+                            errMsg: "该分类下有文章,不能删除!"
+                        });
+                        resolve(1);
+                    } else {
+                        resolve(0);
+                    }
+                });
+                return;
+            }
+            resolve(num);
+        }); */
+        return num;
+    }).then(num => {
+        if (!num) {
+            query.deleteOne("classify", {
+                _id: ObjectID(req.body.id)
+            }).then(ret => {
+                res.send({
+                    errCode: 0
+                });
+            });
+        }
     });
+
 });
 
 router.route("/:page?/:keywords?").get((req, res) => {
@@ -98,9 +135,9 @@ router.route("/:page?/:keywords?").get((req, res) => {
         projection: {
             title: 1,
             classification: 1,
-            secret:1,
+            secret: 1,
             createTime: 1,
-            tags: 1, 
+            tags: 1,
             totalViewed: 1
         }
     }).then(ret => {
@@ -136,20 +173,20 @@ router.route("/:page?/:keywords?").get((req, res) => {
     query.updateOne("articles", {
         _id: ObjectID(body.id)
     }, {
-        $set: {
-            title: body.title,
-            content: body.content,
-            classification: body.classification,
-            secret: body.secret,
-            lastUpdate: new Date(),
-            tags: body.tags,
-            summary: body.summary
-        }
-    }).then(ret => {
-        res.json({
-            errCode: 0
+            $set: {
+                title: body.title,
+                content: body.content,
+                classification: body.classification,
+                secret: body.secret,
+                lastUpdate: new Date(),
+                tags: body.tags,
+                summary: body.summary
+            }
+        }).then(ret => {
+            res.json({
+                errCode: 0
+            });
         });
-    });
 }).delete((req, res) => {
     query.deleteOne("articles", {
         _id: ObjectID(req.body.id)

@@ -2,6 +2,7 @@ import fetch from "../../components/common/fetch";
 import {
     ARTICLE_CLASSIFY
 } from "../../components/common/api";
+import Vue from "vue";
 import {
     FETCH_CLASSIFICATION_LIST,
     UPDATE_CLASSIFICATION_ITEM,
@@ -17,11 +18,11 @@ const classification = {
     },
     mutations: {
         [UPDATE_CLASSIFICATION_LIST](state, payload) {
-            let ret = payload.list;
+            let ret = payload.ret;
             let list = [];
             let subList = {};
             for (let val of ret) {
-                let pid = val.parentId;
+                let pid = val.pid;
                 let tmp = subList[pid];
                 if (pid) {
                     //set sub list
@@ -30,6 +31,8 @@ const classification = {
                     }
                     tmp.push(val);
                 } else {
+                    //the first level expanded or not flag
+                    val.expanded = false;
                     list.push(val);
                 }
             }
@@ -57,6 +60,7 @@ const classification = {
             let item = list[index];
             //update name of the item
             item.name = payload.name;
+            console.log(item)
         },
         //when delete a item and the server responsed successfully,
         //delete the item from the list
@@ -70,7 +74,7 @@ const classification = {
             }
             let index = -1;
             for (let i = list.length; i--;) {
-                if (value._id === payload._id) {
+                if (list[i]._id === payload._id) {
                     index = i;
                     break;
                 }
@@ -85,11 +89,11 @@ const classification = {
             if (pid) {
                 //add new item to second level
                 if (!state.subList[pid]) {
-                    state.subList[pid] = [];
+                    Vue.set(state.subList, pid, []);
                 }
                 state.subList[pid].push(newItem);
             } else {
-                state.list.push(payload.newItem);
+                state.list.push(newItem);
             }
         }
     },
@@ -111,9 +115,7 @@ const classification = {
         async [DELETE_CLASSIFICATION_BY_ID](context, payload) {
             await fetch(ARTICLE_CLASSIFY, {
                 method: "delete",
-                body: {
-                    id: payload._id
-                }
+                body: payload.body
             });
         },
         //update or insert one

@@ -9,6 +9,12 @@
     .content-editor {
         flex-grow: 1;
     }
+    .classification{
+        display: flex;
+        select {
+            flex-grow: 1;
+        }
+    }
 }
 
 @media screen and (max-width: 640px) {
