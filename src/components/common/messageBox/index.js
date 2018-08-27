@@ -12,12 +12,12 @@ export default {
         let body = document.body;
         let noop = () => {};
         options = options || {};
-        let showCancel = options.showCancel;
         instance = new _MessageBox({
             data() {
                 return {
-                    showCancel: showCancel === undefined ? true : showCancel,
-                    msg: options.msg
+                    type: options.type,
+                    msg: options.msg,
+                    title: options.title || "提示"
                 }
             },
             destroyed() {
@@ -38,8 +38,9 @@ export default {
     },
     alert(msg, options) {
         this.show({
-            ...options,
             msg,
+            ...options,
+            type: "alert",
             showCancel: false
         });
     },
@@ -51,7 +52,19 @@ export default {
         this.show({
             msg,
             onOk,
-            ...options
+            ...options,
+            type: "confirm"
+        });
+    },
+    prompt(onOk, options) {
+        if (typeof onOk === "object") {
+            options = onOk;
+            onOk = null;
+        }
+        this.show({
+            onOk,
+            ...options,
+            type: "prompt"
         });
     }
 }

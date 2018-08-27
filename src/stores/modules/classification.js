@@ -5,71 +5,92 @@ import {
 import {
     FETCH_CLASSIFICATION_LIST,
     UPDATE_CLASSIFICATION_ITEM,
-    UPDATE_CLASSIFICATION_NAME_BY_ID,
     DELETE_CLASSIFICATION_BY_ID,
     UPDATE_CLASSIFICATION_LIST,
     ADD_CLASSIFICATION
 } from "../actions";
 
-let guid = 0;
-
 const classification = {
     state: {
-        list: []
+        list: [],
+        subList: {}
     },
     mutations: {
         [UPDATE_CLASSIFICATION_LIST](state, payload) {
-            state.list = payload.list;
+            let ret = payload.list;
+            let list = [];
+            let subList = {};
+            for (let val of ret) {
+                let pid = val.parentId;
+                let tmp = subList[pid];
+                if (pid) {
+                    //set sub list
+                    if (!tmp) {
+                        tmp = subList[pid] = [];
+                    }
+                    tmp.push(val);
+                } else {
+                    list.push(val);
+                }
+            }
+            state.list = list;
+            state.subList = subList;
         },
         //when sever responsed successfully, update the item by _id
         [UPDATE_CLASSIFICATION_ITEM](state, payload) {
             let {
-                list
+                list,
+                subList
             } = state;
+            //first level or second level
+            if (payload.pid) {
+                list = subList[payload.pid];
+            }
             let index = -1;
             for (let i = list.length; i--;) {
                 let value = list[i];
-                if (
-                    value._id === payload.prevId || //for add mode, relace the prev id to new id
-                    value._id === payload._id) {
-                    index = i;
-                    break;
-                }
-            }
-            //update the item
-            list.splice(index, 1, {
-                name: payload.name,
-                _id: payload._id,
-            });
-        },
-        //when delete a item and the server responsed successfully,
-        //delet the item from the list
-        [DELETE_CLASSIFICATION_BY_ID](state, payload) {
-            let {
-                list
-            } = state;
-            let index = -1;
-            //when addition operation cancelled, pop the last item
-            if (!payload || !payload._id) {
-                list.pop();
-                return;
-            }
-            for (let i = list.lengt; i--;) {
                 if (value._id === payload._id) {
                     index = i;
                     break;
                 }
             }
-            if (index > -1) {
-                list.splice(index, 1);
-            }
+            let item = list[index];
+            //update name of the item
+            item.name = payload.name;
         },
-        [ADD_CLASSIFICATION](state) {
-            state.list.push({
-                _id: guid++,
-                name: "",
-                add: true
-            });
+        //when delete a item and the server responsed successfully,
+        //delete the item from the list
+        [DELETE_CLASSIFICATION_BY_ID](state, payload) {
+            let {
+                list,
+                subList
+            } = state;
+            if (payload.pid) {
+                list = subList[payload.pid];
+            }
+            let index = -1;
+            for (let i = list.length; i--;) {
+                if (value._id === payload._id) {
+                    index = i;
+                    break;
+                }
+            }
+            list.splice(index, 1);
+        },
+        [ADD_CLASSIFICATION](state, payload) {
+            let {
+                newItem,
+                pid
+            } = payload;
+            if (pid) {
+                //add new item to second level
+                if (!state.subList[pid]) {
+                    state.subList[pid] = [];
+                }
+                state.subList[pid].push(newItem);
+            } else {
+                state.list.push(payload.newItem);
+            }
         }
     },
     actions: {
@@ -82,16 +103,16 @@ const classification = {
                 let ret = await fetch(ARTICLE_CLASSIFY);
                 commit({
                     type: UPDATE_CLASSIFICATION_LIST,
-                    list: ret
+                    ret
                 });
             } catch (err) {}
         },
         //delete from server
-        async [DELETE_CLASSIFICATION_BY_ID](context, id) {
+        async [DELETE_CLASSIFICATION_BY_ID](context, payload) {
             await fetch(ARTICLE_CLASSIFY, {
                 method: "delete",
                 body: {
-                    id
+                    id: payload._id
                 }
             });
         },
