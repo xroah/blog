@@ -12,7 +12,7 @@
             </li>
             <li v-for="a in list" :key="a._id">
                 <span class="text-ellipsis" :title="a.title">{{a.title}}</span>
-                <span class="text-ellipsis" :title="a.title">{{a.classification}}</span>
+                <span class="text-ellipsis" :title="a.title">{{a.secondLevelName}}</span>
                 <span>{{a.secret === "0" ? "是" : "否"}}</span>
                 <span>{{a.createTime | date}}</span>
                 <span>{{a.totalViewed}}</span>

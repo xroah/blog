@@ -7,10 +7,10 @@
         <div class="form-flex">
             <span class="form-label">文章分类:</span>
             <div class="form-control classification">
-                <select class="v-input" v-model="cls">
+                <select class="v-input" ref="firstLevel" v-model="cls">
                     <option v-for="item in classification" :key="item._id" :value="item._id">{{item.name}}</option>
                 </select>
-                <select class="v-input" v-model="subCls">
+                <select class="v-input" ref="secondLevel" v-model="subCls">
                     <option v-for="item in subClass[cls]" :key="item._id" :value="item._id">{{item.name}}</option>
                 </select>
             </div>
@@ -115,7 +115,6 @@ export default {
         //classifction may empty(no permissions)
         if (classification.length && !this.cls) {
             this.cls = classification[0]._id;
-            console.log(subClass)
             if (Object.keys(subClass).length) {
                 this.subCls = subClass[this.cls][0]._id;
             }
@@ -148,7 +147,8 @@ export default {
                 return;
             }
             this.title = article.title;
-            this.cls = article.classification;
+            this.cls = article.firstLevelId;
+            this.subCls = article.secondLevelId;
             this.secret = article.secret;
             this.editor.root.innerHTML = article.content;
             this.tags = article.tags || [];
@@ -159,22 +159,44 @@ export default {
         removeTag(index) {
             this.tags.splice(index, 1);
         },
+        getSelectedText(select) {
+            if (select.selectedOptions) {
+                return select.selectedOptions[0].text;
+            }
+            let index = select.selectedIndex;
+            return select.options[index].text;
+        },
         async save() {
             if (!this.title) {
                 message.error("标题不能为空", 1.5);
                 return;
-            } else if (!this.cls) {
+            } else if (!this.cls || !this.subCls) {
                 message.error("分类不能为空", 1.5);
                 return;
             } else if (!this.editor.getText().trim()) {
                 message.error("内容不能为空", 1.5);
                 return;
             }
-            let { title, cls, secret, editMode, id, editor, tags } = this;
+            let {
+                title,
+                cls,
+                secret,
+                editMode,
+                id,
+                editor,
+                tags,
+                subCls,
+                $refs,
+                getSelectedText
+            } = this;
             let method = "post";
             let body = {
+                //for search by classification id(when delete a classifcation)
+                firstLevelId: cls,
+                secondLevelId: subCls,
+                firstLevelName: getSelectedText($refs.firstLevel),
+                secondLevelName: getSelectedText($refs.secondLevel),
                 title,
-                classification: cls,
                 secret,
                 tags,
                 content: editor.root.innerHTML,

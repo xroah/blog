@@ -48,7 +48,7 @@ router.route("/classify").get((req, res) => {
             pid, //it seems that we can not set ObjectId manually
             createTime: new Date()
         }
-        query.insertOne(collec, ).then(ret => {
+        query.insertOne(collec, doc).then(ret => {
             res.send({
                 errCode: 0,
                 data: ret.ops[0]
@@ -119,7 +119,8 @@ router.route("/classify").get((req, res) => {
 
 router.route("/:page?/:keywords?").get((req, res) => {
     let {
-        params
+        params,
+        session
     } = req;
     let page = params.page || 1;
     let keywords = params.keywords;
@@ -127,19 +128,19 @@ router.route("/:page?/:keywords?").get((req, res) => {
     if (keywords) {
         filter.content = new RegExp(keywords, "ig");
     }
+    let projection = {
+        content: 0, //cut down the size of response data
+    }
+    if (session.isAdmin) {
+        //admin do not need summary
+        projection.summary = 0;
+    }
     query.find("articles", filter, {
         pagination: page,
         sort: {
             createTime: -1
         },
-        projection: {
-            title: 1,
-            classification: 1,
-            secret: 1,
-            createTime: 1,
-            tags: 1,
-            totalViewed: 1
-        }
+        
     }).then(ret => {
         res.json({
             errCode: 0,
@@ -153,13 +154,16 @@ router.route("/:page?/:keywords?").get((req, res) => {
     query.insertOne("articles", {
         title: body.title,
         content: body.content,
-        classification: body.classification,
         secret: body.secret,
         createTime: new Date(),
         lastUpdate: new Date(),
         totalViewed: 0,
         todayViewed: 0,
         tags: body.tags,
+        firstLevelId: body.firstLevelId,
+        firstLevelName: body.firstLevelName,
+        secondLevelId: body.secondLevelId,
+        secondLevelName: body.secondLevelName,
         summary: body.summary
     }).then(ret => {
         res.json({
