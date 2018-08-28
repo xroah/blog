@@ -47,7 +47,7 @@ export default {
             } else if (img.size > MAX_SIZE) {
                 message.error("文件不能超过2MB");
                 return;
-            } 
+            }
             this.showImg(img);
             this.upload(img);
         },
@@ -58,19 +58,18 @@ export default {
                 this.src = fr.result;
                 this.hasImg = true;
                 fr.onload = null;
-            }
+            };
         },
         async upload(img) {
             let fd = new FormData();
             fd.append("attachment", img);
             try {
-                await fetch(UPLOAD_IMG, {
+                let imgUrl = await fetch(UPLOAD_IMG, {
                     method: "post",
                     body: fd
                 });
-            } catch (error) {
-                
-            }
+                this.$emit("uploadSuccess", imgUrl);
+            } catch (error) {}
         }
     }
 };

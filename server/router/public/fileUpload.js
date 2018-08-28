@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const multer = require("multer");
 const fs = require("fs");
-const path = require("path");
 const md5 = require("../../utils/md5");
 
 function generateDir() {
@@ -47,7 +46,7 @@ router.use("/", upload.single("attachment"), (req, res) => {
     let { destination, filename } = req.file;
     res.json({
         errCode: 0,
-        data: `${destination.split("uploads")[1]}/${filename}`
+        data: `//${req.hostname}:8008${destination.split("uploads")[1]}/${filename}`
     });
 });
 

@@ -7,7 +7,7 @@
         <div class="form-flex">
             <span class="form-label">文章分类:</span>
             <div class="form-control classification">
-                <select class="v-input" ref="firstLevel" v-model="cls">
+                <select class="v-input" ref="firstLevel" @change="firstLevelChange" v-model="cls">
                     <option v-for="item in classification" :key="item._id" :value="item._id">{{item.name}}</option>
                 </select>
                 <select class="v-input" ref="secondLevel" v-model="subCls">
@@ -37,7 +37,13 @@
                 <v-button style="margin-left: 10px;" @click="cancel">取消</v-button>
             </div>
         </div>
-        <upload-img></upload-img>
+        <transition name="slide-top-in">
+            <div class="upload-bg" v-if="showUpload">
+                <upload-img @uploadSuccess="uploadSuccess"></upload-img>
+                <a href="#" class="close" @click.prevent="setUploadVisible(false)">&#10005;</a>
+            </div>
+        </transition>
+
     </section>
     <section class="text-center" v-else>文章不存在</section>
 </template>
@@ -79,7 +85,8 @@ export default {
             subCls: "",
             saved: false,
             error: false,
-            tags: []
+            tags: [],
+            showUpload: false
         };
     },
     computed: {
@@ -127,8 +134,15 @@ export default {
         if (this.error) return;
         //we can get $refs instance just when mounted
         const quill = new _Editor().$mount(this.$refs.editor);
+        const toolbar = quill.editor.getModule("toolbar");
+        //add image handler
+        toolbar.addHandler("image", this.setUploadVisible.bind(this, true));
         this.editor = quill.editor;
         this.editMode && this.handleEdit();
+        document.addEventListener("keydown", this.handleKeydown);
+    },
+    destroyed() {
+        document.removeEventListener("keydown", this.handleKeydown);
     },
     methods: {
         //when page refresh classification list will be null,
@@ -161,6 +175,29 @@ export default {
         },
         removeTag(index) {
             this.tags.splice(index, 1);
+        },
+        setUploadVisible(visible) {
+            this.showUpload = !!visible;
+        },
+        uploadSuccess(imgUrl) {
+            //insert img to edirot
+            let len = this.editor.getLength();
+            this.editor.insertEmbed(len, "image", imgUrl);
+            this.setUploadVisible(false);
+        },
+        handleKeydown(evt) {
+            let key = evt.key;
+            //
+            if (key.toLowerCase() === "escape") {
+                this.setUploadVisible(false);
+            }
+        },
+        firstLevelChange() {
+            let { cls, subClass } = this;
+            let sub = subClass[cls];
+            if (sub && sub.length) {
+                this.subCls = sub[0]._id;
+            }
         },
         getSelectedText(select) {
             if (select.selectedOptions) {

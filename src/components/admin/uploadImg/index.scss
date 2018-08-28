@@ -9,6 +9,7 @@
     overflow: hidden;
     text-align: center;
     transition: all .3s;
+    background-color: #fff;
     cursor: pointer;
     .upload-input,
     .uploaded-img {
@@ -24,6 +25,9 @@
     }
     &:hover {
         border-color: $primaryHoverColor;
+    }
+    svg {
+        transform: translateY(50%);
     }
     path {
         fill: #999;
