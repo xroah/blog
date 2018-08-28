@@ -98,6 +98,10 @@ function _fetch(url, config) {
     if (isObject(conf.body)) {
         conf.body = JSON.stringify(conf.body);
         conf.headers["Content-Type"] = "application/json";
+    } else if (conf.body instanceof FormData) {
+        //delete the default content type, the browser will set it automatically
+        //if set manually, the multer midlleware will throw "Boundary not found"
+       delete conf.headers["Content-Type"];
     }
     return new Promise((resolve, reject) => {
         fetch(url, conf).then(async response => {

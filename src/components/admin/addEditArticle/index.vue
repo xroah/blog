@@ -37,6 +37,7 @@
                 <v-button style="margin-left: 10px;" @click="cancel">取消</v-button>
             </div>
         </div>
+        <upload-img></upload-img>
     </section>
     <section class="text-center" v-else>文章不存在</section>
 </template>
@@ -47,6 +48,7 @@ import Radio from "../../common/radio";
 import Editor from "../../common/editor";
 import msgBox from "../../common/messageBox/index";
 import VButton from "../../common/button";
+import UploadImg from "../uploadImg";
 import message from "../../common/message";
 import Vue from "vue";
 import Loading from "../../common/loading/index";
@@ -66,7 +68,8 @@ export default {
         Radio,
         Editor,
         VButton,
-        Tags
+        Tags,
+        UploadImg
     },
     data() {
         return {

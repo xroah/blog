@@ -53,6 +53,7 @@ app.use(history({
 
 app.use(express.static("../dist"));
 app.use(express.static("./static"));
+app.use(express.static("./uploads"));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
@@ -62,6 +63,7 @@ app.use(bodyParser.urlencoded({
 // parse application/json
 app.use(bodyParser.json());
 
+//input the api url into browser address bar, response empty message
 app.all("/api/*", (req, res, next) => {
     if (!req.xhr) {
         res.send("");
@@ -69,7 +71,6 @@ app.all("/api/*", (req, res, next) => {
     }
     next();
 });
-
 app.all("/api/admin/*", (req, res, next) => {
     //if current user have no permission then response error
     if (!req.session.isAdmin) {
@@ -101,7 +102,7 @@ app.use((err, req, res, next) => {
     console.log(err)
     res.send({
         errCode: 9,
-        errMsg: err.mesage || "出错啦!"
+        errMsg: err.message || "出错啦!"
     });
 });
 

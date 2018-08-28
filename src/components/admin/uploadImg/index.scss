@@ -1,0 +1,31 @@
+@import "../../common/minxinVariable";
+.upload-wrapper {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    line-height: 160px;
+    border: 1px dashed $defaultColor;
+    border-radius: 10px; 
+    overflow: hidden;
+    text-align: center;
+    transition: all .3s;
+    cursor: pointer;
+    .upload-input,
+    .uploaded-img {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+    .upload-input {
+        display: none;
+    }
+    &:hover {
+        border-color: $primaryHoverColor;
+    }
+    path {
+        fill: #999;
+    }
+}
