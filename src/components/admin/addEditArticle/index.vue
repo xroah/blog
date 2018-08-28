@@ -125,6 +125,7 @@ export default {
         //classifction may empty(no permissions)
         if (classification.length && !this.cls) {
             this.cls = classification[0]._id;
+            //get subClass by cls and set subCls
             if (Object.keys(subClass).length) {
                 this.subCls = subClass[this.cls][0]._id;
             }
@@ -187,11 +188,12 @@ export default {
         },
         handleKeydown(evt) {
             let key = evt.key;
-            //
+            //when press esc key
             if (key.toLowerCase() === "escape") {
                 this.setUploadVisible(false);
             }
         },
+        //first level select change, change second level
         firstLevelChange() {
             let { cls, subClass } = this;
             let sub = subClass[cls];
@@ -240,7 +242,7 @@ export default {
                 secret,
                 tags,
                 content: editor.root.innerHTML,
-                summary: editor.getText().substr(0, 100)
+                summary: editor.getText().substr(0, 100) //only text, filter images
             };
             if (editMode) {
                 body.id = id;
