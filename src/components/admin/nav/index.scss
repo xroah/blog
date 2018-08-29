@@ -1,0 +1,35 @@
+@import "../../common/minxinVariable";
+.right-user {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+    padding-right: 10px;
+    .toggle-dropdown {
+        display: inline-block;
+        svg {
+            vertical-align: middle;
+        }
+        path {
+            fill: #ccc;
+        }
+    }
+    .dropdown {
+        line-height: 42px;
+        transition: all .3s;
+        li+li {
+            border-top: 1px solid $defaultColor;
+        }
+    }
+}
+
+.slide-fade-in-enter,
+.slide-fade-in-leave-to {
+    transform: translateY(50%);
+    opacity: 0;
+}
+
+.slide-fade-in-enter-to,
+.slide-fade-in-leave {
+    transform: translateY(0);
+    opacity: 1;
+}

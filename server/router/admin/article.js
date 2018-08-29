@@ -140,7 +140,7 @@ router.route("/:page?/:keywords?").get((req, res) => {
         sort: {
             createTime: -1
         },
-
+        projection
     }).then(ret => {
         res.json({
             errCode: 0,
@@ -161,9 +161,7 @@ router.route("/:page?/:keywords?").get((req, res) => {
         todayViewed: 0,
         tags: body.tags,
         firstLevelId: body.firstLevelId,
-        firstLevelName: body.firstLevelName,
         secondLevelId: body.secondLevelId,
-        secondLevelName: body.secondLevelName,
         summary: body.summary
     }).then(ret => {
         res.json({
@@ -183,9 +181,7 @@ router.route("/:page?/:keywords?").get((req, res) => {
                 secret: body.secret,
                 tags: body.tags,
                 firstLevelId: body.firstLevelId,
-                firstLevelName: body.firstLevelName,
                 secondLevelId: body.secondLevelId,
-                secondLevelName: body.secondLevelName,
                 summary: body.summary
             }
         }).then(ret => {

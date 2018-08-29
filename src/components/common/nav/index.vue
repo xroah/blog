@@ -4,7 +4,8 @@
             <slot></slot>
         </ul>
         <div class="show-nav" :class="{active: visible}" @click="showNav"></div>
-        <div class="backdrop" v-if="visible" @click="hideNav"></div>
+        <div class="backdrop" v-if="visible" @click="showNav"></div>
+        <slot name="right"></slot>
     </nav>
 </template>
 

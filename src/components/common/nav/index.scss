@@ -59,14 +59,15 @@
             }
         }
     }
-    .sub-nav {
-        display: none;
+    .dropdown {
         position: absolute;
+        top: 100%;
         background-color: #fff;
         box-shadow: 0 0 5px 0 #999;
         li:hover {
             .nav-link {
                 color: $primaryHoverColor;
+                background-color: #f1f1f1;
             }
         }
         .nav-link {
