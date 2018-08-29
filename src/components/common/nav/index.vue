@@ -15,16 +15,20 @@ export default {
     data() {
         return {
             visible: false
-        }
+        };
     },
     methods: {
         showNav() {
             this.visible = !this.visible;
         },
-        hideNav() {
+        hideNav(evt) {
             if (!this.visible) return;
-            this.visible = false;
+            let target = evt.target;
+            let nodeName = target.nodeName.toLowerCase();
+            if (nodeName === "a" && !target.classList.contains("has-sub")) {
+                this.visible = false;
+            }
         }
     }
-}
+};
 </script>

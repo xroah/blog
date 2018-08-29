@@ -20,6 +20,9 @@ const ArticleDetails = () =>
 const Error404 = () =>
     import ("../components/common/error");
 
+const AdminModifyPwd = () =>
+    import ("../components/admin/modifyPwd");
+
 export default [{
     path: "/",
     component: PublicMain,
@@ -53,6 +56,9 @@ export default [{
     }, {
         path: "classify",
         component: ArticleClassify
+    }, {
+        path: "mng/modifyPwd",
+        component: AdminModifyPwd
     }]
 }, {
     path: "*",

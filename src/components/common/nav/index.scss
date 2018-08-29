@@ -4,7 +4,6 @@
     justify-content: center;
     align-items: center;
     height: 50px;
-    padding: 0 10px;
     line-height: 50px;
     color: #fff;
     background-color: #20232a;
@@ -12,6 +11,7 @@
         display: flex;
         flex-grow: 1;
         max-width: $maxWidth;
+        line-height: 42px;
     }
     .nav-link {
         display: block;
@@ -59,12 +59,27 @@
             }
         }
     }
+    .sub-nav {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        box-shadow: 0 0 5px 0 #999;
+        li:hover {
+            .nav-link {
+                color: $primaryHoverColor;
+            }
+        }
+        .nav-link {
+            color: $defaultTextColor;
+        }
+    }
 }
 
 @media screen and (max-width: 640px) {
     .nav {
         position: relative;
         justify-content: flex-start;
+        padding: 0 10px;
         .backdrop {
             @include fixed_fullscreen();
             z-index: 5;
@@ -72,7 +87,7 @@
         .nav-menu {
             position: absolute;
             top: 0;
-            left:0;
+            left: 0;
             flex-direction: column;
             width: 50%;
             height: 100vh;
@@ -83,6 +98,18 @@
             &.visible {
                 transform: translate(0);
                 box-shadow: 2px 0 5px #333;
+            }
+        }
+        .sub-nav {
+            position: relative;
+            width: 100%;
+            background-color: #242424;
+            box-shadow: none;
+            li {
+                padding-left: 20px;
+            }
+            .nav-link {
+                color: #fff;
             }
         }
         .show-nav {
