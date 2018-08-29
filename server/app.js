@@ -1,5 +1,3 @@
-const fs = require("fs");
-
 const express = require("express");
 const bodyParser = require("body-parser");
 
@@ -21,7 +19,7 @@ app.use(session({
     saveUninitialized: false,
     resave: true,
     store: new MongoStore({
-        url: "mongodb://localhost/blog"
+        url: "mongodb://127.0.0.1/blog"
     })
 }));
 
@@ -106,4 +104,4 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(8008);
+module.exports = app;
