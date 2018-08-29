@@ -11,45 +11,37 @@ function mongoCallback(resolve) {
 
 module.exports = {
     findOne(collection, query, options) {
-        return new Promise(resolve => {
-            let collec = CONNECTION.collection(collection);
-            collec.findOne(query, options, mongoCallback(resolve));
-        });
+        let collec = CONNECTION.collection(collection);
+        return collec.findOne(query, options);
     },
     find(collection, query, options) {
-        return new Promise(resolve => {
-            let collec = CONNECTION.collection(collection);
+        let collec = CONNECTION.collection(collection);
             let cursor = collec.find(query, options);
             if (options && options.pagination) {
                 let page = options.pagination;
-                Promise.all([
-                    cursor.count(),
+                return Promise.all([
+                    collec.countDocuments(query),
                     cursor.skip((page - 1) * 10).limit(10).toArray()
                 ]).then(([count, ret]) => {
-                    resolve({
+                    return {
                         count,
                         list: ret
-                    });
+                    };
                 });
             } else {
-                cursor.toArray((mongoCallback(resolve)));
+                return cursor.toArray();
             }
-        });
     },
     insertOne(collection, data, options) {
-        return new Promise(resolve => {
-            let collec = CONNECTION.collection(collection);
-            collec.insertOne(data, options, mongoCallback(resolve));
-        });
+        let collec = CONNECTION.collection(collection);
+        return collec.insertOne(data, options);
     },
     updateOne(collection, filter, update, options) {
-        return new Promise(resolve => {
-            let collec = CONNECTION.collection(collection);
-            collec.update(filter, update, options, mongoCallback(resolve));
-        });
+        let collec = CONNECTION.collection(collection);
+        return collec.update(filter, update, options);
     },
     deleteOne(collection, filter, options) {
         let collec = CONNECTION.collection(collection);
-        collec.deleteOne(filter, options, mongoCallback(resolve));
+        return collec.deleteOne(filter, options);
     }
 };
