@@ -1,6 +1,7 @@
 @import "../minxinVariable";
 .nav {
     display: flex;
+    position: relative;
     justify-content: center;
     align-items: center;
     height: 50px;
@@ -78,7 +79,6 @@
 
 @media screen and (max-width: 640px) {
     .nav {
-        position: relative;
         justify-content: flex-start;
         padding: 0 10px;
         .backdrop {
