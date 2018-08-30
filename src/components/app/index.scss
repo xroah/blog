@@ -1,8 +1,8 @@
 /**
 global styles
 */
-
 @import "../common/minxinVariable";
+
 *,
 *::after,
 *::before {
@@ -13,6 +13,7 @@ body {
     font: 14px/1.5 Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
     color: $defaultTextColor;
     background-color: #f6f6f6;
+
     path {
         fill: $defaultTextColor;
     }
@@ -42,8 +43,11 @@ a {
 input,
 button,
 select {
-    -webkit-appearance: none; //ios input
     outline: none;
+}
+
+input {
+    -webkit-appearance: none; //remove ios input shadow
 }
 
 button {
@@ -70,6 +74,7 @@ button {
     border-radius: 3px;
     padding: 0 10px;
     transition: all .3s;
+
     &:focus {
         border-color: $primaryColor;
         box-shadow: $inputFocusBoxShadow;
@@ -117,11 +122,13 @@ button {
     body {
         font-size: 16px;
     }
+
     //small screen, algin vertically
     .form-flex {
         flex-direction: column;
         align-items: flex-start;
     }
+
     .form-control {
         margin-left: 0;
         margin-top: 5px;
@@ -141,19 +148,24 @@ button {
     border-radius: 5px;
     border-color: $defaultColor;
     transition: all .3s;
+
     svg {
         vertical-align: middle;
+
         path {
             fill: $defaultColor;
         }
     }
+
     &:hover,
     &:focus {
         border-color: $hoverColor;
+
         path {
             fill: $hoverColor;
         }
     }
+
     &:active {
         background-color: #ccc;
         border-color: $hoverColor;
@@ -179,6 +191,7 @@ button {
 }
 
 $scrollBarWidth: 5px;
+
 ::-webkit-scrollbar {
     width: $scrollBarWidth;
     border-radius: $scrollBarWidth;
