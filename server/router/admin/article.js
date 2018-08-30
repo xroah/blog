@@ -49,7 +49,7 @@ router.route("/classify").get((req, res) => {
         if (num) return;
         let doc = {
             name,
-            pid, 
+            pid,
             createTime: new Date()
         }
         query.insertOne(collec, doc).then(ret => {
@@ -60,20 +60,28 @@ router.route("/classify").get((req, res) => {
         });
     })
 }).put((req, res) => {
-    query.updateOne("classify", {
+    query.findOneAndUpdate("classify", {
         _id: new ObjectID(req.body.id)
     }, {
         $set: {
             name: req.body.name
         }
     }).then(ret => {
-        res.send({
-            errCode: 0
-        });
+        if (ret.value) {
+            res.json({
+                errCode: 0
+            });
+        } else {
+            res.json({
+                errCode: 404,
+                errMsg: "分类不存在"
+            });
+        }
     });
 }).delete((req, res) => {
+    let id = new ObjectID(req.body.id);
     query.findOne("classify", {
-        pid: new ObjectID(req.body.id)
+        pid: id
     }).then(ret => {
         if (ret) {
             res.send({
@@ -83,32 +91,20 @@ router.route("/classify").get((req, res) => {
             return 1;
         }
     }).then(num => {
-        /* return new Promise(resolve => {
-            if (!num) {
-                query.find("articles", {
-                    clsId: req.body._id
-                }, {
-                    projection: {
-                        _id: 1
-                    }
-                }).then(ret => {
-                    if (ret.length) {
-                        res.send({
-                            errCode: 2,
-                            errMsg: "该分类下有文章,不能删除!"
-                        });
-                        resolve(1);
-                    } else {
-                        resolve(0);
-                    }
-                });
-                return;
-            }
-            resolve(num);
-        }); */
-        return num;
-    }).then(num => {
         if (!num) {
+            return query.findOne("articles", {
+                $or: [{
+                        firstLevelId: id
+                    },
+                    {
+                        secondLevelId: id
+                    }
+                ]
+            });
+        }
+        return num;
+    }).then(ret => {
+        if (!ret) {
             query.deleteOne("classify", {
                 _id: ObjectID(req.body.id)
             }).then(ret => {
@@ -116,15 +112,18 @@ router.route("/classify").get((req, res) => {
                     errCode: 0
                 });
             });
+        } else {
+            res.json({
+                errCode: 2,
+                errMsg: "该分类下有文章,不能删除!"
+            });
         }
     });
-
 });
 
 router.route("/:page?/:keywords?").get((req, res) => {
     let {
-        params,
-        session
+        params
     } = req;
     let page = params.page || 1;
     let keywords = params.keywords;
@@ -132,19 +131,15 @@ router.route("/:page?/:keywords?").get((req, res) => {
     if (keywords) {
         filter.content = new RegExp(keywords, "ig");
     }
-    let projection = {
-        content: 0, //cut down the size of response data
-    }
-    if (session.isAdmin) {
-        //admin do not need summary
-        projection.summary = 0;
-    }
     query.find("articles", filter, {
         pagination: page,
         sort: {
             createTime: -1
         },
-        projection
+        projection: {//cut down the response size
+            content: 0,
+            summary: 0
+        }
     }).then(ret => {
         res.json({
             errCode: 0,

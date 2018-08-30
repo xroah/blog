@@ -8,15 +8,15 @@ const history = require("connect-history-api-fallback");
 
 let app = express();
 
-let router = require("./router/api");
+let router = require("./router");
 
 app.use(session({
     secret: "xroah blog",
     cookie: {
         maxAge: 30 * 60 * 1000 //default half an hour
     },
-    //refresh the expire time when user visited
-    //rolling: refresh the cookie
+    //refresh the expire time on every request
+    //rolling: refresh the cookie expire time
     //resave: resave to mongoDB
     rolling: true,
     resave: true,
@@ -37,7 +37,7 @@ app.use("/xsys", (req, res, next) => {
     next();
 });
 
-//vue router history mode, default response index.html
+//vue router history mode, response index.html by default
 app.use(history({
     //rewrite the api url
     rewrites: [{
@@ -60,7 +60,7 @@ app.use(bodyParser.urlencoded({
 // parse application/json
 app.use(bodyParser.json());
 
-//input the api url into browser address bar, response empty message
+//if input the api url into browser address bar, response empty message
 app.all("/api/*", (req, res, next) => {
     if (!req.xhr) {
         res.send("");

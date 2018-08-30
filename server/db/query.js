@@ -1,14 +1,5 @@
 const CONNECTION = global.dbConn;
 
-function mongoCallback(resolve) {
-    return function callback(err, ret) {
-        if (err) {
-            throw err
-        }
-        resolve(ret);
-    }
-}
-
 module.exports = {
     findOne(collection, query, options) {
         let collec = CONNECTION.collection(collection);
@@ -48,8 +39,8 @@ module.exports = {
         let collec = CONNECTION.collection(collection);
         return collec.findOneAndUpdate(filter, update, options);
     },
-    findOneAndDelete(collection, filter, update, options) {
+    findOneAndDelete(collection, filter, options) {
         let collec = CONNECTION.collection(collection);
-        return collec.findOneAndDelete(filter, update, options);
+        return collec.findOneAndDelete(filter, options);
     }
 };

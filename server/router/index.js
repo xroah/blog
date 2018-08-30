@@ -10,5 +10,4 @@ router.use("/user", user);
 router.use("/admin", admin)
 router.use("/upload", upload);
 
-
 module.exports = router;

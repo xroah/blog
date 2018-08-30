@@ -1,8 +1,8 @@
+import "normalize.css";
 import App from "./components/app";
 import Vue from "vue";
 import VueRouter from "vue-router";
 import routes from "./router";
-import "normalize.css";
 //quill eiditor's style should import globally
 //quill editor's all content attribute are based on class names
 import "quill/dist/quill.snow.css";
