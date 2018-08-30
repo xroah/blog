@@ -1,7 +1,9 @@
-import article from "./modules/article";
+import adminArticle from "./modules/adminArticle";
 import classification from "./modules/classification";
+import publicArticle from "./modules/publicArticle";
 
 export default {
-    article,
-    classification
+    adminArticle,
+    classification,
+    publicArticle
 }

@@ -27,7 +27,8 @@ export default [{
     path: "/",
     component: PublicMain,
     children: [{
-        path: "/",
+        path: "article",
+        name: "pulicArticles",
         component: PublicHome
     }, {
         path: "/about",

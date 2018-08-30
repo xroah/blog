@@ -6,7 +6,8 @@ export const USER_LOGOUT = "/api/user/logout";
 export const MODIFY_PASSWORD = "/api/user/modifyPwd";
 
 export const ARTICLE_CLASSIFY = "/api/admin/article/classify";
-export const ARTICLE = "/api/admin/article";
+export const ADMIN_ARTICLE = "/api/admin/article";
 export const ARTICLE_DETAILS = "/api/admin/article/details";
+export const PUBLIC_ARTICLE = "/api/public/article";
 
 export const UPLOAD_IMG = "/api/upload";

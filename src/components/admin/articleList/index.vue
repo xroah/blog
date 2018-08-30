@@ -29,7 +29,7 @@
                 <loading :fullscreen="false">正在加载...</loading>
             </li>
         </ul>
-        <pagination :total="total" :current="page" @pageChange="pageChange"></pagination>
+        <pagination v-show="list.length" :total="total" :current="page" @pageChange="pageChange"></pagination>
     </section>
 </template>
 
@@ -41,7 +41,7 @@ import msgBox from "../../common/messageBox/index";
 import message from "../../common/message/index";
 import loadingFs from "../../common/loading/index";
 import Search from "../../common/search";
-import { FETCH_ARTICLE_LIST, DELETE_ARRTICLE } from "../../../stores/actions";
+import { DELETE_ARRTICLE, FETCH_ADMIN_ARTICLE } from "../../../stores/actions";
 import { mapState, mapActions } from "vuex";
 import Pagination from "../../common/pagination";
 import { date } from "../../common/filters";
@@ -54,17 +54,15 @@ export default {
     },
     data() {
         return {
-            showType: false,
-            totalArticles: 0,
             page: 1,
             keywords: ""
         };
     },
     computed: {
         ...mapState({
-            list: state => state.article.list,
-            total: state => state.article.total,
-            loaded: state => state.article.loaded
+            list: state => state.adminArticle.list,
+            total: state => state.adminArticle.total,
+            loaded: state => state.adminArticle.loaded
         })
     },
     created() {
@@ -79,7 +77,7 @@ export default {
     },
     methods: {
         ...mapActions({
-            fetchArticles: FETCH_ARTICLE_LIST,
+            fetchArticles: FETCH_ADMIN_ARTICLE,
             delArticle: DELETE_ARRTICLE
         }),
         operate(evt, type, id) {
