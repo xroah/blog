@@ -6,18 +6,18 @@ router.get("/details/:id/:noComments?", (req, res) => {
     query.findOne("articles", {
         _id: ObjectID(req.params.id)
     }, {
-            noComments: !!typeof req.params.noComments, // the article details only
-            projection: {
-                summary: 0
+        noComments: !!typeof req.params.noComments, // the article details only
+        projection: {
+            summary: 0
+        }
+    }).then(ret => {
+        res.json({
+            errCode: 0,
+            data: {
+                article: ret
             }
-        }).then(ret => {
-            res.json({
-                errCode: 0,
-                data: {
-                    article: ret
-                }
-            });
         });
+    });
 });
 
 router.route("/classify").get((req, res) => {
@@ -29,7 +29,11 @@ router.route("/classify").get((req, res) => {
     });
 }).post((req, res) => {
     let collec = "classify";
-    let { name, pid } = req.body;
+    let {
+        name,
+        pid
+    } = req.body;
+    pid = new ObjectID(pid);
     query.findOne(collec, {
         name,
         pid
@@ -45,7 +49,7 @@ router.route("/classify").get((req, res) => {
         if (num) return;
         let doc = {
             name,
-            pid, //it seems that we can not set ObjectId manually
+            pid, 
             createTime: new Date()
         }
         query.insertOne(collec, doc).then(ret => {
@@ -57,21 +61,21 @@ router.route("/classify").get((req, res) => {
     })
 }).put((req, res) => {
     query.updateOne("classify", {
-        _id: ObjectID(req.body.id)
+        _id: new ObjectID(req.body.id)
     }, {
-            $set: {
-                name: req.body.name
-            }
-        }).then(ret => {
-            res.send({
-                errCode: 0
-            });
-        });
-}).delete((req, res) => {
-    query.find("classify", {
-        pid: req.body.id //pid is string , not ObjectId
+        $set: {
+            name: req.body.name
+        }
     }).then(ret => {
-        if (ret.length) {
+        res.send({
+            errCode: 0
+        });
+    });
+}).delete((req, res) => {
+    query.findOne("classify", {
+        pid: new ObjectID(req.body.id)
+    }).then(ret => {
+        if (ret) {
             res.send({
                 errCode: 1,
                 errMsg: "该分类下有子分类，不能删除!"
@@ -160,8 +164,8 @@ router.route("/:page?/:keywords?").get((req, res) => {
         totalViewed: 0,
         todayViewed: 0,
         tags: body.tags,
-        firstLevelId: body.firstLevelId,
-        secondLevelId: body.secondLevelId,
+        firstLevelId: new ObjectID(body.firstLevelId),
+        secondLevelId: new ObjectID(body.secondLevelId),
         summary: body.summary
     }).then(ret => {
         res.json({
@@ -172,30 +176,44 @@ router.route("/:page?/:keywords?").get((req, res) => {
     let {
         body
     } = req;
-    query.updateOne("articles", {
-        _id: ObjectID(body.id)
+    query.findOneAndUpdate("articles", {
+        _id: new ObjectID(body.id),
     }, {
-            $set: {
-                title: body.title,
-                content: body.content,
-                secret: body.secret,
-                tags: body.tags,
-                firstLevelId: body.firstLevelId,
-                secondLevelId: body.secondLevelId,
-                summary: body.summary
-            }
-        }).then(ret => {
+        $set: {
+            title: body.title,
+            content: body.content,
+            secret: body.secret,
+            tags: body.tags,
+            firstLevelId: new ObjectID(body.firstLevelId),
+            secondLevelId: new ObjectID(body.secondLevelId),
+            summary: body.summary
+        }
+    }).then(ret => {
+        if (ret.value) {
             res.json({
                 errCode: 0
             });
-        });
+        } else {
+            res.json({
+                errCode: 404,
+                errMsg: "文章不存在"
+            });
+        }
+    });
 }).delete((req, res) => {
-    query.deleteOne("articles", {
-        _id: ObjectID(req.body.id)
+    query.findOneAndDelete("articles", {
+        _id: new ObjectID(req.body.id)
     }).then(ret => {
-        res.json({
-            errCode: 0
-        });
+        if (ret.value) {
+            res.json({
+                errCode: 0
+            });
+        } else {
+            res.json({
+                errCode: 404,
+                errMsg: "文章不存在"
+            });
+        }
     });
 });
 

@@ -46,6 +46,10 @@ module.exports = {
     },
     findOneAndUpdate(collection, filter, update, options) {
         let collec = CONNECTION.collection(collection);
-        return collec.findOneAndUpdate(filter, update);
+        return collec.findOneAndUpdate(filter, update, options);
+    },
+    findOneAndDelete(collection, filter, update, options) {
+        let collec = CONNECTION.collection(collection);
+        return collec.findOneAndDelete(filter, update, options);
     }
 };

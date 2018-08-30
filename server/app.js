@@ -15,32 +15,31 @@ app.use(session({
     cookie: {
         maxAge: 30 * 60 * 1000 //default half an hour
     },
+    //refresh the expire time when user visited
+    //rolling: refresh the cookie
+    //resave: resave to mongoDB
     rolling: true,
-    saveUninitialized: false,
     resave: true,
+    saveUninitialized: false,
     store: new MongoStore({
         url: "mongodb://127.0.0.1/blog"
     })
 }));
 
-
+//no permission
 app.use("/xsys", (req, res, next) => {
     if (!req.session.isAdmin && req.path !== "/login") {
         res.sendFile("static/error/403.html", {
             root: __dirname
-        }, err => {
-            err && res.send({
-                errCode: 500,
-                errMsg: err.mesage,
-                data: err
-            });
         });
         return;
     }
     next();
 });
 
+//vue router history mode, default response index.html
 app.use(history({
+    //rewrite the api url
     rewrites: [{
         from: /^\/api\/.*$/,
         to: function (context) {
@@ -73,7 +72,7 @@ app.all("/api/admin/*", (req, res, next) => {
     //if current user have no permission then response error
     if (!req.session.isAdmin) {
         res.send({
-            errCode: 2,
+            errCode: 403,
             errMsg: "对不起，您没有权限访问"
         });
         return;
@@ -86,12 +85,6 @@ app.use("/api", router);
 app.use((req, res) => {
     res.sendFile("static/error/404.html", {
         root: __dirname
-    }, err => {
-        err && res.send({
-            errCode: 500,
-            errMsg: err.mesage,
-            data: err
-        });
     });
 });
 
