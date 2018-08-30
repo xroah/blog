@@ -21,13 +21,44 @@ router.post("/login", (req, res) => {
                 resData.errCode = 1;
                 resData.errMsg = "用户名或密码错误!"
             } else {
-                req.session.userName = userName;
+                req.session.user = userName;
                 req.session.isAdmin = +ret.permission === 1;
                 resData.errCode = 0;
-                resData.errMsg = "登录成功!"
             }
             res.send(resData);
         });;
+});
+
+router.post("/logout", (req, res) => {
+    req.session.destroy();
+    res.send({
+        errCode: 0
+    });
+});
+
+router.post("/modifyPwd", (req, res) => {
+    let user = req.session.user;
+    let oldPwd = md5(req.body.oldPwd);
+    let newPwd = md5(req.body.newPwd);
+    query.findOneAndUpdate("users", {
+        userName: user,
+        password: oldPwd
+    }, {
+        $set: {
+            password: newPwd
+        }
+    }).then(ret => {
+        if (!ret.value) {
+            res.send({
+                errCode: 11,
+                errMsg: "原密码不正确"
+            });
+        } else {
+            res.send({
+                errCode: 0
+            });
+        }
+    });
 });
 
 module.exports = router;

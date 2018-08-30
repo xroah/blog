@@ -7,18 +7,18 @@
             <router-link exact to="/xsys/classify" class="nav-link" active-class="active">分类管理</router-link>
         </li>
         <div class="right-user" slot="right">
-            <a href="#" @click.prevent="toggleDropdown" class="toggle-dropdown">
+            <a href="#" @click.stop.prevent="toggleDropdown" class="toggle-dropdown">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024" version="1.1" p-id="4297" width="32" height="32">
-                    <path d="M512 64.3c-247.3 0-447.8 199.8-447.8 446.2 0 1.1 0 2.2 0.1 3.3 0 0.6-0.1 1.3-0.1 1.9 0 2.7 0.2 5.4 0.2 8.1v1c4.9 240.5 202.6 434.7 445 434.7 101.6 0 195.3-34.1 270.3-91.4v0.2c109.3-81.4 180-211.3 180-357.7 0.1-246.5-200.4-446.3-447.7-446.3z m7.5 274.9c73.6 0 133.3 59.5 133.3 132.8 0 73.3-59.7 132.8-133.3 132.8S386.3 545.4 386.3 472c0-73.3 59.6-132.8 133.2-132.8zM268.7 821l82.5-128c21.9-33.9 59.5-54.4 100-54.4h134.5c41.7 0 80.3 21.7 101.8 57.3L758.9 814c-67.6 56.3-154.6 90.2-249.4 90.2-90.9 0.1-174.5-31.1-240.8-83.2z" fill="#40a9ff" />
+                    <path d="M512 64.3c-247.3 0-447.8 199.8-447.8 446.2 0 1.1 0 2.2 0.1 3.3 0 0.6-0.1 1.3-0.1 1.9 0 2.7 0.2 5.4 0.2 8.1v1c4.9 240.5 202.6 434.7 445 434.7 101.6 0 195.3-34.1 270.3-91.4v0.2c109.3-81.4 180-211.3 180-357.7 0.1-246.5-200.4-446.3-447.7-446.3z m7.5 274.9c73.6 0 133.3 59.5 133.3 132.8 0 73.3-59.7 132.8-133.3 132.8S386.3 545.4 386.3 472c0-73.3 59.6-132.8 133.2-132.8zM268.7 821l82.5-128c21.9-33.9 59.5-54.4 100-54.4h134.5c41.7 0 80.3 21.7 101.8 57.3L758.9 814c-67.6 56.3-154.6 90.2-249.4 90.2-90.9 0.1-174.5-31.1-240.8-83.2z" />
                 </svg>
             </a>
             <transition name="slide-fade-in">
-                <ul class="dropdown" v-show="dropdownVisible">
+                <ul class="dropdown" v-show="dropdownVisible" @click="handleClick">
                     <li>
-                        <router-link exact to="/xsys/mng/modifyPwd" class="nav-link">修改密码</router-link>
+                        <a href="#" class="nav-link" data-type="pwd">修改密码</a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link">退出</a>
+                        <a href="#" class="nav-link" data-type="out">退出</a>
                     </li>
                 </ul>
             </transition>
@@ -31,6 +31,9 @@
 
 <script>
 import VNav from "../../common/nav";
+import fetch from "../../common/fetch";
+import { USER_LOGOUT } from "../../common/api";
+
 export default {
     components: {
         VNav
@@ -40,8 +43,19 @@ export default {
             dropdownVisible: false
         };
     },
+    created() {
+        document.addEventListener("click", this.clickOutSide);
+    },
+    destroyed() {
+        document.removeEventListener("click", this.clickOutSide);
+    },
     methods: {
-        toggleDropdown(){
+        clickOutSide(evt) {
+            let { dropdownVisible } = this;
+            if (!dropdownVisible) return;
+            this.dropdownVisible = false;
+        },
+        toggleDropdown() {
             this.dropdownVisible = !this.dropdownVisible;
         },
         toggleSub(evt) {
@@ -52,6 +66,30 @@ export default {
                 next.style.display = "block";
             } else {
                 next.style.display = "none";
+            }
+        },
+        async logout() {
+            try{
+                await fetch(USER_LOGOUT, {
+                    method: "post"
+                });
+                this.$router.push({name: "adminLogin"});
+            }catch(err){}
+        },
+        handleClick(evt) {
+            let target = evt.target;
+            let nodeName = target.nodeName.toLowerCase();
+            if (nodeName === "a") {
+                let type = target.dataset.type;
+                switch (type) {
+                    case "pwd":
+                        this.$router.push({ name: "modifyPwd" });
+                        break;
+                    case "out":
+                        this.logout();
+                        break;
+                }
+                evt.preventDefault();
             }
         }
     }

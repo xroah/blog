@@ -35,6 +35,7 @@ export default [{
     }]
 }, {
     path: "/xsys/login",
+    name: "adminLogin",
     component: AdminLogin
 }, {
     path: "/xsys",
@@ -58,6 +59,7 @@ export default [{
         component: ArticleClassify
     }, {
         path: "mng/modifyPwd",
+        name: "modifyPwd",
         component: AdminModifyPwd
     }]
 }, {

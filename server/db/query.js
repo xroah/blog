@@ -43,5 +43,9 @@ module.exports = {
     deleteOne(collection, filter, options) {
         let collec = CONNECTION.collection(collection);
         return collec.deleteOne(filter, options);
+    },
+    findOneAndUpdate(collection, filter, update, options) {
+        let collec = CONNECTION.collection(collection);
+        return collec.findOneAndUpdate(filter, update);
     }
 };
