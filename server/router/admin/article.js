@@ -2,7 +2,7 @@ const router = require("express").Router();
 const query = require("../../db/query");
 const ObjectID = require("mongodb").ObjectID;
 
-router.get("/details/:id/:noComments?", (req, res) => {
+router.get("/details/:id/:noComments?", (req, res) => {        
     query.findOne("articles", {
         _id: ObjectID(req.params.id)
     }, {
@@ -179,6 +179,7 @@ router.route("/:page?/:keywords?").get((req, res) => {
             content: body.content,
             secret: body.secret,
             tags: body.tags,
+            lastUpdate: new Date(),
             firstLevelId: new ObjectID(body.firstLevelId),
             secondLevelId: new ObjectID(body.secondLevelId),
             summary: body.summary
