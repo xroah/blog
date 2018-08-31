@@ -2,7 +2,7 @@
     <div class="summary-item">
         <p>
             <span>{{summary}}...</span>
-            <v-button type="primary" @click="click">阅读全文</v-button>
+            <v-button type="primary" @click="read">阅读全文</v-button>
         </p>
         <div class="item-footer">
             <div class="left">
@@ -43,13 +43,18 @@ export default {
         },
         totalViewed: {
             type: Number
+        },
+        id: {
+            type: String
         }
     },
     components: {
         VButton
     },
     methods: {
-        click() {}
+        read() {
+            this.$router.push(`/article/details/${this.id}`);
+        }
     }
 };
 </script>

@@ -1,27 +1,28 @@
 const PublicMain = () =>
-    import ("../components/public/main");
+    import("../components/public/main");
 const PublicHome = () =>
-    import ("../components/public/home");
+    import("../components/public/home");
 const About = () =>
-    import ("../components/public/about");
+    import("../components/public/about");
 
 const AdminLogin = () =>
-    import ("../components/admin/login");
+    import("../components/admin/login");
 const AdminMain = () =>
-    import ("../components/admin/main");
+    import("../components/admin/main");
 const AdminArticles = () =>
-    import ("../components/admin/articles");
+    import("../components/admin/articles");
 const AddArticle = () =>
-    import ("../components/admin/addEditArticle");
+    import("../components/admin/addEditArticle");
 const ArticleClassify = () =>
-    import ("../components/admin/classify");
+    import("../components/admin/classify");
 const ArticleDetails = () =>
-    import ("../components/admin/articleDetails");
+    import("../components/admin/articleDetails");
 const Error404 = () =>
-    import ("../components/common/error");
+    import("../components/common/error");
 
 const AdminModifyPwd = () =>
-    import ("../components/admin/modifyPwd");
+    import("../components/admin/modifyPwd");
+const PublicArticleInfo = () => import("../components/public/articleDetails");
 
 export default [{
     path: "/",
@@ -30,6 +31,9 @@ export default [{
         path: "article",
         name: "publicArticles",
         component: PublicHome
+    }, {
+        path: "article/details/:id",
+        component: PublicArticleInfo
     }, {
         path: "/about",
         component: About
@@ -53,7 +57,7 @@ export default [{
         path: "article/edit/:id?",
         component: AddArticle
     }, {
-        path: "article/details/:id?",
+        path: "article/details/:id",
         component: ArticleDetails
     }, {
         path: "classify",

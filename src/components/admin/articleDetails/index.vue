@@ -16,24 +16,21 @@ import { ARTICLE_DETAILS } from "../../common/api";
 export default {
     data() {
         return {
-            error: false,
-            article: null
+            article: null,
+            error: false
         };
     },
     components: {
         ArticleInfo
     },
     async created() {
-        let id = this.$route.params.id;
-        if (!id) {
-            this.error = true;
-            return;
-        }
         Loading.show();
         try{
             let ret = await fetch(`${ARTICLE_DETAILS}/${id}`);
-            this.article = ret.article;
-        }catch(err){}
+            this.article = article;
+        }catch(err){
+            this.error = true;
+        }
         Loading.hide();
     },
     methods: {

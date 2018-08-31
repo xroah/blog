@@ -1,7 +1,7 @@
 <template>
     <articles :queryCallback="_fetchArticles" :total="total" routerName="publicArticles" :showPage="!!list.length">
         <div slot="articleList">
-            <Item v-for="article in list" :key="article._id" :summary="article.summary" :totalViewed="article.totalViewed"></Item>
+            <Item v-for="article in list" :id="article._id" :key="article._id" :summary="article.summary" :totalViewed="article.totalViewed"></Item>
             <div class="text-center" v-if="loaded && !list.length">无数据</div>
         </div>
     </articles>

@@ -2,20 +2,17 @@ const router = require("express").Router();
 const query = require("../../db/query");
 const ObjectID = require("mongodb").ObjectID;
 
-router.get("/details/:id/:noComments?", (req, res) => {        
+router.get("/details/:id", (req, res) => {        
     query.findOne("articles", {
         _id: ObjectID(req.params.id)
     }, {
-        noComments: !!typeof req.params.noComments, // the article details only
         projection: {
             summary: 0
         }
     }).then(ret => {
         res.json({
             errCode: 0,
-            data: {
-                article: ret
-            }
+            data: ret
         });
     });
 });
