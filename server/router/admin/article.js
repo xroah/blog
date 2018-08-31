@@ -33,7 +33,9 @@ router.route("/classify").get((req, res) => {
         name,
         pid
     } = req.body;
-    pid = new ObjectID(pid);
+    if (pid) {
+        pid = new ObjectID(pid);
+    }
     query.findOne(collec, {
         name,
         pid
