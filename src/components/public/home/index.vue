@@ -1,41 +1,31 @@
 <template>
-    <section class="main">
-        <search :defaultValue="keywords" @onSearch="search"></search>
-        <Item v-for="article in list" :key="article._id" :summary="article.summary" :totalViewed="article.totalViewed"></Item>
-        <div class="text-center" v-if="loaded && !list.length">无数据</div>
-        <pagination v-if="list.length" @pageChange="pageChange" :current="page" :total="total"></pagination>
-    </section>
+    <articles :queryCallback="_fetchArticles" :total="total" routerName="publicArticles" :showPage="!!list.length">
+        <div slot="articleList">
+            <Item v-for="article in list" :key="article._id" :summary="article.summary" :totalViewed="article.totalViewed"></Item>
+            <div class="text-center" v-if="loaded && !list.length">无数据</div>
+        </div>
+    </articles>
 </template>
 <style lang="scss" src="./index.scss">
 </style>
 <script>
 import Item from "./item";
-import pagination from "../../common/pagination";
 import { FETCH_PUBLIC_ARTICLE } from "../../../stores/actions";
 import { mapState, mapActions } from "vuex";
 import Loading from "../../common/loading/index";
-import Search from "../../common/search";
+import Articles from "../../common/articles";
 
 export default {
     components: {
         Item,
-        pagination,
-        Search
-    },
-    data() {
-        return {
-            page: 1,
-            keywords: ""
-        };
-    },
-    created() {
-        this.updateList();
+        Articles
     },
     beforeRouteUpdate(to, from, next) {
         let { $route } = this;
+        let { page = 1, keywords = "" } = to.query;
         next();
-        if ($route.path === "/article") {
-            this.updateList();
+        if (to.path === from.path) {
+            this._fetchArticles(page, keywords);
         }
     },
     computed: {
@@ -49,12 +39,6 @@ export default {
         ...mapActions({
             fetchArticles: FETCH_PUBLIC_ARTICLE
         }),
-        updateList() {
-            let { page = 1, keywords = "" } = this.$route.query;
-            this.page = +page || 1;
-            this.keywords = keywords;
-            this._fetchArticles(page, keywords);
-        },
         _fetchArticles(page, keywords) {
             Loading.show();
             this.fetchArticles({
@@ -63,22 +47,6 @@ export default {
                 force: true
             });
             Loading.hide();
-        },
-        queryChange(page, keywords) {
-            let { $router } = this;
-            $router.push({
-                name: "publicArticles",
-                query: {
-                    page,
-                    keywords
-                }
-            });
-        },
-        search(keywords) {
-            this.queryChange(1, keywords);
-        },
-        pageChange(page) {
-            this.queryChange(page, this.keywords);
         }
     }
 };
