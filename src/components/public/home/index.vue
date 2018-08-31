@@ -1,9 +1,9 @@
 <template>
     <section class="main">
-        <search :defaultValue="keywords"></search>
+        <search :defaultValue="keywords" @onSearch="search"></search>
         <Item v-for="article in list" :key="article._id" :summary="article.summary" :totalViewed="article.totalViewed"></Item>
         <div class="text-center" v-if="loaded && !list.length">无数据</div>
-        <pagination v-if="list.length" :current="page" :total="total"></pagination>
+        <pagination v-if="list.length" @pageChange="pageChange" :current="page" :total="total"></pagination>
     </section>
 </template>
 <style lang="scss" src="./index.scss">
@@ -29,23 +29,32 @@ export default {
         };
     },
     created() {
+        this.updateList();
+    },
+    beforeRouteUpdate(to, from, next) {
         let { $route } = this;
-        let { page = 1, keywords = "" } = $route.query;
-        this.page = +page || 1;
-        this.keywords = keywords;
-        this._fetchArticles(page, keywords);
+        next();
+        if ($route.path === "/article") {
+            this.updateList();
+        }
     },
     computed: {
         ...mapState({
-            list: state => state.adminArticle.list,
-            total: state => state.adminArticle.total,
-            loaded: state => state.adminArticle.loaded
+            list: state => state.article.list,
+            total: state => state.article.total,
+            loaded: state => state.article.loaded
         })
     },
     methods: {
         ...mapActions({
             fetchArticles: FETCH_PUBLIC_ARTICLE
         }),
+        updateList() {
+            let { page = 1, keywords = "" } = this.$route.query;
+            this.page = +page || 1;
+            this.keywords = keywords;
+            this._fetchArticles(page, keywords);
+        },
         _fetchArticles(page, keywords) {
             Loading.show();
             this.fetchArticles({
@@ -58,13 +67,18 @@ export default {
         queryChange(page, keywords) {
             let { $router } = this;
             $router.push({
-                name: "adminArticles",
+                name: "publicArticles",
                 query: {
                     page,
                     keywords
                 }
             });
-            this._fetchArticles(page, keywords);
+        },
+        search(keywords) {
+            this.queryChange(1, keywords);
+        },
+        pageChange(page) {
+            this.queryChange(page, this.keywords);
         }
     }
 };

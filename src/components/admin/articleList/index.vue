@@ -60,9 +60,9 @@ export default {
     },
     computed: {
         ...mapState({
-            list: state => state.adminArticle.list,
-            total: state => state.adminArticle.total,
-            loaded: state => state.adminArticle.loaded
+            list: state => state.article.list,
+            total: state => state.article.total,
+            loaded: state => state.article.loaded
         })
     },
     created() {

@@ -1,23 +1,43 @@
 import fetch from "../../components/common/fetch";
-import { ADMIN_ARTICLE } from "../../components/common/api";
+import { ADMIN_ARTICLE, PUBLIC_ARTICLE } from "../../components/common/api";
 import {
     ADD_ARTICLE,
     DELETE_ARRTICLE,
     FETCH_ADMIN_ARTICLE,
+    FETCH_PUBLIC_ARTICLE,
     fetchAricle
 } from "../actions";
+import { UPDATE_ARTICLE_LIST, CHANGE_ARTICLE_LOAD_STATE } from "../mutations";
+const PAGE_SIZE = 10; //number of per page
 
-import { updateArticle } from "../mutations";
-import { articleState } from "../state";
 const article = {
     state: {
-        ...articleState
+        list: [],
+    loaded: true,
+    total: 0,
+    current: 1,
+    keywords: ""
     },
     mutations: {
-        ...updateArticle
+        [UPDATE_ARTICLE_LIST](state, payload) {
+            if (payload.count !== undefined) {
+                state.total = Math.ceil(payload.count / PAGE_SIZE);
+            }
+            state.list = payload.list;
+        },
+        [CHANGE_ARTICLE_LOAD_STATE](state, payload) {
+            state.loaded = payload.loaded;
+        },
+        updateCache(state, payload) {
+            //cache previos page and keywords
+            //if the page or keywords changed, refresh the list
+            state.current = payload.page;
+            state.keywords = payload.keywords;
+        }
     },
     actions: {
-        ...fetchAricle(FETCH_ADMIN_ARTICLE, ADMIN_ARTICLE),
+        ...fetchAricle(FETCH_ADMIN_ARTICLE, ADMIN_ARTICLE), //for admin
+        ...fetchAricle(FETCH_PUBLIC_ARTICLE, PUBLIC_ARTICLE), //for users
         async [DELETE_ARRTICLE]({
             dispatch
         }, id) {
