@@ -10,5 +10,6 @@ export const ADMIN_ARTICLE = "/api/admin/article";
 export const ARTICLE_DETAILS = "/api/admin/article/details";
 export const PUBLIC_ARTICLE = "/api/public/article";
 export const PUBLIC_ARTICLE_DETAILS = "/api/public/article/details";
+export const UPDATE_VIEWED_TIMES = "/api/public/article/updateViewedTimes";
 
 export const UPLOAD_IMG = "/api/upload";

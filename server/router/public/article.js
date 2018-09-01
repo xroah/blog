@@ -46,4 +46,22 @@ router.get("/:page?/:keywords?", (req, res) => {
         });
     });;
 });
+
+router.post("/updateViewedTimes", async (req, res) => {
+    let _id = new ObjectID(req.body.id);
+    try {
+        await query.updateOne("articles", {
+            _id
+        }, {
+            $inc: {
+                totalViewed: 1,
+                todayViewed: 1
+            }
+        });
+    } catch(err) {}
+    res.json({
+        errCode: 0
+    });
+});
+
 module.exports = router;

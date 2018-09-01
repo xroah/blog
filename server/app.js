@@ -71,7 +71,8 @@ app.all("/api/*", (req, res, next) => {
 app.all("/api/admin/*", (req, res, next) => {
     //if current user have no permission then response error
     if (!req.session.isAdmin) {
-        res.send({
+        res.status(403);
+        res.json({
             errCode: 403,
             errMsg: "对不起，您没有权限访问"
         });
@@ -83,18 +84,23 @@ app.use("/api", router);
 
 //404
 app.use((req, res) => {
+    res.status(404);
     res.sendFile("static/error/404.html", {
         root: __dirname
     });
 });
 
 //handle errors
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     console.log(err)
-    res.send({
-        errCode: 9,
-        errMsg: err.message || "出错啦!"
-    });
+    if (req.path.startsWith("/api")) {
+        res.json({
+            errCode: 500,
+            errMsg: err.message || "服务器出错啦!"
+        });
+    } else {
+
+    }
 });
 
 module.exports = app;

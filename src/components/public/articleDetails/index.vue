@@ -16,7 +16,7 @@
 <script>
 import ArticleDetails from "../../common/articleInfo";
 import fetch from "../../common/fetch";
-import { PUBLIC_ARTICLE_DETAILS } from "../../common/api";
+import { PUBLIC_ARTICLE_DETAILS, UPDATE_VIEWED_TIMES } from "../../common/api";
 import Loading from "../../common/loading/index";
 import VButton from "../../common/button";
 
@@ -41,6 +41,12 @@ export default {
             this.error = true;
         }
         Loading.hide();
+        fetch(UPDATE_VIEWED_TIMES, {
+            method: "post",
+            body: {
+                id
+            }
+        });
     },
     methods: {
         back() {

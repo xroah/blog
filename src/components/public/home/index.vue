@@ -59,7 +59,8 @@ export default {
             Loading.show();
             this.fetchArticles({
                 page,
-                keywords
+                keywords,
+                force: true
             });
             Loading.hide();
         }
