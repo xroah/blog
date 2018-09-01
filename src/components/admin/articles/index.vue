@@ -83,8 +83,7 @@ export default {
         _fetchArticles(page, keywords) {
             this.fetchArticles({
                 page,
-                keywords,
-                force: true
+                keywords
             });
         },
         operate(evt, type, id) {

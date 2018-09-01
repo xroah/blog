@@ -156,8 +156,8 @@ export default {
             let article;
             Loading.show();
             try {
-                let ret = await fetch(`${ARTICLE_DETAILS}/${this.id}/true`);
-                article = ret.article;
+                let ret = await fetch(`${ARTICLE_DETAILS}/${this.id}`);
+                article = ret;
             } catch (err) {}
             Loading.hide();
             if (!article) {
@@ -249,7 +249,7 @@ export default {
                 method = "put";
             }
             Loading.show();
-            try {
+            // try {
                 await this.addArticle({
                     method,
                     body
@@ -257,7 +257,7 @@ export default {
                 this.saved = true;
                 message.success("保存成功!");
                 this.cancel();
-            } catch (error) {}
+            // } catch (error) {}
             Loading.hide();
         },
         cancel() {

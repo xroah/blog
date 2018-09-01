@@ -24,13 +24,14 @@ export default {
         ArticleInfo
     },
     async created() {
+        let id = this.$route.params.id;
         Loading.show();
         try{
             let ret = await fetch(`${ARTICLE_DETAILS}/${id}`);
-            this.article = article;
-        }catch(err){
+            this.article = ret;
+       }catch(err){
             this.error = true;
-        }
+       }
         Loading.hide();
     },
     methods: {

@@ -51,7 +51,7 @@ const article = {
                     id
                 }
             });
-            dispatch(FETCH_ARTICLE_LIST, {
+            dispatch(FETCH_ADMIN_ARTICLE, {
                 force: true
             });
         },
@@ -63,7 +63,7 @@ const article = {
                 method: payload.method,
                 body: payload.body
             });
-            dispatch(FETCH_ARTICLE_LIST, {
+            dispatch(FETCH_ADMIN_ARTICLE, {
                 force: true
             });
         }

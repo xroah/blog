@@ -12,6 +12,9 @@
             box-shadow: none;
         }
     }
+    & + .summary-item {
+        margin-top: 20px;
+    }
     .item-footer {
         display: flex;
         margin-top: 10px;
