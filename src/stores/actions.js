@@ -40,7 +40,12 @@ export const fetchAricle = (action, url) => {
                     list: ret.list,
                     count: ret.count
                 });
-            } catch (error) { }
+            } catch (error) {
+                commit({
+                    type: "changeState",
+                    error: true
+                });
+             }
             commit({
                 type: CHANGE_ARTICLE_LOAD_STATE,
                 loaded: true

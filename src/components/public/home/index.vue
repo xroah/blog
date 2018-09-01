@@ -1,13 +1,28 @@
 <template>
     <articles :queryCallback="_fetchArticles" :total="total" routerName="publicArticles" :showPage="!!list.length">
-        <div slot="articleList">
+        <div class="article-list" slot="articleList">
             <Item v-for="article in list" :id="article._id" :key="article._id" :summary="article.summary" :totalViewed="article.totalViewed"></Item>
-            <div class="text-center" v-if="loaded && !list.length">无数据</div>
+            <div class="text-center" v-if="error">
+                <img src="../../../assets/images/500.png">
+                <p class="error-msg">出错啦,等会再试试吧</p>
+            </div>
+            <div class="text-center" v-else-if="loaded && !list.length">
+                <img src="../../../assets/images/no_result.png">
+                <p class="error-msg">没有搜到结果,换个词试试吧</p>
+            </div>
         </div>
     </articles>
 </template>
-<style lang="scss" src="./index.scss">
+
+<style src="./index.scss"></style>
+<style  scoped>
+.error-msg {
+    margin-top: 10px;
+    color: #666;
+}
 </style>
+
+
 <script>
 import Item from "./item";
 import { FETCH_PUBLIC_ARTICLE } from "../../../stores/actions";
@@ -32,7 +47,8 @@ export default {
         ...mapState({
             list: state => state.article.list,
             total: state => state.article.total,
-            loaded: state => state.article.loaded
+            loaded: state => state.article.loaded,
+            error: state => state.article.error
         })
     },
     methods: {
@@ -43,8 +59,7 @@ export default {
             Loading.show();
             this.fetchArticles({
                 page,
-                keywords,
-                force: true
+                keywords
             });
             Loading.hide();
         }

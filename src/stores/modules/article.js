@@ -13,10 +13,11 @@ const PAGE_SIZE = 10; //number of per page
 const article = {
     state: {
         list: [],
-    loaded: true,
-    total: 0,
-    current: 1,
-    keywords: ""
+        loaded: true,
+        total: 0,
+        current: 1,
+        keywords: "",
+        error: false
     },
     mutations: {
         [UPDATE_ARTICLE_LIST](state, payload) {
@@ -33,6 +34,9 @@ const article = {
             //if the page or keywords changed, refresh the list
             state.current = payload.page;
             state.keywords = payload.keywords;
+        },
+        changeState(state, payload) {
+            state.error = payload.error;
         }
     },
     actions: {

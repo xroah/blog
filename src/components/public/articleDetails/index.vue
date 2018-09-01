@@ -4,8 +4,8 @@
             <article-details :article="article"></article-details>
         </div>
         <div class="text-center error-wrapper" v-else>
-            <img src="../../../assets/images/404_article.png">
-            <p>抱歉,文章不存在!</p>
+            <img src="../../../assets/images/no_article.png">
+            <p class="error-msg">抱歉,文章不存在!</p>
             <v-button type="primary" @click="back">返回</v-button>
         </div>
     </section>

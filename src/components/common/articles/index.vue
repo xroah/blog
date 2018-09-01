@@ -43,6 +43,7 @@ export default {
     created() {
         let { $route } = this;
         let { page = 1, keywords = "" } = $route.query;
+        
         this.queryCallback(page, keywords);
     },
     methods: {
