@@ -1,6 +1,26 @@
 const query = require("./query");
 const ObjectID = require("mongodb").ObjectID;
 
+let $lookup = {
+    from: "classify",
+    let: { s_id: "$secondLevelId" },
+    pipeline: [
+        {
+            $match: {
+                $expr: {
+                    $eq: ["$_id", "$$s_id"]
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                name: 1
+            }
+        }],
+    as: "classification"
+};
+
 module.exports = {
     getByCond(params, options = {}) {
         let page = params.page || 1;
@@ -28,25 +48,7 @@ module.exports = {
         let articles = query.aggregate("articles", [{
             $match
         }, {
-            $lookup: {
-                from: "classify",
-                let: { s_id: "$secondLevelId" },
-                pipeline: [
-                    {
-                        $match: {
-                            $expr: {
-                                $eq: ["$_id", "$$s_id"]
-                            }
-                        }
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            name: 1
-                        }
-                    }],
-                as: "classification"
-            }
+            $lookup
         }, {
             $unwind: "$classification"
         },
@@ -74,25 +76,7 @@ module.exports = {
                 _id
             }
         }, {
-            $lookup: {
-                from: "classify",
-                let: { s_id: "$secondLevelId" },
-                pipeline: [
-                    {
-                        $match: {
-                            $expr: {
-                                $eq: ["$_id", "$$s_id"]
-                            }
-                        }
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            name: 1
-                        }
-                    }],
-                as: "classification"
-            }
+            $lookup
         }, {
             $unwind: "$classification"
         },
@@ -106,7 +90,6 @@ module.exports = {
                 classification: 0
             }
         }]).toArray();
-        console.log(ret)
         return ret[0];
     }
 }
