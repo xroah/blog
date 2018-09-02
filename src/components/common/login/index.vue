@@ -1,6 +1,8 @@
 <template>
-    <section>
-        <background :class="{focused}"></background>
+    <section class="login-container">
+        <transition name="fade-in-half">
+            <div class="mask" v-show="focused"></div>
+        </transition>
         <div class="login-box">
             <p class="daily-sentence" :title="note" v-text="sentence"></p>
             <div class="input-wrapper">
@@ -16,7 +18,7 @@
         </div>
     </section>
 </template>
-<style src="./index.scss" lang="scss"></style>
+<style src="./index.scss"></style>
 <script>
 import VButton from "../button";
 import fetch from "../fetch.js";

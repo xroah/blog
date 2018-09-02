@@ -1,3 +1,5 @@
+@import "../minxinVariable";
+@import "../transitions";
 .login-box {
     $marginBottom: 20px;
     position: absolute;
@@ -76,11 +78,14 @@
         height: 36px;
         line-height: 36px;
     }
+    z-index: 10;
 }
 
-.background-wrapper.focused .background{
-    -webkit-filter: blur(5px);
-    filter: blur(5px);
+.login-container .mask {
+    @include fixed_fullscreen();
+    background-color: #000;
+    opacity: .6;
+    transition: all .3s;
 }
 
 @media screen and (max-width: 640px) {
