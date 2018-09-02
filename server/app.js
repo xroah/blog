@@ -71,7 +71,6 @@ app.all("/api/*", (req, res, next) => {
 app.all("/api/admin/*", (req, res, next) => {
     //if current user have no permission then response error
     if (!req.session.isAdmin) {
-        res.status(403);
         res.json({
             errCode: 403,
             errMsg: "对不起，您没有权限访问"

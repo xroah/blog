@@ -1,19 +1,21 @@
 const router = require("express").Router();
 const query = require("../../db/query");
+const queryArticle = require("../../db/queryArticle");
 const ObjectID = require("mongodb").ObjectID;
 
-router.get("/details/:id", (req, res) => {        
-    query.findOne("articles", {
-        _id: ObjectID(req.params.id)
-    }, {
-        projection: {
-            summary: 0
+router.get("/details/:id", (req, res) => {
+    queryArticle.getById(req.params.id).then(ret => {
+        if (ret) {
+            res.json({
+                errCode: 0,
+                data: ret
+            });
+        } else {
+            res.json({
+                errCode: 1,
+                errMsg: "文章不存在"
+            });
         }
-    }).then(ret => {
-        res.json({
-            errCode: 0,
-            data: ret
-        });
     });
 });
 
@@ -62,21 +64,21 @@ router.route("/classify").get((req, res) => {
     query.findOneAndUpdate("classify", {
         _id: new ObjectID(req.body.id)
     }, {
-        $set: {
-            name: req.body.name
-        }
-    }).then(ret => {
-        if (ret.value) {
-            res.json({
-                errCode: 0
-            });
-        } else {
-            res.json({
-                errCode: 404,
-                errMsg: "分类不存在"
-            });
-        }
-    });
+            $set: {
+                name: req.body.name
+            }
+        }).then(ret => {
+            if (ret.value) {
+                res.json({
+                    errCode: 0
+                });
+            } else {
+                res.json({
+                    errCode: 404,
+                    errMsg: "分类不存在"
+                });
+            }
+        });
 }).delete((req, res) => {
     let id = new ObjectID(req.body.id);
     query.findOne("classify", {
@@ -93,11 +95,11 @@ router.route("/classify").get((req, res) => {
         if (!num) {
             return query.findOne("articles", {
                 $or: [{
-                        firstLevelId: id
-                    },
-                    {
-                        secondLevelId: id
-                    }
+                    firstLevelId: id
+                },
+                {
+                    secondLevelId: id
+                }
                 ]
             });
         }
@@ -124,27 +126,18 @@ router.route("/:page?/:keywords?").get((req, res) => {
     let {
         params
     } = req;
-    let page = params.page || 1;
-    let keywords = params.keywords;
-    let filter = {};
-    if (keywords) {
-        filter.content = new RegExp(keywords, "ig");
-    }
-    query.find("articles", filter, {
-        pagination: page,
-        sort: {
-            createTime: -1
-        },
-        projection: {//cut down the response size
-            content: 0,
-            summary: 0
-        }
-    }).then(ret => {
+    queryArticle.getByCond(params, {
+        all: true
+    }).then(([count, list]) => {
         res.json({
             errCode: 0,
-            data: ret
+            data: {
+                count,
+                list
+            }
         });
-    });;
+    });
+    return
 }).post((req, res) => {
     let {
         body
@@ -173,28 +166,28 @@ router.route("/:page?/:keywords?").get((req, res) => {
     query.findOneAndUpdate("articles", {
         _id: new ObjectID(body.id),
     }, {
-        $set: {
-            title: body.title,
-            content: body.content,
-            secret: body.secret,
-            tags: body.tags,
-            lastUpdate: new Date(),
-            firstLevelId: new ObjectID(body.firstLevelId),
-            secondLevelId: new ObjectID(body.secondLevelId),
-            summary: body.summary
-        }
-    }).then(ret => {
-        if (ret.value) {
-            res.json({
-                errCode: 0
-            });
-        } else {
-            res.json({
-                errCode: 404,
-                errMsg: "文章不存在"
-            });
-        }
-    });
+            $set: {
+                title: body.title,
+                content: body.content,
+                secret: body.secret,
+                tags: body.tags,
+                lastUpdate: new Date(),
+                firstLevelId: new ObjectID(body.firstLevelId),
+                secondLevelId: new ObjectID(body.secondLevelId),
+                summary: body.summary
+            }
+        }).then(ret => {
+            if (ret.value) {
+                res.json({
+                    errCode: 0
+                });
+            } else {
+                res.json({
+                    errCode: 404,
+                    errMsg: "文章不存在"
+                });
+            }
+        });
 }).delete((req, res) => {
     query.findOneAndDelete("articles", {
         _id: new ObjectID(req.body.id)

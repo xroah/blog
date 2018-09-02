@@ -1,46 +1,44 @@
-const CONNECTION = global.dbConn;
+const DATABASE = global.dbConn;
 
 module.exports = {
+    aggregate(collection, pipeline, option, callback) {
+        let collec = DATABASE.collection(collection);
+        if (typeof callback === "function") {
+            callback();
+        }
+        return collec.aggregate(pipeline, option);
+    },
+    count(collection, query) {
+        let collec = DATABASE.collection(collection);
+        return collec.countDocuments(query);
+    },
     findOne(collection, query, options) {
-        let collec = CONNECTION.collection(collection);
+        let collec = DATABASE.collection(collection);
         return collec.findOne(query, options);
     },
     find(collection, query, options) {
-        let collec = CONNECTION.collection(collection);
-            let cursor = collec.find(query, options);
-            if (options && options.pagination) {
-                let page = options.pagination;
-                return Promise.all([
-                    collec.countDocuments(query),
-                    cursor.skip((page - 1) * 10).limit(10).toArray()
-                ]).then(([count, ret]) => {
-                    return {
-                        count,
-                        list: ret
-                    };
-                });
-            } else {
-                return cursor.toArray();
-            }
+        let collec = DATABASE.collection(collection);
+        let cursor = collec.find(query, options);
+        return cursor.toArray();
     },
     insertOne(collection, data, options) {
-        let collec = CONNECTION.collection(collection);
+        let collec = DATABASE.collection(collection);
         return collec.insertOne(data, options);
     },
     updateOne(collection, filter, update, options) {
-        let collec = CONNECTION.collection(collection);
+        let collec = DATABASE.collection(collection);
         return collec.update(filter, update, options);
     },
     deleteOne(collection, filter, options) {
-        let collec = CONNECTION.collection(collection);
+        let collec = DATABASE.collection(collection);
         return collec.deleteOne(filter, options);
     },
     findOneAndUpdate(collection, filter, update, options) {
-        let collec = CONNECTION.collection(collection);
+        let collec = DATABASE.collection(collection);
         return collec.findOneAndUpdate(filter, update, options);
     },
     findOneAndDelete(collection, filter, options) {
-        let collec = CONNECTION.collection(collection);
+        let collec = DATABASE.collection(collection);
         return collec.findOneAndDelete(filter, options);
     }
 };

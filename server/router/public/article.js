@@ -1,50 +1,42 @@
 const router = require("express").Router();
 const query = require("../../db/query");
+const queryArticle = require("../../db/queryArticle");
 const ObjectID = require("mongodb").ObjectID;
 
 router.get("/details/:id", (req, res) => {
-    query.findOne("articles", {
-        _id: ObjectID(req.params.id)
-    }, {
-            projection: {
-                summary: 0
-            }
-        }).then(ret => {
+    queryArticle.getById(req.params.id).then(ret => {
+        if (ret && ret.secret === "0") {
             res.json({
                 errCode: 0,
                 data: {
                     article: ret
                 }
             });
-        });
+        } else {
+            res.json({
+                errCode: 1,
+                errMsg: "文章不存在"
+            });
+        }
+    });
 });
 
 router.get("/:page?/:keywords?", (req, res) => {
     let {
         params
     } = req;
-    let page = params.page || 1;
-    let keywords = params.keywords;
-    let filter = {
-        secret: "0"
-    };
-    if (keywords) {
-        filter.content = new RegExp(keywords, "ig");
-    }
-    query.find("articles", filter, {
-        pagination: page,
-        sort: {
-            createTime: -1
-        },
-        projection: {
-            content: 0
-        }
-    }).then(ret => {
+    queryArticle.getByCond(params, {
+        summary: true,
+        all: false
+    }).then(([count, list]) => {
         res.json({
             errCode: 0,
-            data: ret
+            data: {
+                count,
+                list
+            }
         });
-    });;
+    });
 });
 
 router.post("/updateViewedTimes", async (req, res) => {
@@ -53,12 +45,12 @@ router.post("/updateViewedTimes", async (req, res) => {
         await query.updateOne("articles", {
             _id
         }, {
-            $inc: {
-                totalViewed: 1,
-                todayViewed: 1
-            }
-        });
-    } catch(err) {}
+                $inc: {
+                    totalViewed: 1,
+                    todayViewed: 1
+                }
+            });
+    } catch (err) { }
     res.json({
         errCode: 0
     });

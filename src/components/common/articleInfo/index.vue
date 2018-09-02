@@ -1,7 +1,7 @@
 <template>
     <section class="article-info" v-if="article">
         <div class="article-title">{{article.title}}</div>
-        <div class="base-info">发布于{{article.createTime | convertDate}},归类于{{article.classification}}。阅读{{article.totalViewed}}次,今日{{article.todayViewed}}次</div>
+        <div class="base-info">发布于{{article.createTime | convertDate}},归类于{{article.clsName}}。阅读{{article.totalViewed}}次,今日{{article.todayViewed}}次</div>
         <div class="article-content" v-html="article.content"></div>
     </section>
 </template>
