@@ -11,9 +11,6 @@ export default {
             default: "text"
         }
     },
-    mounted() {
-        console.log(this)
-    },
     methods: {
         input(evt) {
             this.$emit("input", evt.target.value);

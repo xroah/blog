@@ -68,40 +68,31 @@ export default {
                 confirm: ""
             },
             rules: {
-                userName: [
-                    {
+                userName: [{
                         required: true,
                         message: "请输入用户名"
-                    }
-                ],
-                email: [
-                    {
+                    }],
+                email: [{
                         validator(value) {
                             return /^[\w.-]+@[a-z\d-_]+(?:\.[a-z\d]+)+$/i.test(
                                 value
                             );
                         },
                         message: "请输入正确的邮箱地址"
-                    }
-                ],
-                password: [
-                    {
+                    }],
+                password: [{
                         required: true,
                         message: "请输入密码"
-                    }
-                ],
-                confirm: [
-                    {
+                    }],
+                confirm: [{
                         required: true,
                         message: "请重复输入密码"
-                    },
-                    {
+                    },{
                         validator: () => {
                             return this.model.password === this.model.confirm;
                         },
                         message: "两次密码输入不一致"
-                    }
-                ]
+                    }]
             }
         };
     },

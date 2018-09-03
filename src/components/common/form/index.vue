@@ -18,9 +18,6 @@ export default {
             required: true
         }
     },
-    mounted() {
-        console.log(this.$children);
-    },
     methods: {
         validate() {
             let fields = this.$children;
