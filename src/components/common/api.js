@@ -4,6 +4,7 @@ export const DAILY_PICTURE = "/api/thirdParty/dailyPicture";
 export const USER_LOGIN = "/api/user/login";
 export const USER_LOGOUT = "/api/user/logout";
 export const MODIFY_PASSWORD = "/api/user/modifyPwd";
+export const USER_REGISTER = "/api/user/register";
 
 export const ARTICLE_CLASSIFY = "/api/admin/article/classify";
 export const ADMIN_ARTICLE = "/api/admin/article";

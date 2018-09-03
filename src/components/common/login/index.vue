@@ -6,10 +6,10 @@
         <div class="login-box">
             <p class="daily-sentence" :title="note" v-text="sentence"></p>
             <div class="input-wrapper">
-                <input type="text" v-model="userName" @focus="focusHandler($event)" @blur="focusHandler($event)" @keypress.enter="keypress" placeholder="用户名">
+                <input type="text" class="border-none" v-model="userName" @focus="focusHandler($event)" @blur="focusHandler($event)" @keypress.enter="keypress" placeholder="用户名">
             </div>
             <div class="input-wrapper">
-                <input type="password" v-model="password" @focus="focusHandler($event)" @blur="focusHandler($event)" @keypress.enter="keypress" placeholder="密码">
+                <input type="password" class="border-none" v-model="password" @focus="focusHandler($event)" @blur="focusHandler($event)" @keypress.enter="keypress" placeholder="密码">
             </div>
             <div class="remember">
                 <checkbox v-model="remember">记住我</checkbox>
@@ -101,7 +101,9 @@ export default {
                         name: "adminArticles"
                     });
                 } else {
-                    this.$router.push("/");
+                    this.$router.push({
+                        name: "publicHome"
+                    });
                 }
             } catch (error) {
                 loading.hide();

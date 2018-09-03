@@ -7,7 +7,7 @@
     </section>
 </template>
 <script>
-import AppHeader from "../header";
+import AppHeader from "../nav";
 export default {
     components: {
         AppHeader

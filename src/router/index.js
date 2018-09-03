@@ -2,6 +2,8 @@ const PublicMain = () =>
     import("../components/public/main");
 const PublicHome = () =>
     import("../components/public/home");
+const PublicArticles = () =>
+    import("../components/public/articles");
 const About = () =>
     import("../components/public/about");
 const AdminLogin = () =>
@@ -33,9 +35,13 @@ export default [{
     path: "/",
     component: PublicMain,
     children: [{
+        path: "/",
+        name: "publicHome",
+        component: PublicHome,
+    },{
         path: "article",
         name: "publicArticles",
-        component: PublicHome
+        component: PublicArticles
     }, {
         path: "article/details/:id",
         component: PublicArticleInfo
@@ -43,7 +49,7 @@ export default [{
         path: "/about",
         component: About
     }]
-},{
+}, {
     path: "/user",
     component: User,
     children: [{
@@ -55,7 +61,7 @@ export default [{
         component: UserRegister,
         name: "userRegister"
     }]
-},{
+}, {
     path: "/xsys/login",
     name: "adminLogin",
     component: AdminLogin
