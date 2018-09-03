@@ -1,18 +1,18 @@
 <template>
-    <section>
-        <background/>
-        <login :isAdmin="true"/>
-    </section>
+    <transition name="rotate-y">
+        <Register/>
+    </transition>
 </template>
 
 <script>
-import Login from "../../common/login";
+import Register from "../../common/login/register";
 import Background from "../../common/background";
 
 export default {
     components: {
-        Login,
+        Register,
         Background
     }
-};
+}
 </script>
+

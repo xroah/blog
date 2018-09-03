@@ -2,6 +2,7 @@
 global styles
 */
 @import "../common/minxinVariable";
+@import "../common/transitions";
 
 *,
 *::after,
@@ -37,7 +38,11 @@ ul {
 
 a {
     text-decoration: none;
-    color: $defaultTextColor;
+    color: $primaryColor;
+
+    &:hover {
+        color: $primaryHoverColor;
+    }
 }
 
 input,
@@ -53,6 +58,14 @@ input {
 button {
     //remove click shadow on mobile phone
     -webkit-tap-highlight-color: transparent;
+}
+
+.f-l {
+    float: left;
+}
+
+.f-r {
+    float: right;
 }
 
 .article-title {

@@ -13,8 +13,11 @@
             </div>
             <div class="remember">
                 <checkbox v-model="remember">记住我</checkbox>
+                <a href="#" class="f-r" @click.prevent="toPwd" v-if="!isAdmin">忘记密码</a>
             </div>
             <v-button type="primary" @click="clickHandler">登录</v-button>
+            <!-- use href directly will refresh the page-->
+            <a href="#" class="f-r" @click.prevent="toRegister" v-if="!isAdmin">没有账号,去注册>></a>
         </div>
     </section>
 </template>
@@ -32,7 +35,9 @@ import Background from "../background";
 const SAVE_USER_KEY = "userInfo";
 
 export default {
-    props: ["isAdmin"],
+    props: {
+        isAdmin: Boolean
+    },
     data() {
         return {
             sentence: "",
@@ -92,7 +97,11 @@ export default {
                 message.success("登录成功", 1.5);
                 this.saveInfo(userName, password);
                 if (this.isAdmin) {
-                    this.$router.push({ name: "adminArticles" });
+                    this.$router.push({
+                        name: "adminArticles"
+                    });
+                } else {
+                    this.$router.push("/");
                 }
             } catch (error) {
                 loading.hide();
@@ -123,7 +132,13 @@ export default {
                 this.password = atob(info.password);
                 this.remember = true;
             }
-        }
+        },
+        toRegister() {
+            this.$router.push({
+                name: "userRegister"
+            });
+        },
+        toPwd() {}
     }
 };
 </script>

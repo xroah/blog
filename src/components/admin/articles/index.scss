@@ -55,10 +55,6 @@
             }
             a {
                 padding: 0 3px;
-                color: $primaryColor;
-                &:hover {
-                    color: $primaryHoverColor;
-                }
                 &.del {
                     color: $dangerColor;
                     &:hover {

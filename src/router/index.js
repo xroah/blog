@@ -4,7 +4,6 @@ const PublicHome = () =>
     import("../components/public/home");
 const About = () =>
     import("../components/public/about");
-
 const AdminLogin = () =>
     import("../components/admin/login");
 const AdminMain = () =>
@@ -19,10 +18,16 @@ const ArticleDetails = () =>
     import("../components/admin/articleDetails");
 const Error404 = () =>
     import("../components/common/error");
-
 const AdminModifyPwd = () =>
     import("../components/admin/modifyPwd");
-const PublicArticleInfo = () => import("../components/public/articleDetails");
+const PublicArticleInfo = () =>
+    import("../components/public/articleDetails");
+const UserLogin = () =>
+    import("../components/public/login");
+const UserRegister = () =>
+    import ("../components/public/register");
+const User = () =>
+    import ("../components/public/user");
 
 export default [{
     path: "/",
@@ -38,7 +43,19 @@ export default [{
         path: "/about",
         component: About
     }]
-}, {
+},{
+    path: "/user",
+    component: User,
+    children: [{
+        path: "login",
+        component: UserLogin,
+        name: "userLogin"
+    }, {
+        path: "register",
+        component: UserRegister,
+        name: "userRegister"
+    }]
+},{
     path: "/xsys/login",
     name: "adminLogin",
     component: AdminLogin

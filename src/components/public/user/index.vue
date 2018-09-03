@@ -1,18 +1,25 @@
 <template>
-    <section>
+    <section class="user-container">
         <background/>
-        <login :isAdmin="true"/>
+        <router-view/>
     </section>
 </template>
 
+<style>
+    .user-container {
+        overflow: hidden;
+        height: 100vh;
+        perspective: 1000px;
+    }
+</style>
+
+
 <script>
-import Login from "../../common/login";
 import Background from "../../common/background";
 
 export default {
     components: {
-        Login,
         Background
     }
-};
+}
 </script>

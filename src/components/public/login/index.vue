@@ -1,8 +1,7 @@
 <template>
-    <section>
-        <background/>
-        <login :isAdmin="true"/>
-    </section>
+    <transition name="rotate-y-reverse">
+        <login/>
+    </transition>
 </template>
 
 <script>
@@ -14,5 +13,6 @@ export default {
         Login,
         Background
     }
-};
+}
 </script>
+
