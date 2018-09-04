@@ -25,6 +25,12 @@
                         <v-input type="password" ref="confirm" v-model="model.confirm" placeholder="请重复输入密码" />
                     </form-item>
                 </div>
+                <div class="input-wrapper border-none id-code">
+                    <form-item name="idCode">
+                        <v-input type="password" v-model="model.idCode" placeholder="请输入验证码" />
+                    </form-item>
+                    <img class="code-img" :src="codeImg">
+                </div>
             </v-form>
             <v-button type="primary" @click="clickHandler">注册</v-button>
             <!-- use href directly will refresh the page-->
@@ -39,7 +45,7 @@ import fetch from "../fetch";
 import message from "../message/index";
 import md5 from "blueimp-md5";
 import loading from "../loading/index";
-import { USER_REGISTER } from "../api";
+import { USER_REGISTER, GET_ID_CODE } from "../api";
 import Background from "../background";
 import VInput from "../input";
 import VForm from "../form";
@@ -61,45 +67,83 @@ export default {
     data() {
         return {
             focused: false,
+            codeImg: "",
             model: {
                 userName: "",
                 email: "",
                 password: "",
-                confirm: ""
+                confirm: "",
+                idCode: ""
             },
             rules: {
-                userName: [{
+                userName: [
+                    {
                         required: true,
                         message: "请输入用户名"
-                    }],
-                email: [{
+                    }
+                ],
+                email: [
+                    {
                         validator(value) {
                             return /^[\w.-]+@[a-z\d-_]+(?:\.[a-z\d]+)+$/i.test(
                                 value
                             );
                         },
                         message: "请输入正确的邮箱地址"
-                    }],
-                password: [{
+                    }
+                ],
+                password: [
+                    {
                         required: true,
                         message: "请输入密码"
-                    }],
-                confirm: [{
+                    },
+                    {
+                        validator: this.validPwd,
+                        message: "密码格式不对(6-20位)"
+                    }
+                ],
+                confirm: [
+                    {
                         required: true,
                         message: "请重复输入密码"
-                    },{
+                    },
+                    {
+                        validator: this.validPwd,
+                        message: "密码格式不对(6-20位)"
+                    },
+                    {
                         validator: () => {
                             return this.model.password === this.model.confirm;
                         },
                         message: "两次密码输入不一致"
-                    }]
+                    }
+                ],
+                idCode: [
+                    {
+                        required: true,
+                        message: "请输入验证码"
+                    },
+                    {
+                        validator(value) {
+                            return value.length === 4;
+                        },
+                        message: "验证码格式不正确"
+                    }
+                ]
             }
         };
     },
+    created() {
+        fetch(GET_ID_CODE).then(ret => (this.codeImg = ret));
+    },
     methods: {
         clickHandler() {
-            let {$refs, model} = this;
+            let { $refs, model } = this;
             let valid = $refs.form.validate();
+        },
+        validPwd(value) {
+            let len = value.length;
+            return len >= 6 && len <= 20;
         },
         focus(evt) {
             let tgt = evt.target;

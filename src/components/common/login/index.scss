@@ -12,6 +12,7 @@
     backface-visibility: hidden;
     transform-style: preserve-3d;
 }
+
 .login-box {
     $marginBottom: 20px;
     padding: 30px;
@@ -80,6 +81,15 @@
             background-color: transparent;
         }
     }
+    .id-code {
+        display: flex;
+        input {
+            width: 150px;
+        }
+    }
+    .code-img {
+        margin-left: 20px;
+    }
     .remember {
         margin-bottom: $marginBottom;
     }
@@ -94,7 +104,6 @@
     }
     z-index: 10;
 }
-
 
 .login-container .mask {
     @include fixed_fullscreen();

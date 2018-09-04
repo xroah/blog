@@ -15,7 +15,6 @@ export default {
     componentName: "formItem",
     data() {
         return {
-
             errorMsg: "",
             showError: false
         };
@@ -35,7 +34,7 @@ export default {
             let value = form.model[this.name];
             let valid = true;
             let error;
-            if (!rules.length) return true;
+            if (!rules || !rules.length) return true;
             for (let val of rules) {
                 if (typeof val.validator === "function") {
                     valid = val.validator(value);
@@ -52,9 +51,9 @@ export default {
                     }
                 }
             }
-            if (this.showError = !valid) {
+            if ((this.showError = !valid)) {
                 this.errorMsg = error.message;
-            } 
+            }
             return valid;
         }
     }
