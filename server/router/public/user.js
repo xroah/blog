@@ -70,39 +70,74 @@ function generateCode() {
         let index = Math.random() * l >>> 0;
         code.push(arr[index]);
     }
-    return code.join("");
+    return code;
+}
+
+function generateColor() {
+    const MAX = 255;
+    const r = Math.random() * MAX >>> 0;
+    const g = Math.random() * MAX >>> 0;
+    const b = Math.random() * MAX >>> 0;
+    return `rgb(${r},${g},${b})`;
+}
+
+function generateImage(code) {
+    const WIDTH = 100;
+    const HEIGHT = 30;
+    let canvas = new Canvas(WIDTH, HEIGHT);
+    let ctx = canvas.getContext("2d", 0, 0);
+    ctx.fillStyle = "#ccc";
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    //generate points
+    for (let i = 0; i < 100; i++) {
+        let x = Math.random() * WIDTH;
+        let y = Math.random() * HEIGHT;
+        ctx.fillStyle = generateColor();
+        ctx.fillRect(x, y, 2, 2);
+    }
+    ctx.fillStyle = "#000";
+    let angle;
+    let offset = -20;
+    ctx.font = "20px Sans";
+    for (let char of code) {
+        let flag = Math.random() > .5 ? -1 : 1;
+        angle = Math.random() * 20 * Math.PI / 180 * flag;
+        offset += 24;
+        ctx.font = "20px Sans";
+        ctx.save();
+        ctx.translate(offset, flag > 0 ? 0 : HEIGHT / 4);
+        ctx.rotate(angle);
+        ctx.fillText(char, 0, 20);
+        ctx.restore();
+    }
+    return canvas.toDataURL();
 }
 
 router.get("/idCode", (req, res) => {
-    let idCode = req.session.idCode = generateCode();
-    let canvas = new Canvas(80, 30);
-    let ctx = canvas.getContext("2d", 0, 0);
-    ctx.fillStyle = "#ccc";
-    ctx.fillRect(0, 0, 80, 30);
-    ctx.fillStyle = "red";
-    ctx.font = "20px Sans";
-    ctx.fillText(idCode, 20, 20);
+    let idCode = generateCode();
+    req.session.idCode = idCode.join("").toLowerCase();
     res.send({
         errCode: 0,
-        data: canvas.toDataURL()
+        data: generateImage(idCode)
     });
 });
 
 router.post("/register", (req, res) => {
-    let { userName, pwd, idCode, email } = req.body;
-    if (!req.session.idCode || idCode !== req.session.idCode) {
+    let { userName, password, idCode, email } = req.body;
+    if (!req.session.idCode || !idCode || idCode.toLowerCase() !== req.session.idCode) {
         res.send({
             errCode: 1,
             errMsg: "验证码不正确"
         });
         return;
     }
-    query.insertOne("users", {
-        userName,
-        password: pwd,
-        permission: 0,
-        email
-    });
+    console.log(userName, password, email)
+    // query.insertOne("users", {
+    //     userName,
+    //     password: pwd,
+    //     permission: 0,
+    //     email
+    // });
 });
 
 module.exports = router;
