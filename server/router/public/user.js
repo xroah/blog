@@ -131,13 +131,55 @@ router.post("/register", (req, res) => {
         });
         return;
     }
-    console.log(userName, password, email)
-    // query.insertOne("users", {
-    //     userName,
-    //     password: pwd,
-    //     permission: 0,
-    //     email
-    // });
+    query.findOne("users", {
+        userName
+    }).then(ret => {
+        if (ret) {
+            res.json({
+                errCode: 1,
+                errMsg: "用户名已存在"
+            });
+            return 1;
+        }
+    }).then(ret => {
+        //no username
+        if (!ret) {
+            return query.findOne("users", {
+                email
+            });
+        }
+        return ret;
+    }).then(ret => {
+        //has username and had responsed, just return
+        if (ret === 1) return;
+        if (ret) {
+            res.json({
+                errCode: 2,
+                errMsg: "该电子邮箱已被注册，请重新输入"
+            });
+        } else {
+            return query.insertOne("users", {
+                userName,
+                password: md5(password),
+                permission: 0,
+                email
+            });
+        }
+    }).then(ret => {
+        if (ret) {
+            delete req.session.idCode;
+            req.session.userName = userName;
+            req.session.isAdmin = false;
+            res.json({
+                errCode: 0,
+                errMsg: "注册成功"
+            });
+        }
+    }).catch(err => { 
+
+        console.log(err);
+    });
+
 });
 
 module.exports = router;

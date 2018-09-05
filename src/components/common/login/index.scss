@@ -84,11 +84,12 @@
     .id-code {
         display: flex;
         input {
-            width: 150px;
+            width: 130px;
         }
     }
     .code-img {
         margin-left: 20px;
+        cursor: pointer;
     }
     .remember {
         margin-bottom: $marginBottom;

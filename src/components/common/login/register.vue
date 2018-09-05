@@ -27,9 +27,9 @@
                 </div>
                 <div class="input-wrapper border-none id-code">
                     <form-item name="idCode">
-                        <v-input type="password" v-model="model.idCode" placeholder="请输入验证码" />
+                        <v-input type="text" v-model="model.idCode" placeholder="请输入验证码" />
                     </form-item>
-                    <img class="code-img" :src="codeImg">
+                    <img class="code-img" title="看不清?点击换一张" :src="codeImg" @click="getCode">
                 </div>
             </v-form>
             <v-button type="primary" @click="clickHandler">注册</v-button>
@@ -134,16 +134,38 @@ export default {
         };
     },
     created() {
-        fetch(GET_ID_CODE).then(ret => (this.codeImg = ret));
+        this.getCode();
     },
     methods: {
-        clickHandler() {
+        async clickHandler() {
             let { $refs, model } = this;
             let valid = $refs.form.validate();
+            if (valid) {
+                loading.show();
+                try {
+                    await fetch(USER_REGISTER, {
+                        method: "post",
+                        body: {
+                            userName: model.userName,
+                            password: md5(model.password),
+                            email: model.email,
+                            idCode: model.idCode
+                        }
+                    });
+                    message.success("注册成功");
+                    this.$router.push({
+                        name: "publicArticles"
+                    });
+                } catch (error) {}
+                loading.hide();
+            }
         },
         validPwd(value) {
             let len = value.length;
             return len >= 6 && len <= 20;
+        },
+        getCode() {
+            fetch(GET_ID_CODE).then(ret => (this.codeImg = ret));
         },
         focus(evt) {
             let tgt = evt.target;
