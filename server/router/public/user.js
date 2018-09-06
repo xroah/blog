@@ -50,9 +50,9 @@ router.post("/login", (req, res) => {
             }
         }).then(ret => {
             if (ret) {
+                delete req.session.idCode;
                 req.session.user = userName;
                 req.session.isAdmin = +ret.permission === 1;
-                delete req.session.idCode;
                 res.json({
                     errCode: 0
                 });
@@ -66,12 +66,11 @@ router.post("/login", (req, res) => {
                 if (doc && doc.value) {
                     errorTimes = doc.value.errorTimes;
                 }
-
                 res.json({
                     errCode: 2,
                     errMsg: "用户名或密码错误",
                     data: {
-                        needCode: errorTimes > 3
+                        needCode: errorTimes > 3 && !req.session.idCode
                     }
                 });
             }
