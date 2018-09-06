@@ -118,7 +118,7 @@ function _fetch(url, config) {
                     resolve(res.data);
 
                 } else {
-                    reject(res);
+                    reject(res.data);
                     errorHint(res);
                 }
                 return;

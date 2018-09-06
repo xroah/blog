@@ -4,10 +4,42 @@ const query = require("../../db/query");
 const md5 = require("../../utils/md5");
 const Canvas = require("canvas");
 
+//update password error times
+function updateErrorTime(userName) {
+    return query.findOneAndUpdate("users", {
+        userName
+    }, {
+            $inc: {
+                errorTimes: 1
+            }
+        }, {
+            returnOriginal: false
+        });
+}
+
+//if login successfully, clear errorTimes
+function clearErrorTimes(userName) {
+    query.updateOne("users", {
+        userName
+    }, {
+        $unset: {
+            errorTimes: 0
+        }
+    });
+}
+
 router.post("/login", (req, res) => {
     let body = req.body;
     let userName = body.userName;
     let password = md5(body.password);
+    let idCode = body.idCode;
+    if (req.session.idCode && idCode !== req.session.idCode) {
+        res.json({
+            errCode: 1,
+            errMsg: "验证码不正确"
+        });
+        return;
+    }
     query.findOne("users", {
         userName,
         password
@@ -17,17 +49,33 @@ router.post("/login", (req, res) => {
                 permission: 1
             }
         }).then(ret => {
-            let resData = {};
-            if (!ret) {
-                resData.errCode = 1;
-                resData.errMsg = "用户名或密码错误!"
-            } else {
+            if (ret) {
                 req.session.user = userName;
                 req.session.isAdmin = +ret.permission === 1;
-                resData.errCode = 0;
+                delete req.session.idCode;
+                res.json({
+                    errCode: 0
+                });
+                clearErrorTimes(userName);
             }
-            res.send(resData);
-        });;
+            return ret;
+        }).then(async ret => {
+            if (!ret) {
+                let doc = await updateErrorTime(userName);
+                let errorTimes;
+                if (doc && doc.value) {
+                    errorTimes = doc.value.errorTimes;
+                }
+
+                res.json({
+                    errCode: 2,
+                    errMsg: "用户名或密码错误",
+                    data: {
+                        needCode: errorTimes > 3
+                    }
+                });
+            }
+        });
 });
 
 router.post("/logout", (req, res) => {
@@ -101,11 +149,11 @@ function generateImage(code) {
     ctx.font = "20px Sans";
     for (let char of code) {
         let flag = Math.random() > .5 ? -1 : 1;
-        angle = Math.random() * 20 * Math.PI / 180 * flag;
+        angle = Math.random() * 30 * Math.PI / 180 * flag;
         offset += 24;
         ctx.font = "20px Sans";
         ctx.save();
-        ctx.translate(offset, flag > 0 ? 0 : HEIGHT / 4);
+        ctx.translate(offset, flag > 0 ? 0 : HEIGHT / 5);
         ctx.rotate(angle);
         ctx.fillText(char, 0, 20);
         ctx.restore();
@@ -175,7 +223,7 @@ router.post("/register", (req, res) => {
                 errMsg: "注册成功"
             });
         }
-    }).catch(err => { 
+    }).catch(err => {
 
         console.log(err);
     });

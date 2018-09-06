@@ -11,6 +11,10 @@
             <div class="input-wrapper">
                 <input type="password" class="border-none" v-model="password" @focus="focusHandler($event)" @blur="focusHandler($event)" @keypress.enter="keypress" placeholder="密码">
             </div>
+            <div class="input-wrapper border-none id-code" v-if="showCode">
+                <input v-model="code" type="text" class="v-input" placeholder="请输入验证码">
+                <img class="code-img" title="看不清?点击换一张" :src="codeImg" @click="getCode">
+            </div>
             <div class="remember">
                 <checkbox v-model="remember">记住我</checkbox>
                 <a href="#" class="f-r" @click.prevent="toPwd" v-if="!isAdmin">忘记密码</a>
@@ -29,7 +33,7 @@ import message from "../message/index";
 import Checkbox from "../checkbox";
 import md5 from "blueimp-md5";
 import loading from "../loading/index";
-import { DAILY_SENTENCE, USER_LOGIN } from "../api";
+import { DAILY_SENTENCE, USER_LOGIN, GET_ID_CODE } from "../api";
 import Background from "../background";
 
 const SAVE_USER_KEY = "userInfo";
@@ -45,7 +49,10 @@ export default {
             userName: "",
             password: "",
             remember: false,
-            focused: false
+            focused: false,
+            showCode: false,
+            codeImg: "",
+            code: ""
         };
     },
     components: {
@@ -54,6 +61,10 @@ export default {
         Background
     },
     async created() {
+        let needCode = !!JSON.parse(localStorage.getItem("needLoginCode"));
+        if (needCode) {
+            this.refreshCode();
+        }
         this.getInfo();
         try {
             let data = await fetch(DAILY_SENTENCE);
@@ -71,13 +82,24 @@ export default {
                 : parent.classList.remove("focused");
         },
         clickHandler() {
-            let { login, userName, password } = this;
-            login(userName, password);
+            let { login, userName, password, showCode, code } = this;
+            if (showCode && code.length !== 4) {
+                message.error("验证码格式不正确(4位字符)");
+                return;
+            }
+            login(userName, password, code);
         },
         keypress() {
             this.clickHandler();
         },
-        async login(userName, password) {
+        refreshCode() {
+            this.showCode = true;
+            this.getCode();
+        },
+        getCode() {
+            fetch(GET_ID_CODE).then(ret => (this.codeImg = ret));
+        },
+        login(userName, password, idCode) {
             message.destroy();
             if (!userName || !password) {
                 message.error("用户名和密码都不能为空!");
@@ -85,29 +107,39 @@ export default {
             }
             let _password = md5(password);
             loading.show();
-            try {
-                await fetch(USER_LOGIN, {
-                    method: "post",
-                    body: {
-                        userName,
-                        password: _password
+            fetch(USER_LOGIN, {
+                method: "post",
+                body: {
+                    userName,
+                    password: _password,
+                    idCode
+                }
+            })
+                .then(() => {
+                    message.success("登录成功", 1.5);
+                    this.saveInfo(userName, password);
+                    if (this.isAdmin) {
+                        this.$router.push({
+                            name: "adminArticles"
+                        });
+                    } else {
+                        this.$router.push({
+                            name: "publicHome"
+                        });
+                    }
+                    localStorage.removeItem("needLoginCode");
+                    loading.hide();
+                })
+                .catch(rej => {
+                    loading.hide();
+                    if (rej && rej.needCode) {
+                        localStorage.setItem(
+                            "needLoginCode",
+                            JSON.stringify(true)
+                        );
+                        this.refreshCode();
                     }
                 });
-                loading.hide();
-                message.success("登录成功", 1.5);
-                this.saveInfo(userName, password);
-                if (this.isAdmin) {
-                    this.$router.push({
-                        name: "adminArticles"
-                    });
-                } else {
-                    this.$router.push({
-                        name: "publicHome"
-                    });
-                }
-            } catch (error) {
-                loading.hide();
-            }
         },
         //save password and username to localstorage
         saveInfo(uname, pwd) {
