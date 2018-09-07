@@ -14,14 +14,14 @@ router.get("/daliySentence", (request, response) => {
             resData += chunk;
         });
         res.on("end", () => {
-            response.send({
+            response.json({
                 errCode: 0,
                 data: JSON.parse(resData)
             });
         });
     });
     req.on("error", err => {
-        response.send({
+        response.json({
             errCode: 1,
             data: err,
             errMsg: err.message
@@ -42,14 +42,14 @@ router.get("/dailyPicture", (request, response) => {
             resData += chunk;
         });
         res.on("end", () => {
-            response.send({
+            response.json({
                 errCode: 0,
                 data: JSON.parse(resData)
             });
         });
     });
     req.on("error", err => {
-        response.send({
+        response.json({
             errCode: 1,
             errMsg: err.message,
             data: err

@@ -79,7 +79,7 @@ router.post("/login", (req, res) => {
 
 router.post("/logout", (req, res) => {
     req.session.destroy();
-    res.send({
+    res.json({
         errCode: 0
     });
 });
@@ -97,12 +97,12 @@ router.post("/modifyPwd", (req, res) => {
             }
         }).then(ret => {
             if (!ret.value) {
-                res.send({
+                res.json({
                     errCode: 11,
                     errMsg: "原密码不正确"
                 });
             } else {
-                res.send({
+                res.json({
                     errCode: 0
                 });
             }
@@ -172,7 +172,7 @@ router.get("/idCode", (req, res) => {
 router.post("/register", (req, res) => {
     let { userName, password, idCode, email } = req.body;
     if (!req.session.idCode || !idCode || idCode.toLowerCase() !== req.session.idCode) {
-        res.send({
+        res.json({
             errCode: 1,
             errMsg: "验证码不正确"
         });
