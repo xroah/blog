@@ -1,17 +1,21 @@
 @import "../minxinVariable";
 .nav {
     display: flex;
-    position: relative;
     justify-content: center;
-    align-items: center;
-    height: 50px;
     line-height: 50px;
     color: #fff;
     background-color: #20232a;
+    .nav-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 10px;
+        width: $maxWidth;
+    }
     .nav-menu {
         display: flex;
         flex-grow: 1;
-        max-width: $maxWidth;
         line-height: 42px;
     }
     .nav-link {
@@ -80,7 +84,6 @@
 @media screen and (max-width: 640px) {
     .nav {
         justify-content: flex-start;
-        padding: 0 10px;
         .backdrop {
             @include fixed_fullscreen();
             z-index: 5;
@@ -92,7 +95,7 @@
             flex-direction: column;
             width: 50%;
             height: 100vh;
-            transform: translateX(-100%);
+            transform: translateX(-120%);
             background-color: #20232a;
             z-index: 10;
             transition: all.3s;

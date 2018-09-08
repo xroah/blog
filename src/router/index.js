@@ -20,7 +20,7 @@ const ArticleDetails = () =>
     import("../components/admin/articleDetails");
 const Error404 = () =>
     import("../components/common/error");
-const AdminModifyPwd = () =>
+const modifyPwd = () =>
     import("../components/admin/modifyPwd");
 const PublicArticleInfo = () =>
     import("../components/public/articleDetails");
@@ -48,6 +48,10 @@ export default [{
     }, {
         path: "/about",
         component: About
+    }, {
+        path: "/user/modifyPwd",
+        component: modifyPwd,
+        name: "userModifyPwd"
     }]
 }, {
     path: "/user",
@@ -87,8 +91,8 @@ export default [{
         component: ArticleClassify
     }, {
         path: "mng/modifyPwd",
-        name: "modifyPwd",
-        component: AdminModifyPwd
+        name: "adminModifyPwd",
+        component: modifyPwd
     }]
 }, {
     path: "*",

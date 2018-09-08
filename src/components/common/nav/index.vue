@@ -1,11 +1,13 @@
 <template>
     <nav class="nav">
-        <ul :class="{visible}" class="nav-menu list-unstyled" @click="hideNav">
-            <slot></slot>
-        </ul>
-        <div class="show-nav" :class="{active: visible}" @click="showNav"></div>
-        <div class="backdrop" v-if="visible" @click="showNav"></div>
-        <slot name="right"></slot>
+        <div class="nav-wrapper">
+            <ul :class="{visible}" class="nav-menu list-unstyled" @click="hideNav">
+                <slot></slot>
+            </ul>
+            <div class="show-nav" :class="{active: visible}" @click="showNav"></div>
+            <div class="backdrop" v-if="visible" @click="showNav"></div>
+            <slot name="right"></slot>
+        </div>
     </nav>
 </template>
 

@@ -6,6 +6,7 @@ export const USER_LOGOUT = "/api/user/logout";
 export const MODIFY_PASSWORD = "/api/user/modifyPwd";
 export const USER_REGISTER = "/api/user/register";
 export const GET_ID_CODE = "/api/user/idCode";
+export const GET_LOGIN_STATUS = "/api/user/loginStatus";
 
 export const ARTICLE_CLASSIFY = "/api/admin/article/classify";
 export const ADMIN_ARTICLE = "/api/admin/article";
