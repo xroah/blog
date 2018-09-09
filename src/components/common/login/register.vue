@@ -7,7 +7,7 @@
             <v-form :model="model" :rules="rules" ref="form">
                 <div class="input-wrapper border-none">
                     <form-item name="userName">
-                        <v-input v-model="model.userName" placeholder="请输入用户名" />
+                        <v-input v-model="model.userName" placeholder="请输入用户名(限字母、数字和下划线)" />
                     </form-item>
                 </div>
                 <div class="input-wrapper border-none">
@@ -80,6 +80,12 @@ export default {
                     {
                         required: true,
                         message: "请输入用户名"
+                    },
+                    {
+                        validator(value) {
+                            return /\w/.test(value);
+                        },
+                        message: "用户名输入不正确(仅限字母、数字或下划线)"
                     }
                 ],
                 email: [

@@ -77,7 +77,7 @@ export default {
                 await fetch(USER_LOGOUT, {
                     method: "post"
                 });
-                this.toLogins();
+                this.toLogin();
             } catch (err) {}
         },
         handleClick(evt) {

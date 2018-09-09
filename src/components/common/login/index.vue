@@ -6,7 +6,7 @@
         <div class="login-box">
             <p class="daily-sentence" :title="note" v-text="sentence"></p>
             <div class="input-wrapper">
-                <input type="text" class="border-none" v-model="userName" @focus="focusHandler($event)" @blur="focusHandler($event)" @keypress.enter="keypress" placeholder="用户名">
+                <input type="text" class="border-none" v-model="userName" @focus="focusHandler($event)" @blur="focusHandler($event)" @keypress.enter="keypress" placeholder="用户名或邮箱">
             </div>
             <div class="input-wrapper">
                 <input type="password" class="border-none" v-model="password" @focus="focusHandler($event)" @blur="focusHandler($event)" @keypress.enter="keypress" placeholder="密码">
