@@ -8,6 +8,16 @@
             <p class="error-msg">抱歉,文章不存在!</p>
             <v-button type="primary" @click="back">返回</v-button>
         </div>
+        <div class="comments-editor-wrapper">
+            <span>发表评论</span>
+            <comment-editor/>
+        </div>
+        <div class="all-comments-wrapper">
+            <span>所有评论</span>
+            <div class="comments-list">
+                <comment-item userName="嘻嘻嘻嘻"/>
+            </div>
+        </div>
     </section>
 </template>
 
@@ -19,11 +29,15 @@ import fetch from "../../common/fetch";
 import { PUBLIC_ARTICLE_DETAILS, UPDATE_VIEWED_TIMES } from "../../common/api";
 import Loading from "../../common/loading/index";
 import VButton from "../../common/button";
+import CommentItem from "../../common/commentItem";
+import CommentEditor from "../../common/commentEditor";
 
 export default {
     components: {
         VButton,
-        ArticleDetails
+        ArticleDetails,
+        CommentEditor,
+        CommentItem
     },
     data() {
         return {

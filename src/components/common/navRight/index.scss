@@ -1,17 +1,11 @@
 @import "../../common/minxinVariable";
 .right-user {
+    .toggle-dropdown {
+        display: inline-flex;
+    }
     display: flex;
     flex-grow: 1;
     justify-content: flex-end;
-    .toggle-dropdown {
-        display: inline-block;
-        svg {
-            vertical-align: middle;
-        }
-        path {
-            fill: #ccc;
-        }
-    }
     .dropdown {
         line-height: 36px;
         transition: all .3s;

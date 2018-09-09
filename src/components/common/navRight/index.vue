@@ -1,9 +1,7 @@
 <template>
     <div class="right-user" slot="right" v-if="loggedIn">
         <a href="#" @click.stop.prevent="toggleDropdown" class="toggle-dropdown">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024" version="1.1" p-id="4297" width="32" height="32">
-                <path d="M512 64.3c-247.3 0-447.8 199.8-447.8 446.2 0 1.1 0 2.2 0.1 3.3 0 0.6-0.1 1.3-0.1 1.9 0 2.7 0.2 5.4 0.2 8.1v1c4.9 240.5 202.6 434.7 445 434.7 101.6 0 195.3-34.1 270.3-91.4v0.2c109.3-81.4 180-211.3 180-357.7 0.1-246.5-200.4-446.3-447.7-446.3z m7.5 274.9c73.6 0 133.3 59.5 133.3 132.8 0 73.3-59.7 132.8-133.3 132.8S386.3 545.4 386.3 472c0-73.3 59.6-132.8 133.2-132.8zM268.7 821l82.5-128c21.9-33.9 59.5-54.4 100-54.4h134.5c41.7 0 80.3 21.7 101.8 57.3L758.9 814c-67.6 56.3-154.6 90.2-249.4 90.2-90.9 0.1-174.5-31.1-240.8-83.2z" />
-            </svg>
+            <img class="avatar" :src="avantar">
         </a>
         <transition name="slide-fade-in">
             <ul class="dropdown" v-show="dropdownVisible" @click="handleClick">
@@ -30,6 +28,7 @@
 <script>
 import fetch from "../../common/fetch";
 import { USER_LOGOUT, GET_LOGIN_STATUS } from "../../common/api";
+import avantar from "../../../assets/images/avatar.png";
 
 export default {
     props: {
@@ -41,7 +40,8 @@ export default {
     data() {
         return {
             dropdownVisible: false,
-            loggedIn: false
+            loggedIn: false,
+            avantar
         };
     },
     async created() {
