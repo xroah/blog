@@ -1,0 +1,51 @@
+@import "../minxinVariable";
+@import "../transitions";
+.modal,
+.modal-mask {
+    @include fixed_fullscreen();
+    transition: all .3s;
+}
+
+.modal-mask {
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 998;
+}
+
+.modal {
+    display: flex;
+    justify-content: center;
+    z-index: 999;
+    .modal-content {
+        position: absolute;
+        width: 520px;
+        margin: 0 auto;
+        border-radius: 5px;
+        background-color: #fff;
+    }
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 10px;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .close {
+            font-size: 20px;
+            color: #999;
+            &:hover {
+                color: $primaryHoverColor;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .modal {
+        padding: 0 10px;
+        .modal-content {
+            width: 95%;
+        }
+    }
+}
