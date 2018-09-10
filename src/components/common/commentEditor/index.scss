@@ -7,3 +7,17 @@
         outline: none;
     }
 }
+
+.comment-editor-wrapper {
+    .info-row {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+    .red {
+        color: red;
+    }
+    .error-msg {
+        margin-left: 15px;
+    }
+}

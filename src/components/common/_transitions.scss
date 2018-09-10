@@ -5,7 +5,7 @@
 
 .fade-in-half-enter-to,
 .fade-in-half-leave {
-    opacity: .6 !important;
+    opacity: .5 !important;
 }
 
 .rotate-y-enter,
@@ -26,4 +26,16 @@
 .rotate-y-reverse-enter-to,
 .rotate-y-reverse-leave {
     transform: rotateY(0deg);
+}
+
+.modal-enter,
+.modal-leave-to {
+    transform: scale(0);
+    opacity: 0;
+}
+
+.modal-enter-to,
+.modal-leave {
+    transform: scale(1);
+    opacity: 1;
 }
