@@ -61,6 +61,9 @@ export default {
             this.renderPages();
         }
     },
+    mounted() {
+        this.renderPages();
+    },
     methods: {
         emitChangeEvent(page) {
             this.$emit("pageChange", page);
@@ -99,6 +102,7 @@ export default {
             } else {
                 this.pages = loop5Times(currentPage - 2);
             }
+            console.log(this.pages)
         },
         prev() {
             if (this.currentPage > 1) {
