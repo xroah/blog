@@ -15,9 +15,25 @@
         <div class="all-comments-wrapper">
             <span>所有评论</span>
             <div class="comments-list">
-                <comment-item userName="嘻嘻嘻嘻"/>
+                <comment-item userName="嘻嘻嘻嘻" />
             </div>
         </div>
+        <modal :visible.sync="showModal" class="info-modal" title="补全信息">
+            <div class="info-row">
+                <label><span class="red">*</span>您的姓名</label>
+                <input type="text" class="v-input" placeholder="请输入您的姓名(必填)" v-model="name">
+            </div>
+            <div class="info-row">
+                <label><span class="red">*</span>您的邮箱</label>
+                <input type="text" class="v-input" placeholder="请输入您的邮箱(必填,不公开)" v-model="email">
+            </div>
+            <div class="info-row">
+                <label>您的网站</label>
+                <input type="text" class="v-input" placeholder="请输入您的网站">
+            </div>
+            <v-button type="primary">确定</v-button>
+            <span class="error-msg red" v-show="!!errorMsg">{{errorMsg}}</span>
+        </modal>
     </section>
 </template>
 
@@ -31,18 +47,24 @@ import Loading from "../../common/loading/index";
 import VButton from "../../common/button";
 import CommentItem from "../../common/commentItem";
 import CommentEditor from "../../common/commentEditor";
+import Modal from "../../common/modal";
 
 export default {
     components: {
         VButton,
         ArticleDetails,
         CommentEditor,
-        CommentItem
+        CommentItem,
+        Modal
     },
     data() {
         return {
             article: null,
-            error: false
+            error: false,
+            showModal: false,
+            errorMsg: "",
+            name: "",
+            email: ""
         };
     },
     async created() {

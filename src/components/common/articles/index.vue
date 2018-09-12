@@ -42,19 +42,24 @@ export default {
     },
     created() {
         let { $route } = this;
-        let { page = 1, keywords = "" } = $route.query;
-        
+        let { page = 1, keywords } = $route.query;
+
         this.queryCallback(page, keywords);
     },
     methods: {
         queryChange(page, keywords) {
             let { $router, routerName } = this;
+            let query = {};
+            //if no keywords or page equals 0, do not add to router
+            if (page > 1) {
+                query.page = page;
+            }
+            if (keywords) {
+                query.keywords = keywords;
+            }
             $router.push({
                 name: routerName,
-                query: {
-                    page,
-                    keywords
-                }
+                query
             });
         },
         pageChange(page) {

@@ -250,18 +250,22 @@ export default {
             }
             Loading.show();
             // try {
-                await this.addArticle({
-                    method,
-                    body
-                });
-                this.saved = true;
-                message.success("保存成功!");
+            await this.addArticle({
+                method,
+                body
+            });
+            this.saved = true;
+            message.success("保存成功!");
+            if(editMode) {
                 this.cancel();
+            } else {
+                this.$router.push({ name: "adminArticles" });
+            }
             // } catch (error) {}
             Loading.hide();
         },
         cancel() {
-            this.$router.push({ name: "adminArticles" });
+            this.$router.go(-1);
         }
     }
 };

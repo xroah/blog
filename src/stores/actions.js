@@ -13,7 +13,8 @@ export const fetchAricle = (action, url) => {
             commit
         }, payload = {}) {
             //if list has value and force param not passed, use original value
-            let { page = 1, keywords = "", force } = payload;
+            let { page = state.current, keywords = state.keywords, force } = payload;
+            console.log(keywords, payload)
             if (page !== state.current || keywords !== state.keywords) {
                 //changed page or keywords
                 //set force to true, for refshing the list
@@ -35,7 +36,7 @@ export const fetchAricle = (action, url) => {
                 list: []
             });
             try {
-                let ret = await fetch(`${url}/${page}/${keywords}`);
+                let ret = await fetch(`${url}/${page}/${keywords || ""}`);
                 commit({
                     type: UPDATE_ARTICLE_LIST,
                     list: ret.list,

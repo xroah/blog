@@ -4,7 +4,7 @@
             <router-link class="nav-link" exact-active-class="active" to="/">首页</router-link>
         </li>
         <li>
-            <router-link class="nav-link" exact-active-class="active" to="/article">文章</router-link>
+            <router-link class="nav-link" active-class="active" to="/article">文章</router-link>
         </li>
         <li>
             <router-link class="nav-link" exact-active-class="active" to="/about">关于我</router-link>
