@@ -20,7 +20,7 @@ export default {
     },
     computed: {
         ...mapState({
-            page: state => state.article.page,
+            page: state => state.article.current,
             keywords: state => state.article.keywords
         })
     },

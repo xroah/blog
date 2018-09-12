@@ -32,7 +32,7 @@ const article = {
         updateCache(state, payload) {
             //cache previos page and keywords
             //if the page or keywords changed, refresh the list
-            state.current = payload.page;
+            state.current = +payload.page || 1; //cast sto number
             state.keywords = payload.keywords;
         },
         changeState(state, payload) {

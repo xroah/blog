@@ -18,7 +18,8 @@ export const fetchAricle = (action, url) => {
                 //changed page or keywords
                 //set force to true, for refshing the list
                 force = true;
-                commit("updateCache", {
+                commit({
+                    type: "updateCache",
                     page,
                     keywords
                 });
