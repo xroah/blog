@@ -16,7 +16,7 @@ const article = {
         loaded: true,
         total: 0,
         current: 1,
-        keywords: "",
+        keywords: undefined,
         error: false
     },
     mutations: {

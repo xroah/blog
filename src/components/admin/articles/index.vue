@@ -69,7 +69,7 @@ export default {
     },
     beforeRouteUpdate(to, from, next) {
         let { $route } = this;
-        let { page = 1, keywords = ""} = to.query;
+        let { page = 1, keywords} = to.query;
         next();
         if (to.path === from.path) {
             this._fetchArticles(page, keywords);

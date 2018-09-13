@@ -54,7 +54,7 @@ export default {
             if (page > 1) {
                 query.page = page;
             }
-            if (keywords) {
+            if (keywords !== undefined) {
                 query.keywords = keywords;
             }
             $router.push({

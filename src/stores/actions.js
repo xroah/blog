@@ -13,8 +13,8 @@ export const fetchAricle = (action, url) => {
             commit
         }, payload = {}) {
             //if list has value and force param not passed, use original value
-            let { page = state.current, keywords = state.keywords, force } = payload;
-            console.log(keywords, payload)
+            let { page = 1, keywords, force } = payload;
+            console.log(keywords === undefined)
             if (page !== state.current || keywords !== state.keywords) {
                 //changed page or keywords
                 //set force to true, for refshing the list
