@@ -6,27 +6,25 @@
     .comment-details {
         margin-left: 10px;
         flex-grow: 1;
+        .user-link {
+            color: #333;
+        }
+        .reply-text {
+            color: #999;
+        }
     }
     .comment-content {
         padding: 10px 0;
     }
-    .original-comment {
-        padding: 10px;
-        margin-top: 15px;
-        border-radius: 5px;
-        background-color: #d9d9d9;
-    }
     .other {
         display: flex;
-        justify-content: flex-end;
-        padding: 0 20px;
+        justify-content: space-between;
+        padding-right: 20px;
         span {
             color: #999;
         }
-        .replay {
+        .reply + .reply {
             margin-left: 10px;
-            padding-left: 10px;
-            border-left: 1px solid #999;
         }
     }
     .avatar img {

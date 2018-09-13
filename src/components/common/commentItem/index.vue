@@ -4,21 +4,22 @@
             <img :src="avantar">
         </div>
         <div class="comment-details">
-            <a :href="href">{{userName}}</a>说:
-            <div class="original-comment">
-                <strong>回复aaaa:</strong>
-                <div class="comment-content">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam dolorem accusamus neque in mollitia, laudantium autem quis alias debitis corrupti odio itaque impedit suscipit porro cum veritatis eligendi blanditiis nobis.
-                </div>
-            </div>
+            <a :href="href" class="user-link">{{userName}}</a>
+            <span>
+                <span class="reply-text">回复</span>
+                <a href="#" class="user-link">test</a>
+            </span>说:
             <div class="comment-content">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis, perferendis suscipit. Iure dolores earum aspernatur quisquam ex, sed dolor harum quia nobis obcaecati ipsum voluptate delectus, tempore culpa consequuntur nesciunt.
             </div>
             <div class="other">
+                <div>
+                    <a href="javascript:;" class="reply">查看对话</a>
+                    <a href="javascript:;" class="reply" @click="toggleEditor">回复</a>
+                </div>
                 <span>2018-08-10 08:19:00</span>
-                <a href="javascript:;" class="replay" @click="toggleEditor">回复</a>
             </div>
-            <comment-editor :showCancel="true" @cancel="toggleEditor" v-show="showEditor"/>
+            <comment-editor :showCancel="true" @cancel="toggleEditor" v-if="showEditor" />
         </div>
     </div>
 </template>
