@@ -22,7 +22,7 @@
     </div>
 </template>
 
-<style src="./index.scss" scoped></style>
+<style src="./index.scss"></style>
 
 <script>
 export default {

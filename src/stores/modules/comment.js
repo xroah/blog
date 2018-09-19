@@ -1,11 +1,13 @@
 import fetch from "../../components/common/fetch";
+import { SAVE_COMMENT } from "../../components/common/api";
 
 const comment = {
-    editorRef: null, 
-    replyTo: null,  
-    visible: false, //reply other user's comment editor visible
-    content: "", 
-    hasInfo: true, //is user loged in, if do not log in, user must input user info manually
+    state: {
+        editorRef: null,
+        replyTo: null,
+        visible: false, //is user loged in, if do not log in, user must input user info manually
+        content: "",
+    },
     mutations: {
         updateRef(state, payload) {
             state.editorRef = payload.editorRef;
@@ -19,8 +21,22 @@ const comment = {
         }
     },
     actions: {
-        saveComment({ commit }, payload) {
-
+        async saveComment({ commit, state }, articleId) {
+            console.log(state)
+            let { content, replyTo } = state;
+            try {
+                await fetch(`${SAVE_COMMENT}/${articleId}`, {
+                    method: "post",
+                    body: {
+                        content,
+                        replyTo
+                    }
+                });
+            } catch (error) {
+                error.needInfo && commit("updateVisibility", true);
+            }
         }
     }
 };
+
+export default comment;

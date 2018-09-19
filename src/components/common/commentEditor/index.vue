@@ -37,7 +37,10 @@ export default {
                 message.error("请输入内容");
                 return;
             }
-            this.$emit("ok");
+            this.$emit("ok", {
+                ref: this,
+                content: this.content
+            });
         },
         cancel() {
             this.$emit("cancel");

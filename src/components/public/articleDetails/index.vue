@@ -10,7 +10,7 @@
         </div>
         <div class="comments-editor-wrapper">
             <span>发表评论</span>
-            <comment-editor/>
+            <comment-editor @ok="handleSave"/>
         </div>
         <div class="all-comments-wrapper">
             <span>所有评论</span>
@@ -18,7 +18,7 @@
                 <comment-item userName="嘻嘻嘻嘻" />
             </div>
         </div>
-        <modal :visible.sync="showModal" class="info-modal" title="补全信息">
+        <modal :visible="showModal" @update:visible="updateVisibility" class="info-modal" title="补全信息">
             <div class="info-row">
                 <label><span class="red">*</span>您的姓名</label>
                 <input type="text" class="v-input" placeholder="请输入您的姓名(必填)" v-model="name">
@@ -37,7 +37,7 @@
     </section>
 </template>
 
-<style src="./index.scss" scoped></style>
+<style src="./index.scss"></style>
 
 <script>
 import ArticleDetails from "../../common/articleInfo";
@@ -48,6 +48,7 @@ import VButton from "../../common/button";
 import CommentItem from "../../common/commentItem";
 import CommentEditor from "../../common/commentEditor";
 import Modal from "../../common/modal";
+import { mapState, mapMutations, mapActions } from "vuex";
 
 export default {
     components: {
@@ -61,11 +62,15 @@ export default {
         return {
             article: null,
             error: false,
-            showModal: false,
             errorMsg: "",
             name: "",
             email: ""
         };
+    },
+    computed: {
+        ...mapState({
+            showModal: state => state.comment.visible
+        })
     },
     async created() {
         let { id } = this.$route.params;
@@ -83,10 +88,22 @@ export default {
                 id
             }
         });
+        this.id = id;
     },
     methods: {
+        ...mapActions([
+            "saveComment"
+        ]),
+        ...mapMutations(["updateRef", "updateContent", "updateVisibility"]),
         back() {
             this.$router.go(-1);
+        },
+        handleSave(data) {
+            this.updateRef({
+                editorRef: data.ref
+            });
+            this.updateContent(data.content);
+            this.saveComment(this.id);
         }
     }
 };
