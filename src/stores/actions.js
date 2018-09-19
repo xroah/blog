@@ -14,7 +14,6 @@ export const fetchAricle = (action, url) => {
         }, payload = {}) {
             //if list has value and force param not passed, use original value
             let { page = 1, keywords, force } = payload;
-            console.log(keywords === undefined)
             if (page !== state.current || keywords !== state.keywords) {
                 //changed page or keywords
                 //set force to true, for refshing the list

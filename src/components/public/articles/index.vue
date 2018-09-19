@@ -1,6 +1,7 @@
 <template>
     <articles :queryCallback="_fetchArticles" :total="total" routerName="publicArticles" :showPage="!!list.length">
         <div class="article-list" slot="articleList">
+            <loading v-show="!loaded"/>
             <Item v-for="article in list" :id="article._id" :key="article._id" :summary="article.summary" :totalViewed="article.totalViewed"></Item>
             <div class="text-center" v-if="error">
                 <img src="../../../assets/images/500.png">
@@ -27,13 +28,14 @@
 import Item from "./item";
 import { FETCH_PUBLIC_ARTICLE } from "../../../stores/actions";
 import { mapState, mapActions } from "vuex";
-import Loading from "../../common/loading/index";
+import Loading from "../../common/loading/loading";
 import Articles from "../../common/articles";
 
 export default {
     components: {
         Item,
-        Articles
+        Articles,
+        Loading
     },
     beforeRouteUpdate(to, from, next) {
         let { $route } = this;
@@ -56,13 +58,11 @@ export default {
             fetchArticles: FETCH_PUBLIC_ARTICLE
         }),
         _fetchArticles(page, keywords) {
-            Loading.show();
             this.fetchArticles({
                 page,
                 keywords,
                 force: true
             });
-            Loading.hide();
         }
     }
 };
