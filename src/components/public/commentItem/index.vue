@@ -28,7 +28,7 @@
 
 <script>
 import avantar from "../../../assets/images/avatar.png";
-import CommentEditor from "../commentEditor/";
+import CommentEditor from "../../common/commentEditor";
 
 export default {
     props: {

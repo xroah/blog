@@ -45,7 +45,7 @@ import fetch from "../../common/fetch";
 import { PUBLIC_ARTICLE_DETAILS, UPDATE_VIEWED_TIMES } from "../../common/api";
 import Loading from "../../common/loading/index";
 import VButton from "../../common/button";
-import CommentItem from "../../common/commentItem";
+import CommentItem from "../commentItem";
 import CommentEditor from "../../common/commentEditor";
 import Modal from "../../common/modal";
 import { mapState, mapMutations, mapActions } from "vuex";
