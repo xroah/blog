@@ -103,7 +103,9 @@ export default {
                 editorRef: data.ref
             });
             this.updateContent(data.content);
-            this.saveComment(this.id);
+            this.saveComment({
+                articleId: this.id
+            });
         }
     }
 };

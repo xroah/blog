@@ -21,15 +21,16 @@ const comment = {
         }
     },
     actions: {
-        async saveComment({ commit, state }, articleId) {
-            console.log(state)
+        async saveComment({ commit, state }, payload) {
             let { content, replyTo } = state;
+            let { articleId, userInfo } = payload;
             try {
                 await fetch(`${SAVE_COMMENT}/${articleId}`, {
                     method: "post",
                     body: {
                         content,
-                        replyTo
+                        replyTo, 
+                        userInfo
                     }
                 });
             } catch (error) {
