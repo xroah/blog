@@ -15,7 +15,7 @@
         <div class="all-comments-wrapper">
             <span>所有评论</span>
             <div class="comments-list">
-                <comment-item userName="嘻嘻嘻嘻" />
+                <comment-item @ok="handleSave" userName="嘻嘻嘻嘻" />
             </div>
         </div>
         <modal :visible="showModal" @update:visible="updateVisibility" class="info-modal" title="补全信息">
@@ -94,15 +94,15 @@ export default {
         ...mapActions([
             "saveComment"
         ]),
-        ...mapMutations(["updateRef", "updateContent", "updateVisibility"]),
+        ...mapMutations(["updateComment", "updateVisibility"]),
         back() {
             this.$router.go(-1);
         },
         handleSave(data) {
-            this.updateRef({
-                editorRef: data.ref
+            this.updateComment({
+                editorRef: data.ref,
+                replyTo: data.replyTo
             });
-            this.updateContent(data.content);
             this.saveComment({
                 articleId: this.id
             });

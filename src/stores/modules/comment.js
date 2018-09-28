@@ -9,15 +9,13 @@ const comment = {
         content: "",
     },
     mutations: {
-        updateRef(state, payload) {
+        updateComment(state, payload) {
             state.editorRef = payload.editorRef;
             state.replyTo = payload.replyTo;
+            state.content = payload.content;
         },
         updateVisibility(state, visible) {
             state.visible = visible;
-        },
-        updateContent(state, content) {
-            state.content = content;
         }
     },
     actions: {

@@ -19,7 +19,7 @@
                 </div>
                 <span>2018-08-10 08:19:00</span>
             </div>
-            <comment-editor :showCancel="true" @cancel="toggleEditor" v-if="showEditor" />
+            <comment-editor :showCancel="true" @ok="handleSave" @cancel="toggleEditor" v-if="showEditor" />
         </div>
     </div>
 </template>
@@ -52,6 +52,9 @@ export default {
     methods: {
         toggleEditor() {
             this.showEditor = !this.showEditor;
+        },
+        handleSave(data) {
+            this.$emit("ok", data);
         }
     }
 };

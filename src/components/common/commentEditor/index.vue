@@ -20,7 +20,8 @@ export default {
         showCancel: {
             type: Boolean,
             default: false
-        }
+        },
+        replyTo: String
     },
     data() {
         return {
@@ -32,14 +33,16 @@ export default {
     },
     methods: {
         ok() {
-            if (!this.content.trim()) {
+            let { content, replyTo } = this;
+            if (!content.trim()) {
                 message.destroy();
                 message.error("请输入内容");
                 return;
             }
             this.$emit("ok", {
                 ref: this,
-                content: this.content
+                content,
+                replyTo
             });
         },
         cancel() {
