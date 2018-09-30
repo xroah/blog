@@ -10,7 +10,7 @@
         </div>
         <div class="comments-editor-wrapper">
             <span>发表评论</span>
-            <comment-editor @ok="handleSave"/>
+            <comment-editor @ok="handleSave" />
         </div>
         <div class="all-comments-wrapper">
             <span>所有评论</span>
@@ -21,18 +21,18 @@
         <modal :visible="showModal" @update:visible="updateVisibility" class="info-modal" title="补全信息">
             <div class="info-row">
                 <label><span class="red">*</span>您的姓名</label>
-                <input type="text" class="v-input" placeholder="请输入您的姓名(必填)" v-model="name">
+                <input type="text" class="v-input" placeholder="请输入您的姓名(必填)" ref="nameRef" v-model="name" @input="clearError">
             </div>
-            <div class="info-row">
-                <label><span class="red">*</span>您的邮箱</label>
-                <input type="text" class="v-input" placeholder="请输入您的邮箱(必填,不公开)" v-model="email">
+                <div class="info-row">
+                    <label><span class="red">*</span>您的邮箱</label>
+                    <input type="text" class="v-input" placeholder="请输入您的邮箱(必填,不公开)" ref="emailRef" v-model="email" @input="clearError">
             </div>
-            <div class="info-row">
-                <label>您的网站</label>
-                <input type="text" class="v-input" placeholder="请输入您的网站">
+                    <div class="info-row">
+                        <label>您的网站</label>
+                        <input type="text" class="v-input" placeholder="请输入您的网站">
             </div>
-            <v-button type="primary">确定</v-button>
-            <span class="error-msg red" v-show="!!errorMsg">{{errorMsg}}</span>
+                        <v-button type="primary" @click="submitComment">确定</v-button>
+                        <span class="error-msg red" v-show="!!errorMsg">{{errorMsg}}</span>
         </modal>
     </section>
 </template>
@@ -91,9 +91,7 @@ export default {
         this.id = id;
     },
     methods: {
-        ...mapActions([
-            "saveComment"
-        ]),
+        ...mapActions(["saveComment"]),
         ...mapMutations(["updateComment", "updateVisibility"]),
         back() {
             this.$router.go(-1);
@@ -106,6 +104,20 @@ export default {
             this.saveComment({
                 articleId: this.id
             });
+        },
+        clearError() {
+            this.errorMsg = "";
+        },
+        submitComment() {
+            let { name, email } = this;
+            if (!name) {
+                this.errorMsg = "请输入姓名";
+                this.$refs.nameRef.focus();
+            } else if (!email) {
+                this.errorMsg = "请输入邮箱";
+            } else if (!/^[\w.-]+@[a-z\d-_]+(?:\.[a-z\d]+)+$/i.test(email)) {
+                this.errorMsg = "请输入正确的邮箱"
+            } 
         }
     }
 };
