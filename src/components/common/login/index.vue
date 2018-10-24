@@ -87,7 +87,7 @@ export default {
                 message.error("验证码格式不正确(4位字符)");
                 return;
             }
-            login(userName, password, code);
+            login();
         },
         keypress() {
             this.clickHandler();
@@ -99,7 +99,8 @@ export default {
         getCode() {
             fetch(GET_ID_CODE).then(ret => (this.codeImg = ret));
         },
-        login(userName, password, idCode) {
+        login() {
+            let {userName, password, showCode, idCode} = this;
             message.destroy();
             if (!userName || !password) {
                 message.error("用户名和密码都不能为空!");
@@ -112,7 +113,8 @@ export default {
                 body: {
                     userName,
                     password: _password,
-                    idCode
+                    idCode,
+                    needCode: showCode
                 }
             })
                 .then(() => {
