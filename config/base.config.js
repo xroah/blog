@@ -1,5 +1,4 @@
 const path = require("path");
-const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 let context = path.resolve(__dirname, "..");
@@ -7,8 +6,7 @@ let dist = path.join(context, "dist");
 
 module.exports = {
     entry: {
-        vendors: ["vue", "vuex", "vue-router"],
-        index: "./src/index.js"
+        index: "./src/index.tsx"
     },
     context,
     output: {
@@ -18,39 +16,43 @@ module.exports = {
         chunkFilename: "js/[name].[chunkhash].js"
     },
     resolve: {
-        extensions: [".js", ".vue"]
+        extensions: ["ts", ".tsx", ".js"]
     },
     module: {
         rules: [{
-                test: /.vue$/,
-                use: "vue-loader"
-            },
-            {
-                test: /.js$/,
-                exclude: /node_modules/,
-                use: "babel-loader"
-            },
-            {
-                test: /.png$|.jpg$|.jpeg$|.gif$|.svg$/,
-                use: [{
-                    loader: "url-loader",
-                    options: {
-                        limit: 8192,
-                        outputPath: "images",
-                        name: "[name].[ext]"
-                    }
-                }],
+            test: /\.tsx?$/,
+            use: "ts-loader"
+        },
+        {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: "babel-loader"
+        },
+        {
+            test: /\.png$|\.jpg$|\.jpeg$|\.gif$|\.svg$/,
+            use: [{
+                loader: "url-loader",
+                options: {
+                    limit: 8192,
+                    outputPath: "images",
+                    name: "[name].[ext]"
+                }
+            }],
 
-            }
+        }
         ]
     },
+    externals: {
+        "react": "React",
+        "react-dom": "ReactDOM",
+        "react-router-dom": "reactRouterDOM"
+    },
     plugins: [
-        new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             hash: true,
             template: "index.html",
             filename: "index.html",
-            favicon: "src/assets/images/favicon.png",
+            favicon: "assets/images/favicon.png",
             inject: "body"
         })
     ]

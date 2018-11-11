@@ -4,7 +4,7 @@ const webpack = require("webpack");
 let rules = baseConf.module.rules.concat({
     test: /.s?css$/,
     use: [
-        "vue-style-loader",
+        "style-loader",
         "css-loader",
         "sass-loader"
     ]
