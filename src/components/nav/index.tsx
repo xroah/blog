@@ -12,7 +12,7 @@ export default class Nav extends React.Component {
         return (
             <div>
                 nav
-                <Button color="primary" variant="contained" classes={{
+                <Button variant="contained" classes={{
                     containedPrimary: "primary"
                 }}>按钮</Button>
             </div>
