@@ -1,4 +1,5 @@
 import * as React from "react"; 
+import {Button} from "antd";
 import "./index.scss";
 
 export default class Nav extends React.Component {
@@ -11,6 +12,7 @@ export default class Nav extends React.Component {
         return (
             <div>
                 nav
+                <Button type="primary">click me</Button>
             </div>
         );
     }
