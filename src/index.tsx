@@ -1,6 +1,6 @@
 import * as React from "react";
 import { render } from "react-dom";
-import App from "./components/nav";
+import App from "./components/app";
 import { hot } from "react-hot-loader";
 import "normalize.css";
 

@@ -76,7 +76,7 @@ module.exports = {
     externals: {
         "react": "React",
         "react-dom": "ReactDOM",
-        "react-router-dom": "reactRouterDOM"
+        "react-router-dom": "ReactRouterDOM"
     },
     plugins: [
         new HtmlWebpackPlugin({
