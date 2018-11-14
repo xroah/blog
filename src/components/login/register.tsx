@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Button } from "antd";
+import { Link } from "react-router-dom";
 
 interface Props {
     history: any;
@@ -15,7 +16,7 @@ export default class Register extends React.Component<Props> {
         return (
             <div>
                 注册页面
-                <Button onClick={this.toLogin}>去登录</Button>
+                <Link to="/user/login">去登陆</Link>
             </div>
         );
     }
