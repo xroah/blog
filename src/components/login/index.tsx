@@ -7,6 +7,7 @@ import "./index.scss";
 
 interface Props {
     history: any;
+    location: any;
 }
 
 export default class User extends React.Component<Props> {
@@ -16,12 +17,13 @@ export default class User extends React.Component<Props> {
     }
 
     render() {
+        let { location } = this.props;
         return (
             <div>
                 111111
                 <TransitionGroup>
-                    <CSSTransition classNames="fade" timeout={300}>
-                        <Switch>
+                    <CSSTransition key={location.key} classNames="fade" timeout={300}>
+                        <Switch location={location}>
                             <Route path="/user/login" exact component={Login}></Route>
                             <Route path="/user/register" exact component={Register}></Route>
                         </Switch>
