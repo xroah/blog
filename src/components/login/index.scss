@@ -1,9 +1,15 @@
-.fade-enter {
-  opacity: 0;
-  z-index: 1;
+.fade-enter,
+.fade-exit.fade-exit-active {
+	opacity: 0;
 }
 
-.fade-enter.fade-enter-active {
+.fade-enter-active,
+.fade-exit {
   opacity: 1;
-  transition: opacity 250ms ease-in;
+}
+
+
+.login-container {
+	position: absolute;
+	top:0;left: 0;
 }

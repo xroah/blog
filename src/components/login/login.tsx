@@ -14,7 +14,7 @@ export default class Login extends React.Component<Props> {
 
     render() {
         return (
-            <div>
+            <div className="login-container">
                 登录页面
                 <Link to="/user/register">去注册</Link>
             </div>
