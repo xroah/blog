@@ -1,3 +1,4 @@
+@import "../../styles/variables";
 .user-container {
     display: flex;
     justify-content: center;
@@ -8,14 +9,16 @@
 
 .login-center-box {
     position: absolute;
-    $margin: 15px;
+    $margin: 20px;
     width: 320px;
     padding: $margin;
     border-radius: 8px;
     backface-visibility: hidden;
     background-color: #fff;
+    box-shadow: 0 0 10px 1px $primaryColor;
     z-index: 10;
     transition: all 1s;
+    opacity: .9;
     .input-wrapper {
         margin: $margin 0;
     }
@@ -27,9 +30,25 @@
         width: 100%;
         margin: $margin 0;
     }
+    .register-button {
+        width: 100%;
+    }
     > :last-child {
         display: flex;
         justify-content: flex-end;
+    }
+    .input-wrapper {
+        .code-input {
+            width: 120px;
+            vertical-align: middle;
+        }
+        .code-img {
+            width: 100px;
+            height: 32px;
+            border: none;
+            margin-left: 10px;
+            background-color: red;
+        }
     }
 }
 
