@@ -19,17 +19,19 @@ export default class User extends React.Component<Props> {
     render() {
         let { location } = this.props;
         return (
-            <div>
-                111111
-                <TransitionGroup>
-                    <CSSTransition key={location.key} classNames="fade" timeout={300}>
-                        <Switch location={location}>
-                            <Route path="/user/login" exact component={Login}></Route>
-                            <Route path="/user/register" exact component={Register}></Route>
-                        </Switch>
-                    </CSSTransition>
-                </TransitionGroup>
-            </div>
+            <>
+                <div className="login-background"></div>
+                <section className="user-container">
+                    <TransitionGroup component={null}>
+                        <CSSTransition key={location.key} classNames="flip" timeout={1000}>
+                            <Switch location={location}>
+                                <Route path="/user/login" exact component={Login}></Route>
+                                <Route path="/user/register" exact component={Register}></Route>
+                            </Switch>
+                        </CSSTransition>
+                    </TransitionGroup>
+                </section>
+            </>
         );
     }
 }

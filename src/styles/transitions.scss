@@ -1,0 +1,15 @@
+.flip-enter {
+    opacity: 0.01;
+    transform: rotateY(180deg);
+}
+
+.flip-enter-active,
+.flip-exit {
+    opacity: 1;
+    transform: rotateY(0);
+}
+
+.flip-exit-active {
+    opacity: 0.01;
+    transform: rotateY(-180deg);
+}

@@ -1,0 +1,50 @@
+/**
+global styles
+*/
+@import "./_variables";
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+}
+
+body {
+    font: 14px/1.5 Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
+    color: $defaultTextColor;
+    background-color: #f6f6f6;
+    path {
+        fill: $defaultTextColor;
+    }
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+input,
+button,
+select {
+    outline: none;
+}
+
+input {
+    -webkit-appearance: none; //remove ios input shadow
+}
+
+button {
+    //remove click shadow on mobile phone
+    -webkit-tap-highlight-color: transparent;
+}

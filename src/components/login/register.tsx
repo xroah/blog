@@ -14,7 +14,7 @@ export default class Register extends React.Component<Props> {
 
     render() {
         return (
-            <div className="login-container">
+            <div className="login-center-box">
                 注册页面
                 <Link to="/user/login">去登陆</Link>
             </div>

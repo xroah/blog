@@ -1,15 +1,44 @@
-.fade-enter,
-.fade-exit.fade-exit-active {
-	opacity: 0;
+.user-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    perspective: 1000px;
 }
 
-.fade-enter-active,
-.fade-exit {
-  opacity: 1;
+.login-center-box {
+    position: absolute;
+    $margin: 15px;
+    width: 320px;
+    padding: $margin;
+    border-radius: 8px;
+    backface-visibility: hidden;
+    background-color: #fff;
+    z-index: 10;
+    transition: all 1s;
+    .input-wrapper {
+        margin: $margin 0;
+    }
+    .remember {
+        display: flex;
+        justify-content: space-between;
+    }
+    .login-button {
+        width: 100%;
+        margin: $margin 0;
+    }
+    > :last-child {
+        display: flex;
+        justify-content: flex-end;
+    }
 }
 
-
-.login-container {
-	position: absolute;
-	top:0;left: 0;
+.login-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #282537;
+    background-image: radial-gradient(circle at left top, #3c3b52 0%, #252233 80%);
 }
