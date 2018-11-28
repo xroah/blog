@@ -8,10 +8,6 @@ interface Props {
 
 export default class Register extends React.Component<Props> {
 
-    toLogin = () => {
-        this.props.history.push("/user/login");
-    }
-
     render() {
         return (
             <div className="login-center-box">
@@ -32,7 +28,7 @@ export default class Register extends React.Component<Props> {
                     <img className="code-img"/>
                 </div>
                 <div className="input-wrapper">
-                     <Button type="primary" className="register-button">注册</Button>
+                     <Button htmlType="button" type="primary" className="register-button">注册</Button>
                 </div>
                 <div>
                     <span>已有账号?</span>
