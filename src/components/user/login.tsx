@@ -40,7 +40,7 @@ export default class Login extends React.Component<Props> {
                     <a href="javascript:;">忘记密码?</a>
                 </div>
                 <Button type="primary" htmlType="button" className="login-button">登录</Button>
-                <div>
+                <div className="to-other">
                     <span>没有账号?</span>
                     <Link to="/user/register">去注册</Link>
                 </div>
