@@ -7,9 +7,38 @@
 .flip-exit {
     opacity: .9;
     transform: rotateY(0);
+    transition: opacity 1s;
 }
 
 .flip-exit-active {
     opacity: 0.01;
     transform: rotateY(-180deg);
+}
+
+.translate-x-scale-enter {
+    transform: translateX(100%) scale(0);
+}
+
+.translate-x-scale-enter-active,
+.translate-x-scale-exit {
+    transform: translateX(0) scale(1);
+    transition: all .3s !important;
+}
+
+.translate-x-scale-exit-active {
+    transform: translateX(-100%) scale(0);
+}
+
+.translate-x-scale-reverse-enter {
+    transform: translateX(-100%) scale(0);
+}
+
+.translate-x-scale-reverse-enter-active,
+.translate-x-scale-reverse-exit {
+    transform: translateX(0) scale(1);
+    transition: all .3s !important;
+}
+
+.translate-x-scale-reverse-exit-active {
+    transform: translateX(100%) scale(0);
 }

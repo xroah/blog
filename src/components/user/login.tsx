@@ -20,7 +20,7 @@ export default class Login extends React.Component<Props> {
 
     render() {
         return (
-            <div className="login-center-box">
+            <div className="center-box">
                 <p className="daily-sentence"></p>
                 <div className="input-wrapper login-input-wrapper">
                     <Input
@@ -37,7 +37,7 @@ export default class Login extends React.Component<Props> {
                 </div>
                 <div className="remember">
                     <Checkbox>记住密码</Checkbox>
-                    <a href="javascript:;">忘记密码?</a>
+                    <Link to="/user/getPass">忘记密码?</Link>
                 </div>
                 <Button type="primary" htmlType="button" className="login-button">登录</Button>
                 <div className="to-other">

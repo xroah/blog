@@ -1,8 +1,10 @@
 import * as React from "react";
 import Login from "./login";
 import Register from "./register";
+import GetPass from "./getPass"
 import { Route, Switch } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+
 import "./index.scss";
 
 interface Props {
@@ -10,7 +12,7 @@ interface Props {
     location: any;
 }
 
-export default class User extends React.Component<Props> {
+export default class User extends React.Component<Props, any> {
 
     login = () => {
         this.props.history.push("/");
@@ -18,6 +20,7 @@ export default class User extends React.Component<Props> {
 
     render() {
         let { location } = this.props;
+
         return (
             <>
                 <div className="login-background"></div>
@@ -25,8 +28,9 @@ export default class User extends React.Component<Props> {
                     <TransitionGroup component={null}>
                         <CSSTransition key={location.pathname} classNames="flip" timeout={1000}>
                             <Switch location={location}>
-                                <Route path="/user/login" exact component={Login}></Route>
-                                <Route path="/user/register" exact component={Register}></Route>
+                                <Route path="/user/login" exact component={Login}/>
+                                <Route path="/user/register" exact component={Register}/>
+                                <Route path="/user/getPass" exact component={GetPass}/>
                             </Switch>
                         </CSSTransition>
                     </TransitionGroup>

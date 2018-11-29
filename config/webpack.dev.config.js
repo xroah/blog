@@ -26,6 +26,7 @@ module.exports = {
         hot: true,
         inline: true,
         historyApiFallback: true,
+        host: "10.1.18.125",
         proxy: {
             "/api": "http://localhost:8008"
         }

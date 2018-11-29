@@ -1,10 +1,10 @@
 import * as React from "react";
 import {Button, Input, Form} from "antd";
 import {Link} from "react-router-dom";
+import {FormComponentProps} from "antd/lib/form";
 
-interface Props {
+interface Props extends FormComponentProps {
     history: any;
-    form: any;
 }
 
 class Register extends React.Component<Props, any> {
@@ -38,9 +38,9 @@ class Register extends React.Component<Props, any> {
         const {getFieldDecorator} = this.props.form;
         const {Item} = Form;
         return (
-            <div className="login-center-box">
+            <div className="center-box">
                 <Form>
-                    <Item label="用户名">
+                    <Item>
                         {getFieldDecorator("userName", {
                             rules: [{required: true, message: "用户名不能为空"}, {
                                 pattern: /\w/,
@@ -54,7 +54,7 @@ class Register extends React.Component<Props, any> {
                                 onChange={this.handleChange}/>
                         )}
                     </Item>
-                    <Item label="邮箱">
+                    <Item>
                         {getFieldDecorator("email", {
                             rules: [{
                                 required: true,
@@ -67,7 +67,7 @@ class Register extends React.Component<Props, any> {
                                 placeholder="请输入邮箱,帮助找回密码"/>
                         )}
                     </Item>
-                    <Item label="密码">
+                    <Item>
                         {getFieldDecorator("password", {
                             rules: [{required: true, message: "密码不能为空"}],
                         })(
@@ -77,7 +77,7 @@ class Register extends React.Component<Props, any> {
                                 placeholder="请输入密码"/>
                         )}
                     </Item>
-                    <Item label="重复密码">
+                    <Item>
                         {getFieldDecorator("confirm", {
                             rules: [{required: true, message: "请重复输入密码"}, {
                                 validator: (rule: any, value: string, callback: Function) => {
@@ -101,23 +101,18 @@ class Register extends React.Component<Props, any> {
                                 placeholder="请重复输入密码"/>
                         )}
                     </Item>
-                    <Item label="验证码">
-                    {getFieldDecorator("idCode", {
-                        rules: [{required: true, message: "验证码不能为空"}],
-                    })(
-                        <Input
-                            type="text"
-                            name="idCode"
-                            className="code-input"
-                            placeholder="请输入验证码"/>
-                    )}
+                    <Item>
+                        {getFieldDecorator("idCode", {
+                            rules: [{required: true, message: "验证码不能为空"}],
+                        })(
+                            <Input
+                                type="text"
+                                name="idCode"
+                                className="code-input"
+                                placeholder="请输入验证码"/>
+                        )}
                         <img className="code-img"/>
-                </Item>
-                    {/*
-                    <div className="input-wrapper">
-                        <Input type="text" className="code-input" placeholder="请输入验证码"/>
-
-                    </div>*/}
+                    </Item>
                     <Button type="primary" className="login-button" onClick={this.handleSubmit}>注册</Button>
                     <div className="to-other">
                         <span>已有账号?</span>
