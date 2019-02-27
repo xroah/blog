@@ -1,0 +1,50 @@
+.loading-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .2);
+    pointer-events: none;
+    z-index: 100;
+
+    .loading-rotate {
+        $size: 36px;
+        $borderWidth: 5px;
+
+        @mixin base {
+            width: $size;
+            height: $size;
+            border-radius: 50%;
+            border: #{$borderWidth} solid #aaa;
+        }
+        
+        position: relative;
+        @include base();
+        background-color: #fff;
+
+        &::after {
+            content: "";
+            position: absolute;
+            top: -$borderWidth;
+            left: -$borderWidth;
+            @include base();
+            border-color: transparent;
+            border-top-color: #2196f3;
+            animation: rotate 1s infinite linear;
+        }
+    }
+}
+
+
+@keyframes rotate {
+    0% {
+        transform: rotate(360deg);
+    }
+    100% {
+        transform: rotate(0);
+    }
+}

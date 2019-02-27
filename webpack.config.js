@@ -1,0 +1,120 @@
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const CleanPlugin = require("clean-webpack-plugin");
+const ExtractCssPlugin = require("mini-css-extract-plugin");
+const HTMLPlugin = require("html-webpack-plugin");
+const OptimizeCssPlugin = require("optimize-css-assets-webpack-plugin");
+const path = require("path");
+
+let env = process.env.NODE_ENV;
+let styleLoader = env === "production" ? ExtractCssPlugin.loader : "style-loader";
+let cfg = {
+    mode: env,
+    entry: {
+        // polyfill: "@babel/polyfill",
+        app: "./src/index.tsx",
+        //    vendors: ["react", "react-dom", "react-router-dom", "redux", "redux-saga"]
+    },
+    context: __dirname,
+    output: {
+        path: `${__dirname}/dist`,
+        filename: "js/[name].js",
+        chunkFilename: "js/[name].[chunkhash].js"
+    },
+    resolve: {
+        extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
+        alias: {
+            "@images": path.resolve(__dirname, "./assets/images"),
+            "@common": path.resolve(__dirname, "./src/components/common")
+        }
+    },
+    module: {
+        rules: [{
+                test: /\.(j|t)sx?$/,
+                use: [
+                    "babel-loader",
+                    "react-hot-loader/webpack"
+                ]
+            },
+            {
+                test: /\.s?css$/,
+                use: [
+                    styleLoader,
+                    "css-loader",
+                    "sass-loader"
+                ]
+            },
+            {
+                test: /\.png$|\.jpe?g$|\.gif$|\.svg$/,
+                use: {
+                    loader: "url-loader",
+                    options: {
+                        limit: 8192,
+                        outputPath: "images",
+                        name: "[name].[ext]"
+                    }
+                },
+
+            }
+        ]
+    },
+    plugins: [
+        new HTMLPlugin({
+            template: "index.html",
+            filename: "index.html",
+            hash: true,
+            favicon: "./assets/images/favicon.png"/* ,
+            chunksSortMode(chunk1, chunk2) {
+                if (chunk1.names[0].includes("polyfill") || chunk2.names.includes("polyfill")) {
+                    return -1;
+                }
+                return 0;
+            } */
+        })
+    ]
+};
+
+if (env === "development") {
+    cfg.devServer = {
+        hot: true,
+        historyApiFallback: true,
+        port: 8008,
+        open: true,
+        inline: true,
+        contentBase: "dist"
+    };
+} else {
+    cfg.plugins.push(
+        new CleanPlugin("./dist", {
+            root: __dirname
+        }),
+        new ExtractCssPlugin({
+            filename: "css/style.css"
+        })
+    );
+    cfg.optimization = {
+        minimizer: [
+            new UglifyJsPlugin({
+                cache: true,
+                parallel: true
+            }),
+            new OptimizeCssPlugin()
+        ],
+        splitChunks: {
+            chunks: "all",
+            minChunks: 1,
+            maxSize: 500 * 1024,
+            cacheGroups: {
+                vendors: {
+                    test(module) {
+                        return module.type === "javascript/auto" &&
+                            module.context.includes("node_modules") /* &&
+                            !/@babel[\/\\]polyfill/.test(module.context);//polyfill should load first */
+                    },
+                    name: "vendors"
+                }
+            }
+        }
+    };
+}
+
+module.exports = cfg;

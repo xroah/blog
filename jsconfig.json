@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@images/*": ["./assets/images/*"],
+      "@common/*": ["./src/components/common/*"]
+    }
+  }
+}
