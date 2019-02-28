@@ -3,6 +3,7 @@ import { hot } from "react-hot-loader/root";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Loadable from "react-loadable";
 import Loading from "@common/loading";
+import "quill/dist/quill.snow.css";
 import "./app.scss";
 
 const _loading = {
