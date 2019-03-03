@@ -1,0 +1,21 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    font: 14px/1.5 Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
+    background-color: #f6f6f6;
+}
+
+a {
+    text-decoration: none;
+    color: #333;
+}
+
+.main-container {
+    width: 1000px;
+    margin: 0 auto;
+    padding-top: 75px;
+}

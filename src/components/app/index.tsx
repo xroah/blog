@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Loadable from "react-loadable";
 import Loading from "@common/loading";
 import "quill/dist/quill.snow.css";
-import "./app.scss";
+import "./index.scss";
 
 const _loading = {
     loading: Loading
@@ -28,7 +28,7 @@ class App extends React.Component {
         return (
             <Router>
                 <Switch>
-                    <Route path="/admin" component={AdminHome} />
+                    <Route path="/xsys" component={AdminHome} />
                     <Route path="/404" component={E404}/>
                     <Route path="/" component={UserHome} />
                 </Switch>

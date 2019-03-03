@@ -18,7 +18,8 @@ let cfg = {
     output: {
         path: `${__dirname}/dist`,
         filename: "js/[name].js",
-        chunkFilename: "js/[name].[chunkhash].js"
+        chunkFilename: "js/[name].[chunkhash].js",
+        publicPath: "/"
     },
     resolve: {
         extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
