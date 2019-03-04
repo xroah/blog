@@ -4,6 +4,7 @@ import Articles from "../articles";
 
 export default class UserHome extends React.Component {
     render() {
+        console.log(this)
         return (
             <div>
                 <nav>导航</nav>

@@ -1,0 +1,13 @@
+@import "../styles/variables";
+
+.message-wrapper {
+    .message-success {
+        background-color: $successColor;
+    }
+    .message-error {
+        background-color: $errorColor;
+    }
+    .message-info {
+        background-color: $infoColor;
+    }
+}
