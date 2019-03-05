@@ -81,7 +81,10 @@ if (env === "development") {
         port: 8008,
         open: true,
         inline: true,
-        contentBase: "dist"
+        contentBase: "dist",
+        proxy: {
+            "/api": "http://localhost:8000"
+        }
     };
 } else {
     cfg.plugins.push(

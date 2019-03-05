@@ -95,7 +95,7 @@ function setXhrFlag(conf) {
     }
 }
 
-function _fetch(url: string, config: Object) {
+function _fetch(url: string, config?: Object) {
     let conf: any = {
         ...DEFAULT_CONFIG,
         ...config
