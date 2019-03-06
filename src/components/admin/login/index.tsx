@@ -13,7 +13,10 @@ import Tooltip from "@material-ui/core/Tooltip";
 import message from "@common/message";
 import md5 from "blueimp-md5";
 import { RouteComponentProps } from "react-router-dom";
+import { encrypt } from "@common/util";
 import "./index.scss";
+
+const SAVE_INFO_KEY = "accountInfo";
 
 export default class Login extends React.Component<RouteComponentProps> {
     state = {
@@ -26,7 +29,21 @@ export default class Login extends React.Component<RouteComponentProps> {
         usernameError: false,
         passwordError: false
     };
+
+    getSavedInfo() {
+        let info: any = JSON.parse(localStorage.getItem(SAVE_INFO_KEY));
+        if (info) {
+            this.setState({
+                password: encrypt(atob(info.password), info.username),
+                username: atob(info.username),
+                autoLogin: info.autoLogin,
+                savePassword: true
+            });
+        }
+    }
+
     async componentDidMount() {
+        this.getSavedInfo();
         try {
             let img: any = await _fetch(FETCH_BACKGROUND);
             this.setState({
@@ -74,6 +91,27 @@ export default class Login extends React.Component<RouteComponentProps> {
         }
     }
 
+    handleLoginSuccess = () => {
+        let {
+            username,
+            password,
+            savePassword,
+            autoLogin
+        } = this.state;
+        if (savePassword) {
+            username = btoa(username);
+            password = btoa(encrypt(password, username));
+            localStorage.setItem(SAVE_INFO_KEY, JSON.stringify({
+                username,
+                password,
+                autoLogin
+            }));
+        } else {
+            localStorage.removeItem(SAVE_INFO_KEY);
+        }
+        this.props.history.push("/xsys");
+    }
+
     login = () => {
         let { username, password } = this.state;
         if (!username.trim() || !password.trim()) {
@@ -86,9 +124,7 @@ export default class Login extends React.Component<RouteComponentProps> {
                 username,
                 password: md5(password)
             }
-        }).then(() => {
-            this.props.history.push("/xsys");
-        }).catch(() => {});
+        }).then(this.handleLoginSuccess).catch(() => { });
     }
 
     render() {
@@ -133,6 +169,7 @@ export default class Login extends React.Component<RouteComponentProps> {
                             value={password}
                             placeholder="密码"
                             className="login-item"
+                            type="password"
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
