@@ -1,0 +1,23 @@
+.dialog {
+    .hint-dialog-content {
+        min-width: 320px;
+        // padding: 10px 24px;
+        $border: 1px solid #eee;
+/* 
+        border: {
+            left: none;
+            right: none;
+            top: $border;
+            bottom: $border;
+        } */
+    }
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        min-width: auto;
+        border-radius: 50%;
+        height: 36px;
+        width: 36px;
+    }
+}

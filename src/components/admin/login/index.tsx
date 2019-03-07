@@ -156,7 +156,7 @@ export default class Login extends React.Component<RouteComponentProps> {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <Person />
+                                        <Person color="action"/>
                                     </InputAdornment>
                                 ),
                             }} />
@@ -173,7 +173,7 @@ export default class Login extends React.Component<RouteComponentProps> {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <Lock />
+                                        <Lock color="action"/>
                                     </InputAdornment>
                                 ),
                             }} />

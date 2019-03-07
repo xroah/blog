@@ -1,0 +1,13 @@
+.cls-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    .cls-card {
+        width: 200px;
+        margin: 10px;
+    }
+
+    .cls-operate {
+        display: flex;
+        justify-content: flex-end;
+    }
+}
