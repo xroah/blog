@@ -1,4 +1,5 @@
 import message from "./message";
+import { autoLogin } from "./login";
 
 let supportFetch = "fetch" in window && typeof fetch === "function";
 
@@ -27,8 +28,7 @@ function isObject(obj) {
     return Object.prototype.toString.call(obj) === "[object Object]";
 }
 
-function errorAlert(err) {
-    err = err || {};
+function errorAlert(err: any = {}) {
     message.error(
         err.errMsg // error message from server
         ||
@@ -122,6 +122,11 @@ function _fetch(url: string, config?: Object) {
                 let res = await response.json();
                 if (res.errCode === 0) {
                     resolve(res.data);
+                } else if (res.errCode === 403) {
+                    autoLogin(
+                        () => location.reload(),
+                        () => location.assign("/xsys/login")
+                        );
                 } else {
                     reject(res.data);
                     errorAlert(res);

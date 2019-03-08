@@ -7,16 +7,13 @@ import Button from "@material-ui/core/Button"
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import _fetch from "@common/fetch";
-import { FETCH_BACKGROUND, ADMIN_LOGIN } from "@common/api";
+import { FETCH_BACKGROUND } from "@common/api";
 import InfoOutlined from "@material-ui/icons/InfoOutlined"
 import Tooltip from "@material-ui/core/Tooltip";
 import message from "@common/message";
-import md5 from "blueimp-md5";
 import { RouteComponentProps } from "react-router-dom";
-import { encrypt } from "@common/util";
+import _login, { getInfo, saveInfo, delInfo } from "@common/login";
 import "./index.scss";
-
-const SAVE_INFO_KEY = "accountInfo";
 
 export default class Login extends React.Component<RouteComponentProps> {
     state = {
@@ -31,11 +28,11 @@ export default class Login extends React.Component<RouteComponentProps> {
     };
 
     getSavedInfo() {
-        let info: any = JSON.parse(localStorage.getItem(SAVE_INFO_KEY));
+        let info: any = getInfo();
         if (info) {
             this.setState({
-                password: encrypt(atob(info.password), info.username),
-                username: atob(info.username),
+                username: info.username,
+                password: info.password,
                 autoLogin: info.autoLogin,
                 savePassword: true
             });
@@ -69,7 +66,7 @@ export default class Login extends React.Component<RouteComponentProps> {
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>, type: string) => {
         let target = evt.target;
-        if (target.type === "text") {
+        if (target.type === "text" || target.type === "password") {
             this.setState({
                 [type]: target.value
             });
@@ -99,15 +96,9 @@ export default class Login extends React.Component<RouteComponentProps> {
             autoLogin
         } = this.state;
         if (savePassword) {
-            username = btoa(username);
-            password = btoa(encrypt(password, username));
-            localStorage.setItem(SAVE_INFO_KEY, JSON.stringify({
-                username,
-                password,
-                autoLogin
-            }));
+            saveInfo(username, password, autoLogin);
         } else {
-            localStorage.removeItem(SAVE_INFO_KEY);
+            delInfo();
         }
         this.props.history.push("/xsys");
     }
@@ -118,13 +109,7 @@ export default class Login extends React.Component<RouteComponentProps> {
             message.error("用户名和密码都不能为空");
             return;
         }
-        _fetch(ADMIN_LOGIN, {
-            method: "post",
-            body: {
-                username,
-                password: md5(password)
-            }
-        }).then(this.handleLoginSuccess).catch(() => { });
+        _login(username, password).then(this.handleLoginSuccess);
     }
 
     render() {

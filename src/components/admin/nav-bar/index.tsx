@@ -6,9 +6,11 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { NavLink } from "react-router-dom";
+import { logOut } from "@common/login";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import "./index.scss";
 
-export default class NavBar extends React.Component {
+class NavBar extends React.Component<RouteComponentProps> {
 
     state = {
         anchorEl: null
@@ -24,6 +26,14 @@ export default class NavBar extends React.Component {
         this.setState({
             anchorEl: null
         });
+    }
+
+    logout = async () => {
+        this.closeMenu();
+        try {
+            await logOut();
+        }catch(err){}
+        this.props.history.push("/xsys/login");
     }
 
     render() {
@@ -47,9 +57,11 @@ export default class NavBar extends React.Component {
                 </AppBar>
                 <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={this.closeMenu}>
                     <MenuItem onClick={this.closeMenu}>修改密码</MenuItem>
-                    <MenuItem onClick={this.closeMenu}>退出</MenuItem>
+                    <MenuItem onClick={this.logout}>退出</MenuItem>
                 </Menu>
             </>
         );
     }
 }
+
+export default withRouter(NavBar);
