@@ -103,6 +103,12 @@ export default class Login extends React.Component<RouteComponentProps> {
         this.props.history.push("/xsys");
     }
 
+    handleKeydown = (evt: React.KeyboardEvent) => {
+        if (evt.key.toLowerCase() === "enter") {
+            this.login();
+        }
+    }
+
     login = () => {
         let { username, password } = this.state;
         if (!username.trim() || !password.trim()) {
@@ -135,6 +141,7 @@ export default class Login extends React.Component<RouteComponentProps> {
                             onFocus={this.handleFocus}
                             onBlur={this.handleFocus}
                             onChange={evt => this.handleChange(evt as React.ChangeEvent<HTMLInputElement>, "username")}
+                            onKeyDown={this.handleKeydown}
                             value={username}
                             placeholder="用户名"
                             className="login-item"
@@ -151,6 +158,7 @@ export default class Login extends React.Component<RouteComponentProps> {
                             onFocus={this.handleFocus}
                             onBlur={this.handleFocus}
                             onChange={evt => this.handleChange(evt as React.ChangeEvent<HTMLInputElement>, "password")}
+                            onKeyDown={this.handleKeydown}
                             value={password}
                             placeholder="密码"
                             className="login-item"
