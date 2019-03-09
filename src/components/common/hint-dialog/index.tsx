@@ -65,7 +65,7 @@ class HintDialog extends React.Component<Props> {
             message,
             ok,
             cancel
-         } = this.props;
+        } = this.props;
         return (
             <Dialog
                 className="dialog"
@@ -74,14 +74,17 @@ class HintDialog extends React.Component<Props> {
                 transitionDuration={500}
                 onClose={this.handleClose}>
                 <DialogTitle>
-                <span>{title}</span>
-                <Button className="close-btn" color="secondary" onClick={this.handleClose}>
-                    <Clear />
-                </Button>
+                    <span>{title}</span>
+                    <Button className="close-btn" color="secondary" onClick={this.handleClose}>
+                        <Clear />
+                    </Button>
                 </DialogTitle>
                 <DialogContent className="hint-dialog-content">{message}</DialogContent>
                 <DialogActions>
-                    {ok && <Button color="primary" onClick={this.handleOk}>确定</Button>}
+                    {ok && <Button
+                        color="primary"
+                        style={{ color: "#2196f3" }}
+                        onClick={this.handleOk}>确定</Button>}
                     {cancel && <Button onClick={this.handleClose}>取消</Button>}
                 </DialogActions>
             </Dialog>
@@ -98,9 +101,9 @@ function show(msg: string, config: Props) {
     }
     config.onClose = onClose(config.onClose);
     render(
-        <HintDialog 
-        message={msg}
-        {...config}
+        <HintDialog
+            message={msg}
+            {...config}
         />,
         container
     );
@@ -119,12 +122,12 @@ const dialog = {
     confirm(message: string, onOk?: () => any, config: Props = {}) {
         config.ok = true;
         config.cancel = true;
-        show(message, {...config, onOk});
+        show(message, { ...config, onOk });
     },
     alert(message, onOk?: () => any, config: Props = {}) {
         config.ok = true;
         config.cancel = false;
-        show(message, {...config, onOk})
+        show(message, { ...config, onOk })
     }
 };
 

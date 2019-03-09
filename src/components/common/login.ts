@@ -2,6 +2,7 @@ import _fetch from "./fetch";
 import md5 from "blueimp-md5";
 import { encrypt } from "./util";
 import { ADMIN_LOGIN } from "./api";
+import message from "@common/message";
 
 export const SAVE_INFO_KEY = "accountInfo";
 
@@ -45,9 +46,12 @@ export default function login(username: string, password: string) {
 export function autoLogin(callback: Callback = () => 0, errCb: Callback = () => 0) {
     let info: any = getInfo();
     if (info && info.autoLogin) {
+        message.info("正在登录...");
         login(info.username, info.password)
             .then(callback)
             .catch(errCb);
+    } else {
+        errCb(null);
     }
 }
 

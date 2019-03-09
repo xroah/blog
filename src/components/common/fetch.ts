@@ -36,8 +36,7 @@ function errorAlert(err: any = {}) {
         ||
         err.message //other javascript error
         ||
-        "未知错误",
-        1500
+        "未知错误"
     );
 }
 
@@ -123,7 +122,6 @@ function _fetch(url: string, config?: Object) {
                 if (res.errCode === 0) {
                     resolve(res.data);
                 } else if (res.errCode === 403) {
-                    message.info("正在登录...", 3000);
                     autoLogin(
                         () => location.reload(),
                         () => setTimeout(() => location.assign("/xsys/login"), 1500)
