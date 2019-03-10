@@ -34,7 +34,7 @@
             @include base();
             border-color: transparent;
             border-top-color: #2196f3;
-            animation: rotate 1s infinite linear;
+            animation: rotate 1s infinite linear reverse;
         }
     }
 }

@@ -7,7 +7,7 @@ import "normalize.css";
 
 render(
     <MuiThemeProvider theme={theme}>
-        <App />
+        <App/>
     </MuiThemeProvider>,
     document.getElementById("app")
 );
