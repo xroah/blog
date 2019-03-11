@@ -1,11 +1,15 @@
 .admin-article-list {
-    padding: 10px;
+    // padding: 10px;
+    margin-top: -10px;
+
     .article-list-wrapper {
         display: flex;
         flex-wrap: wrap;
+
         .article-card {
             width: 480px;
             margin-top: 20px;
+
             &:nth-child(2n) {
                 margin-left: 20px;
             }

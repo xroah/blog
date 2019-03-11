@@ -1,6 +1,6 @@
 import * as React from "react";
 import ArticleCard from "../../../containers/article-card";
-import { Button } from "@material-ui/core";
+import { Button, Zoom } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import "./index.scss";
 
@@ -22,11 +22,13 @@ export default class Articles extends React.Component<Props> {
             return (
                 <ArticleCard
                     key={a._id}
+                    style={{ transition: "all .3s" }}
                     isAdmin={true}
                     title={a.title}
                     createTime={a.createTime}
                     index={i}
-                    tags={a.tags}>
+                    tags={a.tags}
+                    timeout={50 + i * 50}>
                     {a.summary}
                 </ArticleCard>
             );
@@ -36,7 +38,6 @@ export default class Articles extends React.Component<Props> {
     render() {
         return (
             <section className="admin-article-list">
-                文章列表
                 <div className="article-list-wrapper">
                     {this.renderArticles()}
                 </div>

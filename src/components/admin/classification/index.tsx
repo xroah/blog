@@ -133,7 +133,7 @@ export default class Classification extends React.Component {
         let { list } = this.state;
         if (!list || !list.length) return null;
         return list.map((item: any, index) => {
-            let timeout = 300;
+            let timeout = 50 + index * 50;
             return (
                 <Zoom in={true} key={item._id} timeout={timeout}>
                     <Card className="cls-card">
