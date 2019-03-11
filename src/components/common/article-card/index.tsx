@@ -17,7 +17,7 @@ import {
 import { formatDate } from "@common/util";
 import "./index.scss";
 
-interface Props extends React.HTMLAttributes<any> {
+export interface Props extends React.HTMLAttributes<any> {
     title: string;
     createTime: string;
     tags?: Array<string>;
@@ -26,7 +26,7 @@ interface Props extends React.HTMLAttributes<any> {
     comments?: number;
     secret?: boolean;
     index?: number;
-    detailCallback?: (index: number) => void;
+    showDetails?: (arg: any) => void;
 }
 
 export default class ArticleCard extends React.Component<Props> {
@@ -38,13 +38,6 @@ export default class ArticleCard extends React.Component<Props> {
         comments: 0
     };
 
-    showDetails = () => {
-        let { detailCallback, index = 0 } = this.props;
-        if (typeof detailCallback === "function") {
-            detailCallback(index);
-        }
-    }
-
     render() {
         let {
             title,
@@ -54,18 +47,20 @@ export default class ArticleCard extends React.Component<Props> {
             isAdmin,
             viewedTimes,
             comments,
-            secret
+            secret,
+            showDetails
         } = this.props;
         let date = formatDate(new Date(createTime));
         return (
             <Card className="article-card">
                 <CardHeader
                     title={title}
+                    className="article-title"
                     subheader={date}
                     action={
                         isAdmin ?
                             (
-                                <IconButton onClick={this.showDetails}>
+                                <IconButton onClick={showDetails}>
                                     <MoreVert />
                                 </IconButton>
                             ) : null

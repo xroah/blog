@@ -25,7 +25,10 @@ let cfg = {
         extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
         alias: {
             "@images": path.resolve(__dirname, "./assets/images"),
-            "@common": path.resolve(__dirname, "./src/components/common")
+            "@common": path.resolve(__dirname, "./src/components/common"),
+            "@containers": path.resolve(__dirname, "./src/containers"),
+            "@components": path.resolve(__dirname, "./src/components"),
+            "@redux": path.resolve(__dirname, "./src/redux")
         }
     },
     module: {
@@ -107,6 +110,7 @@ if (env === "development") {
             chunks: "all",
             minChunks: 1,
             maxSize: 500 * 1024,
+            minSize: 300 * 1024,
             cacheGroups: {
                 vendors: {
                     test(module) {

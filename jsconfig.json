@@ -4,7 +4,10 @@
     "baseUrl": ".",
     "paths": {
       "@images/*": ["./assets/images/*"],
-      "@common/*": ["./src/components/common/*"]
+      "@common/*": ["./src/components/common/*"],
+      "@containers/*": ["./src/containers/*"],
+      "@components/*": ["./src/components/*"],
+      "@redux/*": ["./src/redux/*"]
     }
   }
 }

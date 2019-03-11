@@ -2,7 +2,7 @@ import * as React from "react";
 import NavBar from "../nav-bar";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Classification from "../classification";
-import Articles from "../articles";
+import Articles from "../../../containers/admin-article";
 import PhotoAlbum from "../photo-album";
 import "./index.scss";
 

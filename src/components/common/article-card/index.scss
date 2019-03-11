@@ -4,11 +4,21 @@
         box-shadow: 0 5px 10px 0 rgba(0, 0, 0, .5);
         transform: translateY(-10px);
     }
+    .article-title > div:first-child {
+        span {
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
     .article-summary {
         cursor: pointer;
     }
     .tag-list {
         margin-top: 10px;
+        min-height: 24px;
+        line-height: 24px;
     }
     .tag {
         padding: 5px;
