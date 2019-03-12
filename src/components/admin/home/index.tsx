@@ -1,10 +1,10 @@
 import * as React from "react";
-import NavBar from "@containers/nav-bar";
+import NavBar from "@components/admin/nav-bar";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Classification from "../classification";
-import Articles from "../../../containers/admin-article";
+import Articles from "../../../containers/admin/admin-article";
 import PhotoAlbum from "../photo-album";
-import ModifyPwd from "@containers/modify-pwd";
+import ModifyPwd from "@containers/admin/modify-pwd";
 import "./index.scss";
 
 export default class AdminHome extends React.Component {

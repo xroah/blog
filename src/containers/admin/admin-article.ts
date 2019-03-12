@@ -1,4 +1,4 @@
-import Articles from "../components/admin/articles";
+import Articles from "@components/admin/articles";
 import { FETCH_ARTICLES_START } from "@redux/actions";
 import { connect } from "react-redux";
 

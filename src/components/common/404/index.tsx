@@ -1,24 +1,39 @@
 import * as React from "react";
 import { Button } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import "./index.scss";
+
 let img = require("@images/404.png");
 
-interface Props {
+interface Props extends RouteComponentProps {
     toUrl?: string;
 }
 
-export default class E404 extends React.Component<Props> {
+class E404 extends React.Component<Props> {
+
+    toHome = () => this.props.history.push("/");
+
+    back = () => this.props.history.goBack();
+
     render() {
         let { toUrl } = this.props;
         return (
-            <div>
-                <img src={img}/>
-                <Button variant="contained" color="primary">按钮</Button>
-                <Button variant="contained" color="secondary">
-                    <MenuIcon />
-                </Button>
-                <div>Hello React</div>
+            <div className="wrapper-404">
+                <img src={img} />
+                <p className="message">对不起,您访问的页面不存在!</p>
+                <div>
+                    <Button
+                        onClick={this.toHome}
+                        variant="contained"
+                        color="primary">主页</Button>
+                    <Button
+                        onClick={this.back}
+                        style={{ marginLeft: 20 }}
+                        variant="contained">返回</Button>
+                </div>
             </div>
         );
     }
 }
+
+export default withRouter(E404);

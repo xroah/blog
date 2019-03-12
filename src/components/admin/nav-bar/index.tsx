@@ -1,54 +1,15 @@
 import * as React from "react";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import {
     AppBar,
-    Toolbar,
-    IconButton,
-    Menu,
-    MenuItem
+    Toolbar
 } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
-import { logOut } from "@common/login";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import UserMenu from "@containers/admin/user-menu";
 import "./index.scss";
 
-interface Props extends RouteComponentProps {
-    showPwdDialog: () => void;
-}
-
-class NavBar extends React.Component<Props> {
-
-    state = {
-        anchorEl: null
-    };
-
-    openMenu = (evt: React.MouseEvent<HTMLElement, MouseEvent>) => {
-        this.setState({
-            anchorEl: evt.target
-        });
-    }
-
-    closeMenu = () => {
-        this.setState({
-            anchorEl: null
-        });
-    }
-
-    logout = async () => {
-        this.closeMenu();
-        try {
-            await logOut();
-        }catch(err){}
-        this.props.history.push("/xsys/login");
-    }
-
-    modifyPwd = () => {
-        this.closeMenu();
-        this.props.showPwdDialog();
-    }
+export default class NavBar extends React.Component {
 
     render() {
-        let { anchorEl } = this.state;
         return (
             <>
                 <AppBar>
@@ -60,19 +21,11 @@ class NavBar extends React.Component<Props> {
                             <NavLink to="/xsys/photo-album" exact className="nav-link">相册</NavLink>
                         </div>
                         <div className="nav-right">
-                            <IconButton color="inherit" onClick={this.openMenu}>
-                                <AccountCircle fontSize="large" />
-                            </IconButton>
+                            <UserMenu/>
                         </div>
                     </Toolbar>
                 </AppBar>
-                <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={this.closeMenu}>
-                    <MenuItem onClick={this.modifyPwd}>修改密码</MenuItem>
-                    <MenuItem onClick={this.logout}>退出</MenuItem>
-                </Menu>
             </>
         );
     }
 }
-
-export default withRouter(NavBar);

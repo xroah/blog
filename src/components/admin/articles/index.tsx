@@ -1,5 +1,5 @@
 import * as React from "react";
-import ArticleCard from "../../../containers/article-card";
+import ArticleCard from "@containers/admin/article-card";
 import { Button, Zoom } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import "./index.scss";

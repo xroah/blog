@@ -123,11 +123,10 @@ export default class Login extends React.Component<RouteComponentProps> {
             await _login(username, password);
             this.handleLoginSuccess();
         } catch (error) {
-
+            this.setState({
+                disabled: false
+            });
         }
-        this.setState({
-            disabled: false
-        });
     }
 
     render() {
