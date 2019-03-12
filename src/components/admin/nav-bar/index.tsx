@@ -1,16 +1,22 @@
 import * as React from "react";
-import AppBar from "@material-ui/core/AppBar";
-import ToolBar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import {
+    AppBar,
+    Toolbar,
+    IconButton,
+    Menu,
+    MenuItem
+} from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 import { logOut } from "@common/login";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import "./index.scss";
 
-class NavBar extends React.Component<RouteComponentProps> {
+interface Props extends RouteComponentProps {
+    showPwdDialog: () => void;
+}
+
+class NavBar extends React.Component<Props> {
 
     state = {
         anchorEl: null
@@ -36,12 +42,17 @@ class NavBar extends React.Component<RouteComponentProps> {
         this.props.history.push("/xsys/login");
     }
 
+    modifyPwd = () => {
+        this.closeMenu();
+        this.props.showPwdDialog();
+    }
+
     render() {
         let { anchorEl } = this.state;
         return (
             <>
                 <AppBar>
-                    <ToolBar className="admin-nav-bar">
+                    <Toolbar className="admin-nav-bar">
                         <div className="nav-left">
                             <h3 color="inherit" style={{ marginRight: 10 }}>后台管理系统</h3>
                             <NavLink to="/xsys" exact className="nav-link">首页</NavLink>
@@ -53,10 +64,10 @@ class NavBar extends React.Component<RouteComponentProps> {
                                 <AccountCircle fontSize="large" />
                             </IconButton>
                         </div>
-                    </ToolBar>
+                    </Toolbar>
                 </AppBar>
                 <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={this.closeMenu}>
-                    <MenuItem onClick={this.closeMenu}>修改密码</MenuItem>
+                    <MenuItem onClick={this.modifyPwd}>修改密码</MenuItem>
                     <MenuItem onClick={this.logout}>退出</MenuItem>
                 </Menu>
             </>

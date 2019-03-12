@@ -24,7 +24,8 @@ export default class Login extends React.Component<RouteComponentProps> {
         autoLogin: false,
         savePassword: false,
         usernameError: false,
-        passwordError: false
+        passwordError: false,
+        disabled: false
     };
 
     getSavedInfo() {
@@ -109,13 +110,24 @@ export default class Login extends React.Component<RouteComponentProps> {
         }
     }
 
-    login = () => {
+    login = async () => {
         let { username, password } = this.state;
         if (!username.trim() || !password.trim()) {
             message.error("用户名和密码都不能为空");
             return;
         }
-        _login(username, password).then(this.handleLoginSuccess);
+        this.setState({
+            disabled: true
+        });
+        try {
+            await _login(username, password);
+            this.handleLoginSuccess();
+        } catch (error) {
+
+        }
+        this.setState({
+            disabled: false
+        });
     }
 
     render() {
@@ -125,7 +137,8 @@ export default class Login extends React.Component<RouteComponentProps> {
             password,
             username,
             savePassword,
-            autoLogin
+            autoLogin,
+            disabled
         } = this.state;
         return (
             <section className="login-container">
@@ -148,7 +161,7 @@ export default class Login extends React.Component<RouteComponentProps> {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <Person color="action"/>
+                                        <Person color="action" />
                                     </InputAdornment>
                                 ),
                             }} />
@@ -166,7 +179,7 @@ export default class Login extends React.Component<RouteComponentProps> {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <Lock color="action"/>
+                                        <Lock color="action" />
                                     </InputAdornment>
                                 ),
                             }} />
@@ -198,6 +211,7 @@ export default class Login extends React.Component<RouteComponentProps> {
                     </div>
                     <div className="login-row">
                         <Button
+                            disabled={disabled}
                             variant="contained"
                             className="login-item"
                             color="primary"

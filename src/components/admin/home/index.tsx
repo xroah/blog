@@ -1,9 +1,10 @@
 import * as React from "react";
-import NavBar from "../nav-bar";
+import NavBar from "@containers/nav-bar";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Classification from "../classification";
 import Articles from "../../../containers/admin-article";
 import PhotoAlbum from "../photo-album";
+import ModifyPwd from "@containers/modify-pwd";
 import "./index.scss";
 
 export default class AdminHome extends React.Component {
@@ -19,6 +20,7 @@ export default class AdminHome extends React.Component {
                         <Route path="/xsys/photo-album" exact component={PhotoAlbum}/>
                         <Redirect to="/404"/>
                     </Switch>
+                    <ModifyPwd/>
                 </section>
             </>
         );
