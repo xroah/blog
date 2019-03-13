@@ -17,7 +17,8 @@ export default class NavBar extends React.Component {
                         <div className="nav-left">
                             <h3 color="inherit" style={{ marginRight: 10 }}>后台管理系统</h3>
                             <NavLink to="/xsys" exact className="nav-link">首页</NavLink>
-                            <NavLink to="/xsys/cls" exact className="nav-link">文章分类</NavLink>
+                            <NavLink to="/xsys/articles" className="nav-link">文章</NavLink>
+                            <NavLink to="/xsys/cls" exact className="nav-link">分类</NavLink>
                             <NavLink to="/xsys/photo-album" exact className="nav-link">相册</NavLink>
                         </div>
                         <div className="nav-right">

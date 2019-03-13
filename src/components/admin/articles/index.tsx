@@ -3,8 +3,9 @@ import ArticleCard from "@containers/admin/article-card";
 import { Button, Zoom } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import "./index.scss";
+import { RouteComponentProps } from "react-router";
 
-interface Props {
+interface Props extends RouteComponentProps {
     details?: any;
     articles?: Array<any>;
     fetchArticle?: () => void;
@@ -14,6 +15,10 @@ export default class Articles extends React.Component<Props> {
 
     async componentDidMount() {
         this.props.fetchArticle();
+    }
+
+    toAdd = () => {
+        this.props.history.push("/xsys/articles/edit");
     }
 
     renderArticles() {
@@ -41,7 +46,11 @@ export default class Articles extends React.Component<Props> {
                 <div className="article-list-wrapper">
                     {this.renderArticles()}
                 </div>
-                <Button className="add-right-bottom" variant="contained" color="primary">
+                <Button
+                    onClick={this.toAdd}
+                    className="add-right-bottom"
+                    variant="contained"
+                    color="primary">
                     <Add fontSize="large" />
                 </Button>
             </section>

@@ -1,8 +1,9 @@
 import * as React from "react";
 import Quill from "quill";
+import classnames from "classnames";
 import "./index.scss";
 
-export default class Editor extends React.Component {
+export default class Editor extends React.Component<React.HTMLAttributes> {
 
     toolbar: HTMLElement;
     textArea: HTMLElement;
@@ -78,8 +79,10 @@ export default class Editor extends React.Component {
     }
 
     render() {
+        let {className, ...otherProps} = this.props;
+        className = classnames(className, ".editor-wrapper");
         return (
-            <div className="editor-wrapper">
+            <div className={className}  {...otherProps}>
                 <div ref={el => this.toolbar = el}>
                     <select className="ql-size" defaultValue="">
                         <option value="f12">12px</option>

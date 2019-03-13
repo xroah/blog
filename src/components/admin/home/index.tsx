@@ -5,7 +5,9 @@ import Classification from "../classification";
 import Articles from "../../../containers/admin/admin-article";
 import PhotoAlbum from "../photo-album";
 import ModifyPwd from "@containers/admin/modify-pwd";
+import ArticleEdit from "../article-edit";
 import "./index.scss";
+import HomePage from "../home-page";
 
 export default class AdminHome extends React.Component {
 
@@ -15,9 +17,11 @@ export default class AdminHome extends React.Component {
                 <NavBar/>
                 <section className="main-container">
                     <Switch>
-                        <Route path="/xsys" exact component={Articles}/>
+                        <Route path="/xsys" exact component={HomePage}/>
                         <Route path="/xsys/cls" exact component={Classification}/>
                         <Route path="/xsys/photo-album" exact component={PhotoAlbum}/>
+                        <Route path="/xsys/articles/edit" exact component={ArticleEdit}/>
+                        <Route path="/xsys/articles" component={Articles}/>
                         <Redirect to="/404"/>
                     </Switch>
                     <ModifyPwd/>
