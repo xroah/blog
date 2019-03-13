@@ -1,19 +1,25 @@
 import * as React from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import {
+    Route,
+    Switch,
+    Redirect
+} from "react-router-dom";
+import NavBar from "../nav-bar";
 import Articles from "../articles";
+import PhotoAlbum from "@common/photo-album";
 
 export default class UserHome extends React.Component {
+
     render() {
-        console.log(this)
         return (
-            <div>
-                <nav>导航</nav>
+            <section className="main-container">
+                <NavBar />
                 <Switch>
-                    <Route exact path="/" component={Articles}/>
-                    <Redirect to="/404"/>
+                    <Route exact path="/" component={Articles} />
+                    <Route exact path="/photo-album" component={PhotoAlbum} />
+                    <Redirect to="/404" />
                 </Switch>
-                User Home page
-            </div>
+            </section>
         );
     }
 }

@@ -57,11 +57,11 @@ export default class ModifyPwd extends React.Component<Props> {
             rePwdRef
         } = this;
         if (!origPwd) {
-            origPwdRef.current.focus();
+            return origPwdRef.current.focus();
         } else if (!newPwd) {
-            newPwdRef.current.focus();
+            return newPwdRef.current.focus();
         } else if (!rePwd) {
-            rePwdRef.current.focus();
+            return rePwdRef.current.focus();
         }
         if (newPwd !== rePwd) {
             return message.error("新密码和重复密码输入不一致");

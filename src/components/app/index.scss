@@ -1,10 +1,10 @@
+@import "../common/styles/variables";
+
 *,
 *::before,
 *::after {
     box-sizing: border-box;
 }
-
-$primaryColor: #2196f3;
 
 body {
     font: 14px/1.5 Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
@@ -42,11 +42,42 @@ select {
     height: 32px;
     padding: 0 8px;
     border-radius: 5px;
-    border: 1px solid #d9d9d9;
+    border: 1px solid $defaultBorderColor;
     transition: all .3s;
+
     &:focus {
-        border-color: $primaryColor; 
-        box-shadow: 0 0 8px 0 #2196f3;
+        border-color: $primaryColor;
+        box-shadow: 0 0 8px 0 $primaryColor;
+    }
+}
+
+.nav-bar {
+    $height: 50px;
+
+    .toolbar {
+        width: $maxPageWidth;
+        height: $height;
+        min-height: $height;
+        margin: 0 auto;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 15px;
+        color: #fff;
+    }
+
+    .nav-link {
+        display: inline-flex;
+        height: $height;
+        align-items: center;
+        padding: 0 15px;
+        color: #fff;
+        transition: all .3s;
+    }
+
+    .nav-menu {
+        display: flex;
+        align-items: center;
+        height: $height;
     }
 }
 
@@ -54,10 +85,10 @@ select {
     padding-right: 0;
 }
 
-.main-container {
-    width: 1000px;
+.main-container{
+    width: $maxPageWidth;
     margin: 0 auto;
-    padding-top: 75px;
+    padding: 60px 10px 10px;
 
     .add-right-bottom {
         position: fixed;
@@ -67,5 +98,11 @@ select {
         height: 64px;
         padding: 0;
         border-radius: 50%;
+    }
+}
+
+@media screen and (max-width: #{$maxPageWidth}) {
+    .container {
+        width: 100%;
     }
 }
