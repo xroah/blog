@@ -118,17 +118,22 @@ function onClose(callback: () => any) {
 
 const container = document.createElement("div");
 
-const dialog = {
-    confirm(message: string, onOk?: () => any, config: Props = {}) {
+function factory(showCancel: boolean = true) {
+    return (message: string, onOk?: (() => any | void) | Props, config: Props = {}) => {
         config.ok = true;
-        config.cancel = true;
-        show(message, { ...config, onOk });
-    },
-    alert(message, onOk?: () => any, config: Props = {}) {
-        config.ok = true;
-        config.cancel = false;
-        show(message, { ...config, onOk })
+        config.cancel = showCancel;
+        if (typeof onOk === "object") {
+            config = onOk;
+        } else {
+            config = { ...config, onOk };
+        }
+        show(message, config);
     }
+}
+
+const dialog = {
+    confirm: factory(),
+    alert: factory(false)
 };
 
 export default dialog;

@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Loadable from "react-loadable";
 import Loading from "@common/loading";
 import E404 from "@common/404";
+import getUserConfirmation from "@common/user-confirmation";
 import "quill/dist/quill.snow.css";
 import "./index.scss";
 
@@ -29,7 +30,7 @@ const UserHome = Loadable({
 class App extends React.Component {
     render() {
         return (
-            <Router>
+            <Router getUserConfirmation={getUserConfirmation}>
                 <Switch>
                     <Route path="/xsys/login" exact component={AdminLogin}/>
                     <Route path="/xsys" component={AdminHome} />

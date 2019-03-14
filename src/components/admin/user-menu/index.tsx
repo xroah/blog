@@ -51,7 +51,7 @@ class UserMenu extends React.Component<Props> {
         return (
             <>
                 <IconButton color="inherit" onClick={this.openMenu}>
-                    <AccountCircle fontSize="large" />
+                    <AccountCircle />
                 </IconButton>
                 <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={this.closeMenu}>
                     <MenuItem onClick={this.modifyPwd}>修改密码</MenuItem>

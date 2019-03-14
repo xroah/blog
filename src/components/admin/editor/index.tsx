@@ -3,7 +3,11 @@ import Quill from "quill";
 import classnames from "classnames";
 import "./index.scss";
 
-export default class Editor extends React.Component<React.HTMLAttributes> {
+interface Props extends React.HTMLAttributes<any> {
+    onUpload?: () => void;
+}
+
+export default class Editor extends React.Component<Props> {
 
     toolbar: HTMLElement;
     textArea: HTMLElement;
@@ -35,7 +39,10 @@ export default class Editor extends React.Component<React.HTMLAttributes> {
     }
 
     handleImage = () => {
-        console.log("uploading")
+        let { onUpload } = this.props;
+        if (typeof onUpload === "function") {
+            onUpload();
+        }
     }
 
     setColors(second: string = "#000000") {
@@ -79,7 +86,7 @@ export default class Editor extends React.Component<React.HTMLAttributes> {
     }
 
     render() {
-        let {className, ...otherProps} = this.props;
+        let { className, onUpload, ...otherProps } = this.props;
         className = classnames(className, ".editor-wrapper");
         return (
             <div className={className}  {...otherProps}>
@@ -122,7 +129,7 @@ export default class Editor extends React.Component<React.HTMLAttributes> {
                     <button className="ql-list" value="bullet"></button>
                     <button className="ql-code-block"></button>
                     <select className="ql-color" defaultValue="#000000">
-                       {this.setColors("#ffffff")} 
+                        {this.setColors("#ffffff")}
                     </select>
                     <select className="ql-background" defaultValue="#ffffff">
                         {this.setColors()}
