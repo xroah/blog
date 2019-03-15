@@ -3,7 +3,7 @@ import ArticleCard from "@containers/admin/article-card";
 import { Button, Zoom } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import "./index.scss";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps } from "react-router-dom";
 
 interface Props extends RouteComponentProps {
     details?: any;
@@ -27,7 +27,7 @@ export default class Articles extends React.Component<Props> {
             return (
                 <ArticleCard
                     key={a._id}
-                    style={{ transition: "all .3s" }}
+                    id={a._id}
                     isAdmin={true}
                     title={a.title}
                     createTime={a.createTime}

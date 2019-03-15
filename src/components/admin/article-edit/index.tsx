@@ -13,7 +13,7 @@ import _fetch from "@common/fetch";
 import message from "@common/message";
 import {
     UPLOAD_FILE,
-    FETCH_ARTICLES_URL
+    FETCH_ARTICLES_ADMIN
 } from "@common/api";
 import "./index.scss";
 
@@ -34,24 +34,27 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
     id: string;
 
     async componentDidMount() {
-        this.id = this.props.history.location.state.id;
-        let ret: any = null;
-        try {
-            ret = await _fetch(`${FETCH_ARTICLES_URL}?id=${this.id}`);
-        } catch (error) {
-            return;
-        }
-        if (!ret) {
-            message.error("文章不存在");
-            this.props.history.push("/xsys/articles/edit");
-        } else {
-            this.setState({
-                title: ret.title,
-                cls: ret.clsId,
-                secret: ret.secret,
-                tags: ret.tags.join(";")
-            });
-            this.editorRef.current.editor.setText(ret.content);
+        let locationState = this.props.history.location.state;
+        if (locationState && locationState.id) {
+            let ret: any = null;
+            this.id = locationState.id;
+            try {
+                ret = await _fetch(`${FETCH_ARTICLES_ADMIN}?id=${this.id}`);
+            } catch (error) {
+                return;
+            }
+            if (!ret) {
+                message.error("文章不存在");
+                this.props.history.push("/xsys/articles/edit");
+            } else {
+                this.setState({
+                    title: ret.title,
+                    cls: ret.clsId,
+                    secret: !!ret.secret,
+                    tags: ret.tags.join(";")
+                });
+                this.editorRef.current.editor.setText(ret.content);
+            }
         }
     }
 
@@ -109,7 +112,7 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
             showLoading: true
         });
         try {
-            await _fetch(FETCH_ARTICLES_URL, {
+            await _fetch(FETCH_ARTICLES_ADMIN, {
                 method,
                 body
             });

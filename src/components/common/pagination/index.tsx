@@ -6,7 +6,6 @@ import {
 } from "@material-ui/core";
 import classnames from "classnames";
 import "./index.scss";
-import { PagesSharp } from "@material-ui/icons";
 
 interface Props {
     total?: number;

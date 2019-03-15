@@ -17,8 +17,10 @@ import {
 } from "@material-ui/icons";
 import { formatDate } from "@common/util";
 import "./index.scss";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 
-export interface Props extends React.HTMLAttributes<any> {
+export interface Props extends React.HTMLAttributes<any>, RouteComponentProps {
+    id: string;
     title: string;
     createTime: string;
     tags?: Array<string>;
@@ -31,7 +33,7 @@ export interface Props extends React.HTMLAttributes<any> {
     showDetails?: (arg: any) => void;
 }
 
-export default class ArticleCard extends React.Component<Props> {
+class ArticleCard extends React.Component<Props> {
 
     static defaultProps = {
         isAdmin: false,
@@ -40,6 +42,16 @@ export default class ArticleCard extends React.Component<Props> {
         comments: 0,
         timeout: 0
     };
+
+    handleEdit = () => {
+        let {
+            id,
+            history
+        } = this.props;
+        history.push("/xsys/articles/edit", {
+            id
+        });
+    }
 
     render() {
         let {
@@ -109,7 +121,11 @@ export default class ArticleCard extends React.Component<Props> {
                                 isAdmin &&
                                 (
                                     <div>
-                                        <Button className="action-item" variant="contained" color="primary">
+                                        <Button
+                                            onClick={this.handleEdit}
+                                            className="action-item"
+                                            variant="contained"
+                                            color="primary">
                                             <Edit />
                                         </Button>
                                         <Button className="action-item" variant="contained" color="secondary">
@@ -125,3 +141,5 @@ export default class ArticleCard extends React.Component<Props> {
         );
     }
 }
+
+export default withRouter(ArticleCard);

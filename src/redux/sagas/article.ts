@@ -3,13 +3,13 @@ import {
     put,
     call
 } from "redux-saga/effects";
-import { FETCH_ARTICLES_URL } from "@common/api";
+import { FETCH_ARTICLES_ADMIN } from "@common/api";
 import _fetch from "@common/fetch";
 import { FETCH_ARTICLES, FETCH_ARTICLES_START } from "@redux/actions";
 
 function* fetchArticles() {
     try {
-        let articles = yield call(_fetch, `${FETCH_ARTICLES_URL}`, {
+        let articles = yield call(_fetch, `${FETCH_ARTICLES_ADMIN}`, {
             method: "get"
         });
         yield put({
@@ -17,7 +17,7 @@ function* fetchArticles() {
             articles
         });
     } catch (error) {
-        
+
     }
 }
 
