@@ -1,0 +1,24 @@
+@import "../styles/variables";
+
+.pagination-wrapper {
+    .pagination {
+        display: flex;
+
+        li {
+            width: auto;
+            padding: 0;
+        }
+        .pagination-btn {
+            min-width: 30px;
+            padding: 2px 5px;
+            &.active {
+                background-color: $primaryColor;
+                color: #fff;
+            }
+        }
+        .pagination-ellipsis {
+            min-width: initial;
+            padding: 2px;
+        }
+    }
+}
