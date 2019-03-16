@@ -11,11 +11,13 @@ import {
 import Loading from "@common/loading";
 import _fetch from "@common/fetch";
 import message from "@common/message";
+import ClsList from "@containers/admin/article-edit-cls-list";
 import {
     UPLOAD_FILE,
     FETCH_ARTICLES_ADMIN
 } from "@common/api";
 import "./index.scss";
+import _ClsList from "./cls-list";
 
 export default class ArticleEdit extends React.Component<RouteComponentProps> {
 
@@ -30,7 +32,6 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
     fileEl: React.RefObject<HTMLInputElement> = React.createRef();
     editorRef: React.RefObject<any> = React.createRef();
     titleEl: React.RefObject<HTMLInputElement> = React.createRef();
-    clsEl: React.RefObject<HTMLSelectElement> = React.createRef();
     id: string;
 
     async componentDidMount() {
@@ -89,15 +90,13 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
         let content = this.editorRef.current.editor.getText().trim();
         if (!title.trim()) {
             return this.titleEl.current.focus();
-        } else if (!cls) {
-            return this.clsEl.current.focus();
         } else if (!content) {
             return message.error("请输入文章内容!");
         }
         tags = tags.split(";") as any;
         let body: any = {
             title,
-            cls,
+            clsId: cls,
             tags,
             secret,
             content,
@@ -198,18 +197,13 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
                 </div>
                 <div className="row">
                     <span className="label-text">文章分类:</span>
-                    <select
-                        onChange={this.handleChange}
-                        ref={this.clsEl}
+                    <ClsList
                         value={cls}
-                        className="form-control form-item">
-                        <option value="">请选择</option>
-                        <option value="1">Javascript</option>
-                        <option value="2">CSS</option>
-                    </select>
+                        className="form-item"
+                        onChange={this.handleChange} />
                 </div>
                 <div className="row">
-                    <span className="label-text">是否公开:</span>
+                    <span className="label-text">仅自己可见:</span>
                     <Switch
                         onChange={this.handleChange}
                         checked={secret}
