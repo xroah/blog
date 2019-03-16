@@ -24,6 +24,8 @@ interface Props {
     hideDialog?: () => any;
     type?: string;
     id?: string;
+    value?: string;
+    save?: (arg: Object) => any;
 }
 
 export default class EditDialog extends React.Component<Props> {
@@ -34,69 +36,23 @@ export default class EditDialog extends React.Component<Props> {
 
     clsInput: React.RefObject<HTMLInputElement> = React.createRef<HTMLInputElement>();
 
-    handleEdit = (id: string, value: string) => {
-        this.setState({
-            value
-        });
-        this.openDialog("edit");
-    }
-
-    handleAdd = () => {
-        this.openDialog("add");
-    };
-
     save = () => {
-        /* let { value, } = this.state;
-        let body: any = {
-            name: value
-        };
-        let method = "post";
-        if (id) {
-            body.id = id;
-            method = "put";
-        }
+        let {
+            save,
+            id
+        } = this.props;
+        let { value } = this.state;
         if (!value.trim()) {
             return this.clsInput.current.focus();
-        } */
-    }
-
-    handleDel = (id: string) => {
-      /*   this.setState({
-            id
+        }
+        save({
+            id,
+            name: this.state.value
         });
-        hint.confirm("确定要删除吗?", this.del); */
-    }
-
-    del = () => {
-        /*let { id } = this.state;
-         _fetch(`${FETCH_CLS}?id=${id}`, {
-            method: "delete"
-        }).then(() => {
-            message.success("删除成功!", 1500);
-            this.fetchCls();
-        }).catch(e => 0); */
     }
 
     handleClose = () => {
-        this.setState({
-            open: false,
-            type: "",
-            id: "",
-            value: ""
-        });
-    }
-
-    openDialog = (type: string, value: string = "") => {
-        let title = "";
-        if (type === "edit") {
-            title = "编辑分类";
-        } else if (type === "add") {
-            title = "添加分类";
-        }
-        this.setState({
-            type,
-            title
-        });
+        this.props.hideDialog();
     }
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,28 +61,49 @@ export default class EditDialog extends React.Component<Props> {
         });
     }
 
+    handleEnter = () => {
+        let { value } = this.props;
+        this.setState({
+            value
+        });
+    }
+
+    handleExit = () => {
+        this.setState({
+            value: ""
+        });
+    };
+
+    handleKeyDown = (evt: React.KeyboardEvent) => {
+        let key = evt.key.toLowerCase();
+        if (key === "enter") {
+            this.save();
+        }
+    }
+
     render() {
         let {
-            title,
             value
         } = this.state;
         let {
             visible,
-            hideDialog
+            type
         } = this.props;
+        let title = type === "edit" ? "编辑分类" : "添加分类";
         return (
             <section>
-                <ClsList/>
                 <Dialog
                     disableBackdropClick={true}
-                    open={visible}
-                    onClose={hideDialog}>
+                    onEnter={this.handleEnter}
+                    onExit={this.handleExit}
+                    open={visible}>
                     <DialogTitle>{title}</DialogTitle>
                     <DialogContent>
                         <TextField
                             inputRef={this.clsInput}
                             style={{ width: 240 }}
                             onChange={this.handleChange}
+                            onKeyDown={this.handleKeyDown}
                             value={value} />
                     </DialogContent>
                     <DialogActions>
@@ -134,13 +111,6 @@ export default class EditDialog extends React.Component<Props> {
                         <Button onClick={this.handleClose}>取消</Button>
                     </DialogActions>
                 </Dialog>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.handleAdd}
-                    className="add-right-bottom">
-                    <Add fontSize="large" />
-                </Button>
             </section>
         );
     }

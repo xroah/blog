@@ -57,3 +57,12 @@ export const SHOW_CLS_DIALOG = {
 export const HIDE_CLS_DIALOG = {
     type: "HIDE_CLS_DIALOG"
 };
+
+export const EDIT_CLS_INFO = {
+    type: "EDIT_CLS_INFO",
+    info: {
+        id: "",
+        type: "",
+        value: ""
+    }
+}

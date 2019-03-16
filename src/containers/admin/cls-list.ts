@@ -3,7 +3,8 @@ import ClsList from "@components/admin/classification/list";
 import {
     DELETE_CLS_START,
     FETCH_CLS_START,
-    SHOW_CLS_DIALOG
+    SHOW_CLS_DIALOG,
+    EDIT_CLS_INFO
 } from "@redux/actions";
 
 export default connect(
@@ -19,6 +20,18 @@ export default connect(
         showEditDialog() {
             dispatch({
                 ...SHOW_CLS_DIALOG
+            });
+        },
+        setEditInfo(info: Object) {
+            dispatch({
+                ...EDIT_CLS_INFO,
+                info
+            });
+        },
+        delCls(id: string) {
+            dispatch({
+                ...DELETE_CLS_START,
+                id
             });
         }
     })

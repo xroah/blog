@@ -12,7 +12,7 @@ import "./index.scss";
 
 interface Props {
     title?: string;
-    message?: string;
+    message?: string | React.ReactNode;
     ok?: boolean;
     cancel?: boolean;
     close?: boolean;
@@ -92,7 +92,7 @@ class HintDialog extends React.Component<Props> {
     }
 }
 
-function show(msg: string, config: Props) {
+function show(msg: string | React.ReactNode, config: Props) {
     if (!container.parentNode) {
         document.body.appendChild(container);
     }
@@ -119,7 +119,7 @@ function onClose(callback: () => any) {
 const container = document.createElement("div");
 
 function factory(showCancel: boolean = true) {
-    return (message: string, onOk?: (() => any | void) | Props, config: Props = {}) => {
+    return (message: string | React.ReactNode, onOk?: (() => any | void) | Props, config: Props = {}) => {
         config.ok = true;
         config.cancel = showCancel;
         if (typeof onOk === "object") {
