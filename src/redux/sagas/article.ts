@@ -9,9 +9,7 @@ import { FETCH_ARTICLES, FETCH_ARTICLES_START } from "@redux/actions";
 
 function* fetchArticles() {
     try {
-        let articles = yield call(_fetch, `${FETCH_ARTICLES_ADMIN}`, {
-            method: "get"
-        });
+        let articles = yield call(_fetch, FETCH_ARTICLES_ADMIN);
         yield put({
             type: FETCH_ARTICLES.type,
             articles

@@ -23,3 +23,37 @@ export const MODIFY_PASSWORD_SHOW = {
 export const MODIFY_PASSWORD_HIDE = {
     type: "MODIFY_PASSWORD_HIDE"
 };
+
+export const FETCH_CLS = {
+    type: "FETCH_CLS",
+    list: []
+};
+
+export const FETCH_CLS_START = {
+    type: "FETCH_CLS_START"
+};
+
+export const DELETE_CLS = {
+    type: "DELETE_CLS",
+    id: ""
+};
+
+export const DELETE_CLS_START = {
+    type: "DELETE_CLS_START"
+};
+
+export const EDIT_CLS = {
+    type: "EDIT_CLS"
+}
+
+export const EDIT_CLS_START = {
+    type: "EDIT_CLS_START"
+};
+
+export const SHOW_CLS_DIALOG = {
+    type: "SHOW_CLS_DIALOG"
+}
+
+export const HIDE_CLS_DIALOG = {
+    type: "HIDE_CLS_DIALOG"
+};

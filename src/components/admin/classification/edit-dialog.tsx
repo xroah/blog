@@ -1,10 +1,6 @@
 import * as React from "react";
 import {
-    Card,
-    CardHeader,
-    CardContent,
     Button,
-    Zoom,
     Dialog,
     DialogTitle,
     DialogContent,
@@ -23,22 +19,23 @@ import message from "@common/message";
 import ClsList from "@containers/admin/cls-list";
 import "./index.scss";
 
-export default class Classification extends React.Component {
+interface Props {
+    visible?: boolean;
+    hideDialog?: () => any;
+    type?: string;
+    id?: string;
+}
+
+export default class EditDialog extends React.Component<Props> {
 
     state = {
-        list: [],
-        open: false,
-        type: "",
-        title: "",
-        value: "",
-        id: ""
+        value: ""
     };
 
     clsInput: React.RefObject<HTMLInputElement> = React.createRef<HTMLInputElement>();
 
     handleEdit = (id: string, value: string) => {
         this.setState({
-            id,
             value
         });
         this.openDialog("edit");
@@ -48,8 +45,8 @@ export default class Classification extends React.Component {
         this.openDialog("add");
     };
 
-    /* save = () => {
-        let { value, id } = this.state;
+    save = () => {
+        /* let { value, } = this.state;
         let body: any = {
             name: value
         };
@@ -60,32 +57,25 @@ export default class Classification extends React.Component {
         }
         if (!value.trim()) {
             return this.clsInput.current.focus();
-        }
-        _fetch(FETCH_CLS, {
-            method,
-            body
-        }).then(() => {
-            message.success("保存成功!");
-            this.handleClose();
-        }).catch(e => 0);
+        } */
     }
 
     handleDel = (id: string) => {
-        this.setState({
+      /*   this.setState({
             id
         });
-        hint.confirm("确定要删除吗?", this.del);
+        hint.confirm("确定要删除吗?", this.del); */
     }
 
     del = () => {
-        let { id } = this.state;
-        _fetch(`${FETCH_CLS}?id=${id}`, {
+        /*let { id } = this.state;
+         _fetch(`${FETCH_CLS}?id=${id}`, {
             method: "delete"
         }).then(() => {
             message.success("删除成功!", 1500);
             this.fetchCls();
-        }).catch(e => 0);
-    } */
+        }).catch(e => 0); */
+    }
 
     handleClose = () => {
         this.setState({
@@ -104,7 +94,6 @@ export default class Classification extends React.Component {
             title = "添加分类";
         }
         this.setState({
-            open: true,
             type,
             title
         });
@@ -118,17 +107,20 @@ export default class Classification extends React.Component {
 
     render() {
         let {
-            open,
             title,
             value
         } = this.state;
+        let {
+            visible,
+            hideDialog
+        } = this.props;
         return (
             <section>
                 <ClsList/>
                 <Dialog
                     disableBackdropClick={true}
-                    open={open}
-                    onClose={this.handleClose}>
+                    open={visible}
+                    onClose={hideDialog}>
                     <DialogTitle>{title}</DialogTitle>
                     <DialogContent>
                         <TextField
