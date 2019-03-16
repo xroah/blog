@@ -25,14 +25,19 @@ export default class ClsList extends React.Component<Props> {
         let {
             className,
             list,
-            value
+            value,
+            onChange,
+            fetchCls,
+            ...otherProps
         } = this.props;
         if (!list || !list.length) return null;
         return (
             <select
                 value={value}
                 onChange={this.handleChange}
-                className={classnames("form-control", className)}>
+                className={classnames("form-control", className)}
+                {...otherProps}>
+                <option value="">请选择</option>
                 {
                     list.map(item => <option value={item._id} key={item._id}>{item.name}</option>)
                 }

@@ -17,7 +17,7 @@ import {
     FETCH_ARTICLES_ADMIN
 } from "@common/api";
 import "./index.scss";
-import _ClsList from "./cls-list";
+import Quill from "quill";
 
 export default class ArticleEdit extends React.Component<RouteComponentProps> {
 
@@ -26,7 +26,8 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
         cls: "",
         tags: "",
         secret: false,
-        showLoading: false
+        showLoading: false,
+        saved: false
     };
 
     fileEl: React.RefObject<HTMLInputElement> = React.createRef();
@@ -54,7 +55,7 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
                     secret: !!ret.secret,
                     tags: ret.tags.join(";")
                 });
-                this.editorRef.current.editor.setText(ret.content);
+                this.editorRef.current.editor.root.innerHTML = ret.content;
             }
         }
     }
@@ -87,20 +88,29 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
             tags,
             secret
         } = this.state;
-        let content = this.editorRef.current.editor.getText().trim();
+        let editor: Quill = this.editorRef.current.editor;
+        let text = editor.getText().trim(); //only get text, filter images
+        let content = editor.root.innerHTML;
         if (!title.trim()) {
             return this.titleEl.current.focus();
-        } else if (!content) {
+        } else if (!cls) {
+            return document.getElementById("clsSelect").focus();
+        } else if (!text) {
             return message.error("请输入文章内容!");
         }
-        tags = tags.split(";") as any;
+       tags = tags.trim();
+       if (tags) {
+            tags = tags.split(";") as any;
+       } else {
+           tags = [] as any;
+       }
         let body: any = {
             title,
             clsId: cls,
             tags,
             secret,
             content,
-            summary: content.substring(0, 150)
+            summary: text.substring(0, 150)
         };
         let method = "post";
         if (this.id) {
@@ -114,6 +124,10 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
             await _fetch(FETCH_ARTICLES_ADMIN, {
                 method,
                 body
+            });
+            this.setState({
+                saved: true,
+                showLoading: false
             });
             this.props.history.push("/xsys/articles");
         } catch (error) {
@@ -171,13 +185,14 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
             cls,
             secret,
             tags,
-            showLoading
+            showLoading,
+            saved
         } = this.state;
 
         return (
             <section className="article-edit-wrapper">
                 {showLoading && <Loading />}
-                <Prompt message="文章没有保存,确定要离开吗？" />
+                <Prompt when={!saved} message="文章没有保存,确定要离开吗？" />
                 <input
                     accept="image/jpeg, image/gif, image/png"
                     onChange={this.handleFileChange}
@@ -200,6 +215,7 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
                     <ClsList
                         value={cls}
                         className="form-item"
+                        id="clsSelect"
                         onChange={this.handleChange} />
                 </div>
                 <div className="row">

@@ -66,6 +66,7 @@ export default class EditDialog extends React.Component<Props> {
         this.setState({
             value
         });
+        this.clsInput.current.focus();
     }
 
     handleExit = () => {
