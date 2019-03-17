@@ -10,11 +10,12 @@ import {
     FETCH_ARTICLES_START,
     DELETE_ARTICLE_START
 } from "@redux/actions";
+import { push } from "connected-react-router";
 import message from "@common/message";
 
-function* fetchArticles() {
+function* fetchArticles(action) {
     try {
-        let articles = yield call(_fetch, ADMIN_ARTICLE_URL);
+        let articles = yield call(_fetch, `${ADMIN_ARTICLE_URL}?page=${action.page}`);
         yield put({
             ...FETCH_ARTICLES,
             ...articles
@@ -33,7 +34,7 @@ function* delArticle(action) {
             }
         });
         message.success("删除成功!");
-        yield fetchArticles();
+        yield fetchArticles({ page: 1 });
     } catch (error) {
 
     }

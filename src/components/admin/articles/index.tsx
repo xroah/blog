@@ -14,7 +14,7 @@ interface Props extends RouteComponentProps {
 
 export default class Articles extends React.Component<Props> {
 
-    async componentDidMount() {
+    componentDidMount() {
         this.props.fetchArticle();
     }
 
