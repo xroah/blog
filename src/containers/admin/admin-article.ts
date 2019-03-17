@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 
 export default connect(
     (state: any) => ({
-        articles: state.article.articles
+        list: state.article.list
     }),
     {
         fetchArticle() {
             return {
-                type: FETCH_ARTICLES_START.type
+                ...FETCH_ARTICLES_START
             };
         }
     }

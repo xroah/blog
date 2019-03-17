@@ -3,6 +3,11 @@ export const SHOW_ARTICLE_DETAILS = {
     index: 0
 };
 
+export const HIDE_ARTICLES_DETAILS = {
+    type: "HIDE_ARTICLES_DETAILS",
+    index: -1
+};
+
 export const FETCH_ARTICLES_START = {
     type: "FETCH_ARTICLE_START"
 };

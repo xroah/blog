@@ -11,6 +11,7 @@ import {
 import Loading from "@common/loading";
 import _fetch from "@common/fetch";
 import message from "@common/message";
+import hint from "@common/hint-dialog";
 import ClsList from "@containers/admin/article-edit-cls-list";
 import {
     UPLOAD_FILE,
@@ -138,7 +139,12 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
     }
 
     cancel = () => {
-        this.props.history.goBack();
+        hint.confirm("确定要离开吗?", () => {
+            this.setState({
+                saved: true
+            });
+            this.props.history.goBack(); 
+        });
     }
 
     upload = () => {

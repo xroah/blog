@@ -4,7 +4,8 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    Button
+    Button,
+    IconButton
 } from "@material-ui/core";
 import { render, unmountComponentAtNode } from "react-dom";
 import { Clear } from "@material-ui/icons";
@@ -75,9 +76,12 @@ class HintDialog extends React.Component<Props> {
                 onClose={this.handleClose}>
                 <DialogTitle>
                     <span>{title}</span>
-                    <Button className="close-btn" color="secondary" onClick={this.handleClose}>
+                    <IconButton
+                        className="close-btn"
+                        color="secondary"
+                        onClick={this.handleClose}>
                         <Clear />
-                    </Button>
+                    </IconButton>
                 </DialogTitle>
                 <DialogContent className="hint-dialog-content">{message}</DialogContent>
                 <DialogActions>

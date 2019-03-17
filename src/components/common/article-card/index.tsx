@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-    Button,
     Card,
     CardActions,
     CardContent,
@@ -16,20 +15,18 @@ import {
     Comment
 } from "@material-ui/icons";
 import { formatDate } from "@common/util";
+import {
+     RouteComponentProps, 
+     withRouter 
+    } from "react-router-dom";
+import classnames from "classnames";
 import "./index.scss";
-import { RouteComponentProps, withRouter } from "react-router-dom";
 
 export interface Props extends React.HTMLAttributes<any>, RouteComponentProps {
     id: string;
-    title: string;
-    createTime: string;
-    tags?: Array<string>;
     isAdmin?: boolean;
-    viewedTimes?: number;
-    comments?: number;
-    secret?: boolean;
-    index?: number;
     timeout?: number;
+    article?: any;
     showDetails?: (arg: any) => void;
 }
 
@@ -57,23 +54,19 @@ class ArticleCard extends React.Component<Props> {
         let {
             title,
             children,
-            createTime,
-            tags,
             isAdmin,
-            viewedTimes,
-            comments,
-            secret,
             showDetails,
-            timeout
+            timeout,
+            article
         } = this.props;
-        let date = formatDate(new Date(createTime));
+        let date = formatDate(new Date(article.createTime));
         return (
             <div className="article-card">
                 <Zoom in={true} timeout={timeout}>
                     <Card>
                         <CardHeader
                             title={
-                                <span className="article-title">{title}</span>
+                                <span className="article-title">{article.title}</span>
                             }
                             subheader={date}
                             action={
@@ -88,8 +81,8 @@ class ArticleCard extends React.Component<Props> {
                             <div className="article-summary">{children}</div>
                             <div className="tag-list">
                                 {
-                                    Array.isArray(tags) &&
-                                    tags.map(t => <span className="tag" key={t}>{t}</span>)
+                                    Array.isArray(article.tags) &&
+                                    article.tags.map(t => <span className="tag" key={t}>{t}</span>)
                                 }
                             </div>
                         </CardContent>
@@ -97,40 +90,33 @@ class ArticleCard extends React.Component<Props> {
                             <div>
                                 {
                                     isAdmin && (
-                                        <span
-                                            className="tag"
-                                            style={{
-                                                backgroundColor: "rgba(0, 132, 255, 0.15)",
-                                                color: "#0084FF",
-                                                border: "none"
-                                            }}>
+                                        <span className={classnames("tag permission-tag", article.secret ? "secret" : "")}>
                                             {
-                                                secret ? "私密" : "公开"
+                                                article.secret ? "私密" : "公开"
                                             }
                                         </span>
                                     )
                                 }
                                 <span className="action-item">
-                                    <Visibility />{viewedTimes}
+                                    <Visibility />{article.totalViewed}
                                 </span>
                                 <span className="action-item">
-                                    <Comment />{comments}
+                                    <Comment />{article.comments || 0}
                                 </span>
                             </div>
                             {
                                 isAdmin &&
                                 (
                                     <div>
-                                        <Button
+                                        <IconButton
                                             onClick={this.handleEdit}
-                                            className="action-item"
-                                            variant="contained"
                                             color="primary">
                                             <Edit />
-                                        </Button>
-                                        <Button className="action-item" variant="contained" color="secondary">
+                                        </IconButton>
+                                        <IconButton
+                                            color="secondary">
                                             <Delete />
-                                        </Button>
+                                        </IconButton>
                                     </div>
                                 )
                             }

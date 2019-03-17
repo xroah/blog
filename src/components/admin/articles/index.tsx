@@ -1,13 +1,14 @@
 import * as React from "react";
 import ArticleCard from "@containers/admin/article-card";
-import { Button, Zoom } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
-import "./index.scss";
 import { RouteComponentProps } from "react-router-dom";
+import ArticleDetails from "@containers/admin/articles-details";
+import "./index.scss";
 
 interface Props extends RouteComponentProps {
     details?: any;
-    articles?: Array<any>;
+    list?: Array<any>;
     fetchArticle?: () => void;
 }
 
@@ -22,17 +23,14 @@ export default class Articles extends React.Component<Props> {
     }
 
     renderArticles() {
-        let { articles = { list: [] } } = this.props as any;
-        return articles.list.map((a, i) => {
+        let { list } = this.props;
+        return list.map((a, i) => {
             return (
                 <ArticleCard
                     key={a._id}
                     id={a._id}
+                    article={a}
                     isAdmin={true}
-                    title={a.title}
-                    createTime={a.createTime}
-                    index={i}
-                    tags={a.tags}
                     timeout={50 + i * 50}>
                     {a.summary}
                 </ArticleCard>
@@ -46,6 +44,7 @@ export default class Articles extends React.Component<Props> {
                 <div className="article-list-wrapper">
                     {this.renderArticles()}
                 </div>
+                <ArticleDetails/>
                 <Button
                     onClick={this.toAdd}
                     className="add-right-bottom"

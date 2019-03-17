@@ -4,6 +4,7 @@ import {
     CardHeader,
     CardContent,
     Button,
+    IconButton,
     Zoom
 } from "@material-ui/core";
 import {
@@ -43,7 +44,7 @@ export default class extends React.Component<Props> {
 
     handelDel = (id: string, name: string) => () => {
         hint.confirm(
-            <>确定要删除<span style={{ color: "#f50057", fontWeight:"bold" }}> {name} </span>吗?</>,
+            <>确定要删除<span style={{ color: "#f50057", fontWeight: "bold" }}> {name} </span>吗?</>,
             () => {
                 this.props.delCls(id);
             });
@@ -53,25 +54,22 @@ export default class extends React.Component<Props> {
         let { list } = this.props;
         if (!list || !list.length) return null;
         return list.map((item: any, index) => {
-            console.log("=======>", item.createTime)
             return (
                 <Zoom in={true} key={item._id} timeout={0}>
                     <Card className="cls-card">
                         <CardHeader title={item.name} subheader={formatDate(new Date(item.createTime))} />
                         <CardContent className="cls-operate">
-                            <Button
+                            <IconButton
                                 onClick={this.handleEdit(item._id, item.name, "edit")}
-                                variant="contained"
                                 color="primary">
                                 <Edit />
-                            </Button>
-                            <Button
+                            </IconButton>
+                            <IconButton
                                 style={{ marginLeft: 10 }}
                                 onClick={this.handelDel(item._id, item.name)}
-                                variant="contained"
                                 color="secondary">
                                 <Delete />
-                            </Button>
+                            </IconButton>
                         </CardContent>
                     </Card>
                 </Zoom >

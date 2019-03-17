@@ -11,8 +11,8 @@ function* fetchArticles() {
     try {
         let articles = yield call(_fetch, FETCH_ARTICLES_ADMIN);
         yield put({
-            type: FETCH_ARTICLES.type,
-            articles
+            ...FETCH_ARTICLES,
+            ...articles
         });
     } catch (error) {
 

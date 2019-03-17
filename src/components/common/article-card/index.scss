@@ -1,11 +1,9 @@
 .article-card {
     transition: all .25s;
-
     &:hover {
         box-shadow: 0 5px 10px 0 rgba(0, 0, 0, .5);
         transform: translateY(-10px);
     }
-
     .article-title {
         display: inline-block;
         max-width: 400px;
@@ -13,17 +11,14 @@
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-
     .article-summary {
         cursor: pointer;
     }
-
     .tag-list {
         margin-top: 10px;
         min-height: 24px;
         line-height: 24px;
     }
-
     .tag {
         padding: 5px;
         color: #666;
@@ -32,23 +27,26 @@
         background-color: #f0f0f0;
         margin-right: 10px;
     }
-
+    .permission-tag {
+        background-color: #e6f7ff;
+        color: #1890ff;
+        border: none;
+        &.secret {
+            background-color: #fff0f6;
+            color: #eb2f96;
+        }
+    }
     .article-action {
         display: flex;
         justify-content: space-between;
         padding: 0 10px 10px;
-
-        >div:first-child span {
-            color: #999;
-
-            svg {
-                margin-right: 5px;
-                vertical-align: middle;
-            }
-        }
     }
-
     .action-item {
+        color: #999;
+        svg {
+            margin-right: 5px;
+            vertical-align: middle;
+        }
         &+.action-item {
             margin-left: 10px;
         }
