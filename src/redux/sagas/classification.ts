@@ -11,12 +11,12 @@ import {
     call
 } from "redux-saga/effects";
 import _fetch from "@common/fetch";
-import { FETCH_CLS_URL } from "@common/api"
+import { ADMIN_CLS_URL } from "@common/api"
 import message from "@common/message";
 
 function* deleteCls(action) {
     try {
-        yield call(_fetch, FETCH_CLS_URL, {
+        yield call(_fetch, ADMIN_CLS_URL, {
             method: "delete",
             body: {
                 id: action.id
@@ -39,7 +39,7 @@ function* editCls(action) {
         method = "put";
     }
     try {
-        yield call(_fetch, FETCH_CLS_URL, {
+        yield call(_fetch, ADMIN_CLS_URL, {
             method,
             body
         });
@@ -53,7 +53,7 @@ function* editCls(action) {
 
 function* fetchCls() {
     try {
-        let list = yield call(_fetch, FETCH_CLS_URL);
+        let list = yield call(_fetch, ADMIN_CLS_URL);
         yield put({
             ...FETCH_CLS,
             list

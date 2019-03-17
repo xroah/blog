@@ -21,6 +21,11 @@ export const FETCH_ARTICLE_ERROR = {
     type: "FETCH_ARTICLES"
 };
 
+export const DELETE_ARTICLE_START = {
+    type: "DELETE_ARTICLES_START",
+    id: ""
+};
+
 export const MODIFY_PASSWORD_SHOW = {
     type: "MODIFY_PASSWORD_SHOW"
 }

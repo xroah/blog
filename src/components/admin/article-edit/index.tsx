@@ -6,16 +6,16 @@ import {
 } from "@material-ui/core";
 import {
     RouteComponentProps,
-    Prompt
+    Prompt,
+    Link
 } from "react-router-dom";
 import Loading from "@common/loading";
 import _fetch from "@common/fetch";
 import message from "@common/message";
-import hint from "@common/hint-dialog";
 import ClsList from "@containers/admin/article-edit-cls-list";
 import {
     UPLOAD_FILE,
-    FETCH_ARTICLES_ADMIN
+    ADMIN_ARTICLE_URL
 } from "@common/api";
 import "./index.scss";
 import Quill from "quill";
@@ -42,7 +42,7 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
             let ret: any = null;
             this.id = locationState.id;
             try {
-                ret = await _fetch(`${FETCH_ARTICLES_ADMIN}?id=${this.id}`);
+                ret = await _fetch(`${ADMIN_ARTICLE_URL}?id=${this.id}`);
             } catch (error) {
                 return;
             }
@@ -59,6 +59,11 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
                 this.editorRef.current.editor.root.innerHTML = ret.content;
             }
         }
+        window.onbeforeunload = () => "文章未保存,确定要离开吗?";
+    }
+
+    componentWillUnmount() {
+        window.onbeforeunload = null;
     }
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -99,12 +104,12 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
         } else if (!text) {
             return message.error("请输入文章内容!");
         }
-       tags = tags.trim();
-       if (tags) {
+        tags = tags.trim();
+        if (tags) {
             tags = tags.split(";") as any;
-       } else {
-           tags = [] as any;
-       }
+        } else {
+            tags = [] as any;
+        }
         let body: any = {
             title,
             clsId: cls,
@@ -122,7 +127,7 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
             showLoading: true
         });
         try {
-            await _fetch(FETCH_ARTICLES_ADMIN, {
+            await _fetch(ADMIN_ARTICLE_URL, {
                 method,
                 body
             });
@@ -130,21 +135,13 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
                 saved: true,
                 showLoading: false
             });
+            message.success("保存成功!");
             this.props.history.push("/xsys/articles");
         } catch (error) {
             this.setState({
                 showLoading: false
             });
         }
-    }
-
-    cancel = () => {
-        hint.confirm("确定要离开吗?", () => {
-            this.setState({
-                saved: true
-            });
-            this.props.history.goBack(); 
-        });
     }
 
     upload = () => {
@@ -253,12 +250,13 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
                         variant="contained"
                         onClick={this.save}
                         color="primary">保存</Button>
-                    <Button
-                        style={{ marginLeft: 20 }}
-                        onClick={this.cancel}
-                        className="ml-10"
-                        variant="contained"
-                        color="secondary">取消</Button>
+                    <Link to="/xsys/articles">
+                        <Button
+                            style={{ marginLeft: 20 }}
+                            className="ml-10"
+                            variant="contained"
+                            color="secondary">取消</Button>
+                    </Link>
                 </div>
             </section>
         );

@@ -16,10 +16,11 @@ import {
 } from "@material-ui/icons";
 import { formatDate } from "@common/util";
 import {
-     RouteComponentProps, 
-     withRouter 
-    } from "react-router-dom";
+    RouteComponentProps,
+    withRouter
+} from "react-router-dom";
 import classnames from "classnames";
+import hint from "@common/hint-dialog";
 import "./index.scss";
 
 export interface Props extends React.HTMLAttributes<any>, RouteComponentProps {
@@ -28,15 +29,13 @@ export interface Props extends React.HTMLAttributes<any>, RouteComponentProps {
     timeout?: number;
     article?: any;
     showDetails?: (arg: any) => void;
+    delArticle?: (id: string) => void;
 }
 
 class ArticleCard extends React.Component<Props> {
 
     static defaultProps = {
         isAdmin: false,
-        secret: false,
-        viewedTimes: 0,
-        comments: 0,
         timeout: 0
     };
 
@@ -47,6 +46,17 @@ class ArticleCard extends React.Component<Props> {
         } = this.props;
         history.push("/xsys/articles/edit", {
             id
+        });
+    }
+
+    handleDel = () => {
+        let {
+            id,
+            delArticle,
+            article
+        } = this.props;
+        hint.confirm("确定要删除这篇文章吗?", () => {
+            delArticle(id);
         });
     }
 
@@ -114,6 +124,7 @@ class ArticleCard extends React.Component<Props> {
                                             <Edit />
                                         </IconButton>
                                         <IconButton
+                                            onClick={this.handleDel}
                                             color="secondary">
                                             <Delete />
                                         </IconButton>
