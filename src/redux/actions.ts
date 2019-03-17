@@ -17,6 +17,15 @@ export const FETCH_ARTICLES = {
     articles: []
 };
 
+export const FETCH_ARTICLE_BY_ID = {
+    type: "FETCH_ARTICLE_BY_ID",
+    id: ""
+};
+
+export const FETCH_ARTICLE_BY_ID_START = {
+    type: "FETCH_ARTICLE_BY_ID_START"
+};
+
 export const FETCH_ARTICLE_ERROR = {
     type: "FETCH_ARTICLES"
 };
@@ -24,6 +33,10 @@ export const FETCH_ARTICLE_ERROR = {
 export const DELETE_ARTICLE_START = {
     type: "DELETE_ARTICLES_START",
     id: ""
+};
+
+export const CLEAR_FETCHED_BY_ID = {
+    type: "CLEAR_FETCHED_BY_ID"
 };
 
 export const MODIFY_PASSWORD_SHOW = {

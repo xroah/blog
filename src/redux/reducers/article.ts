@@ -4,7 +4,14 @@ import {
     HIDE_ARTICLES_DETAILS
 } from "../actions";
 
-export default function (state = { list: [], index: -1, visible: false }, action) {
+export default function (
+    state = {
+        list: [],
+        index: -1,
+        visible: false,
+        current: ""
+    }, action
+) {
     switch (action.type) {
         case SHOW_ARTICLE_DETAILS.type:
             return {
