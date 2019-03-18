@@ -9,7 +9,7 @@ import {
     Prompt,
     Link
 } from "react-router-dom";
-import Loading from "@common/loading";
+import { loading } from "@common/loading";
 import _fetch from "@common/fetch";
 import message from "@common/message";
 import ClsList from "@containers/admin/article-edit-cls-list";
@@ -20,15 +20,20 @@ import {
 import "./index.scss";
 import Quill from "quill";
 
-export default class ArticleEdit extends React.Component<RouteComponentProps> {
+interface Props extends RouteComponentProps {
+    saveArticle?: (arg: any) => any;
+    changeSaved?: (arg?: any) => any;
+    saved?: boolean;
+    fetchArticleById?: (id: string, success: Function, error: Funcion) => any;
+}
+
+export default class ArticleEdit extends React.Component<Props> {
 
     state = {
         title: "",
         cls: "",
         tags: "",
-        secret: false,
-        showLoading: false,
-        saved: false
+        secret: false
     };
 
     fileEl: React.RefObject<HTMLInputElement> = React.createRef();
@@ -36,28 +41,41 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
     titleEl: React.RefObject<HTMLInputElement> = React.createRef();
     id: string;
 
+    fetchSuccess = (ret: any) => {
+        this.setState({
+            title: ret.title,
+            cls: ret.clsId,
+            secret: !!ret.secret,
+            tags: ret.tags.join(";")
+        });
+        this.editorRef.current.editor.root.innerHTML = ret.content;
+    }
+
+    fetchError = () => {
+        let {
+            history,
+            changeSaved
+        } = this.props;
+        message.error("文章不存在,跳转到新增文章");
+        changeSaved(true);
+        setTimeout(() => {
+            history.push("/xsys/articles/edit");
+        }, 300);
+    }
+
     async componentDidMount() {
-        let locationState = this.props.history.location.state;
-        if (locationState && locationState.id) {
-            let ret: any = null;
-            this.id = locationState.id;
-            try {
-                ret = await _fetch(`${ADMIN_ARTICLE_URL}?id=${this.id}`);
-            } catch (error) {
-                return;
-            }
-            if (!ret) {
-                message.error("文章不存在");
-                this.props.history.push("/xsys/articles/edit");
-            } else {
-                this.setState({
-                    title: ret.title,
-                    cls: ret.clsId,
-                    secret: !!ret.secret,
-                    tags: ret.tags.join(";")
-                });
-                this.editorRef.current.editor.root.innerHTML = ret.content;
-            }
+        let {
+            changeSaved,
+            fetchArticleById,
+            history: { location: { state } }
+        } = this.props;
+        changeSaved(false);
+        if (state && state.id) {
+            fetchArticleById(
+                this.id = state.id,
+                this.fetchSuccess,
+                this.fetchError
+            );
         }
         window.onbeforeunload = () => "文章未保存,确定要离开吗?";
     }
@@ -111,6 +129,7 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
             tags = [] as any;
         }
         let body: any = {
+            id: this.id,
             title,
             clsId: cls,
             tags,
@@ -118,30 +137,7 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
             content,
             summary: text.substring(0, 150)
         };
-        let method = "post";
-        if (this.id) {
-            method = "put";
-            body.id = this.id;
-        }
-        this.setState({
-            showLoading: true
-        });
-        try {
-            await _fetch(ADMIN_ARTICLE_URL, {
-                method,
-                body
-            });
-            this.setState({
-                saved: true,
-                showLoading: false
-            });
-            message.success("保存成功!");
-            this.props.history.push("/xsys/articles");
-        } catch (error) {
-            this.setState({
-                showLoading: false
-            });
-        }
+        this.props.saveArticle(body);
     }
 
     upload = () => {
@@ -152,22 +148,16 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
         let fd = new FormData();
         let editor = this.editorRef.current.editor;
         fd.append("attachment", file);
-        this.setState({
-            showLoading: true
-        });
         let urlInfo: any = null;
+        loading.show();
         try {
             urlInfo = await _fetch(UPLOAD_FILE, {
                 method: "post",
                 body: fd
             });
-        } catch (error) { }
-        this.setState({
-            showLoading: false
-        });
-        if (urlInfo) {
             editor.insertEmbed(editor.getText().length, "image", urlInfo.url);
-        }
+        } catch (error) { }
+        loading.hide();
     }
 
     handleFileChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -187,14 +177,13 @@ export default class ArticleEdit extends React.Component<RouteComponentProps> {
             title,
             cls,
             secret,
-            tags,
-            showLoading,
-            saved
+            tags
         } = this.state;
+
+        let { saved } = this.props;
 
         return (
             <section className="article-edit-wrapper">
-                {showLoading && <Loading />}
                 <Prompt when={!saved} message="文章没有保存,确定要离开吗？" />
                 <input
                     accept="image/jpeg, image/gif, image/png"

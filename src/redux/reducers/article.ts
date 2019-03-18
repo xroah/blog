@@ -1,18 +1,30 @@
 import {
     SHOW_ARTICLE_DETAILS,
     FETCH_ARTICLES,
-    HIDE_ARTICLES_DETAILS
+    HIDE_ARTICLES_DETAILS,
+    CHANGE_ARTICLE_SAVED,
+    CHANGE_ARTICLE_NOT_SAVED
 } from "../actions";
 
 export default function (
     state = {
         list: [],
+        //get article from list by index
         index: -1,
+        //whether detail dialog is visible
         visible: false,
-        current: ""
+        //view article component, current article
+        current: null,
+        //edit component, if not saved will show prompt before route change
+        saved: false
     }, action
 ) {
     switch (action.type) {
+        case FETCH_ARTICLES.type:
+            return {
+                ...state,
+                list: action.list
+            };
         case SHOW_ARTICLE_DETAILS.type:
             return {
                 ...state,
@@ -24,11 +36,16 @@ export default function (
                 ...state,
                 visible: false
             };
-        case FETCH_ARTICLES.type:
+        case CHANGE_ARTICLE_SAVED.type:
             return {
                 ...state,
-                list: action.list
+                saved: true
             };
+        case CHANGE_ARTICLE_NOT_SAVED.type:
+            return {
+                ...state,
+                saved: false
+            }
         default:
             return state;
     }

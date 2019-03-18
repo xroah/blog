@@ -39,6 +39,23 @@ export const CLEAR_FETCHED_BY_ID = {
     type: "CLEAR_FETCHED_BY_ID"
 };
 
+export const EDIT_ARTICLE = {
+    type: "EDIT_ARTICLE",
+    body: {}
+};
+
+export const EDIT_ARTICLE_START = {
+    type: "EDIT_ARTICLE_START"
+};
+
+export const CHANGE_ARTICLE_SAVED = {
+    type: "CHANGE_ARTICLE_SAVED"
+};
+
+export const CHANGE_ARTICLE_NOT_SAVED = {
+    type: "CHANGE_ARTICLE_NOT_SAVED"
+};
+
 export const MODIFY_PASSWORD_SHOW = {
     type: "MODIFY_PASSWORD_SHOW"
 }

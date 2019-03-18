@@ -52,8 +52,7 @@ class ArticleCard extends React.Component<Props> {
     handleDel = () => {
         let {
             id,
-            delArticle,
-            article
+            delArticle
         } = this.props;
         hint.confirm("确定要删除这篇文章吗?", () => {
             delArticle(id);
@@ -62,7 +61,6 @@ class ArticleCard extends React.Component<Props> {
 
     render() {
         let {
-            title,
             children,
             isAdmin,
             showDetails,
@@ -76,7 +74,9 @@ class ArticleCard extends React.Component<Props> {
                     <Card>
                         <CardHeader
                             title={
-                                <span className="article-title">{article.title}</span>
+                                <span className="article-title">
+                                    {article.title}
+                                </span>
                             }
                             subheader={date}
                             action={
@@ -92,7 +92,9 @@ class ArticleCard extends React.Component<Props> {
                             <div className="tag-list">
                                 {
                                     Array.isArray(article.tags) &&
-                                    article.tags.map(t => <span className="tag" key={t}>{t}</span>)
+                                    article.tags.map(
+                                        t => t ? <span className="tag" key={t}>{t}</span> : null
+                                    )
                                 }
                             </div>
                         </CardContent>
@@ -100,7 +102,11 @@ class ArticleCard extends React.Component<Props> {
                             <div>
                                 {
                                     isAdmin && (
-                                        <span className={classnames("tag permission-tag", article.secret ? "secret" : "")}>
+                                        <span
+                                            className={classnames(
+                                                "tag permission-tag",
+                                                article.secret ? "secret" : ""
+                                            )}>
                                             {
                                                 article.secret ? "私密" : "公开"
                                             }

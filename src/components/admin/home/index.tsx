@@ -5,7 +5,7 @@ import Classification from "../classification";
 import Articles from "@containers/admin/admin-article";
 import PhotoAlbum from "@common/photo-album";
 import ModifyPwd from "@containers/admin/modify-pwd";
-import ArticleEdit from "../article-edit";
+import ArticleEdit from "@containers/admin/article-edit";
 import "./index.scss";
 import HomePage from "../home-page";
 
