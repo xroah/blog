@@ -9,7 +9,6 @@ import {
     FETCH_ARTICLES,
     FETCH_ARTICLES_START,
     DELETE_ARTICLE_START,
-    EDIT_ARTICLE,
     EDIT_ARTICLE_START,
     CHANGE_ARTICLE_SAVED,
     FETCH_ARTICLE_BY_ID,
@@ -20,6 +19,7 @@ import message from "@common/message";
 import { loading } from "@common/loading";
 
 function* fetchArticles(action) {
+    loading.show();
     try {
         let articles = yield call(_fetch, `${ADMIN_ARTICLE_URL}?page=${action.page}`);
         yield put({
@@ -29,6 +29,7 @@ function* fetchArticles(action) {
     } catch (error) {
 
     }
+    loading.hide();
 }
 
 function* delArticle(action) {
@@ -49,7 +50,11 @@ function* delArticle(action) {
 function* fetchArticleById(action) {
     loading.show();
     try {
-        let ret = yield call(_fetch, `${ADMIN_ARTICLE_URL}?id=${action.id}`)
+        let ret = yield call(_fetch, `${ADMIN_ARTICLE_URL}?id=${action.id}`);
+        yield put({
+            ...FETCH_ARTICLE_BY_ID,
+            article: ret
+        });
         if (typeof action.success === "function") action.success(ret);
     } catch (error) {
         if (typeof action.error === "function") action.error();

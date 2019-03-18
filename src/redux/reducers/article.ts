@@ -3,7 +3,8 @@ import {
     FETCH_ARTICLES,
     HIDE_ARTICLES_DETAILS,
     CHANGE_ARTICLE_SAVED,
-    CHANGE_ARTICLE_NOT_SAVED
+    CHANGE_ARTICLE_NOT_SAVED,
+    FETCH_ARTICLE_BY_ID
 } from "../actions";
 
 export default function (
@@ -30,6 +31,11 @@ export default function (
                 ...state,
                 index: action.index,
                 visible: true
+            };
+        case FETCH_ARTICLE_BY_ID.type:
+            return {
+                ...state,
+                current: action.article
             };
         case HIDE_ARTICLES_DETAILS.type:
             return {

@@ -6,8 +6,9 @@ import Articles from "@containers/admin/admin-article";
 import PhotoAlbum from "@common/photo-album";
 import ModifyPwd from "@containers/admin/modify-pwd";
 import ArticleEdit from "@containers/admin/article-edit";
-import "./index.scss";
 import HomePage from "../home-page";
+import ViewArticle from "@containers/admin/view-article";
+import "./index.scss";
 
 export default class AdminHome extends React.Component {
 
@@ -21,7 +22,8 @@ export default class AdminHome extends React.Component {
                         <Route path="/xsys/cls" exact component={Classification}/>
                         <Route path="/xsys/photo-album" exact component={PhotoAlbum}/>
                         <Route path="/xsys/articles/edit" exact component={ArticleEdit}/>
-                        <Route path="/xsys/articles" component={Articles}/>
+                        <Route path="/xsys/articles" exact component={Articles}/>
+                        <Route path="/xsys/articles/:id" exact component={ViewArticle}/>
                         <Redirect to="/404"/>
                     </Switch>
                     <ModifyPwd/>

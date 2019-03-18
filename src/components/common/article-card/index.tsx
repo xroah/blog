@@ -59,6 +59,14 @@ class ArticleCard extends React.Component<Props> {
         });
     }
 
+    viewArticle = () => {
+        let {
+            id,
+            history
+        } = this.props;
+        history.push(`/xsys/articles/${id}`);
+    }
+
     render() {
         let {
             children,
@@ -88,7 +96,7 @@ class ArticleCard extends React.Component<Props> {
                                     ) : null
                             } />
                         <CardContent style={{ paddingTop: 0 }}>
-                            <div className="article-summary">{children}</div>
+                            <div onClick={this.viewArticle} className="article-summary">{children}</div>
                             <div className="tag-list">
                                 {
                                     Array.isArray(article.tags) &&

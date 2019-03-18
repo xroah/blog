@@ -1,0 +1,15 @@
+.view-article-wrapper {
+    .article-title {
+        margin: 15px 0 0;
+    }
+    .other-info {
+        color: #999;
+        margin-bottom: 15px;
+        span + span {
+            margin-left: 15px;
+        }
+    }
+    .article-content {
+        white-space: pre-wrap;
+    }
+}
