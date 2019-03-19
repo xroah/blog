@@ -136,11 +136,6 @@ function _fetch(url: string, config?: Object) {
             errorAlert(response);
         }).catch(err => {
             errorAlert(err);
-            //catch other error
-            if (err instanceof Error) {
-                console.error(err);
-                return;
-            }
             reject(err);
         });
     });

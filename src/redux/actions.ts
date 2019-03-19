@@ -18,6 +18,10 @@ export const FETCH_ARTICLES = {
     total: 0
 };
 
+export const EMPTY_ARTICLE = {
+    type: "EMPTY_ARTICLE"
+};
+
 export const FETCH_ARTICLE_BY_ID = {
     type: "FETCH_ARTICLE_BY_ID",
     id: ""
@@ -34,6 +38,11 @@ export const FETCH_ARTICLE_BY_ID_STARTED = {
 
 export const FETCH_ARTICLE_ERROR = {
     type: "FETCH_ARTICLES"
+};
+
+export const ADMIN_UPDATE_ARTICLE_PAGE = {
+    type: "ADMIN_UPDATE_ARTICLE_PAGE",
+    page: 1
 };
 
 export const DELETE_ARTICLE_START = {

@@ -10,40 +10,34 @@ import "./index.scss";
 interface Props extends RouteComponentProps {
     total?: number;
     list?: Array<any>;
+    page?: number;
+    updatePage?: (page: number) => any;
     fetchArticle?: (page?: number) => void;
+    emptyArticle?: () => any;
 }
 
 export default class Articles extends React.Component<Props> {
 
-    state = {
-        page: 1
-    };
-
-    componentDidMount() {
-        this.props.fetchArticle();
-    }
+    state = {};
 
     static getDerivedStateFromProps(props: Props, state) {
         let {
             match: { params },
-            fetchArticle
+            page,
+            list,
+            fetchArticle,
+            updatePage,
+            emptyArticle
         } = props;
-        let page = (params as any).page;
-        if (!page) {
-            if (state.page !== 1) {
-                fetchArticle();
-                return {
-                    page: 1
-                };
-            }
-        } else {
-            page = Number(page);
-            if (!isNaN(page) && page !== state.page) {
-                fetchArticle(page);
-                return {
-                    page
-                };
-            }
+        let _page = Number((params as any).page) || 1;
+        //empty the articles, and update page
+        //when getDerivedStateFromProps called next time
+        //the page will equal to _page and list is empty
+        if (page !== _page) {
+            emptyArticle();
+            updatePage(_page);
+        } else if (!list.length) {
+            fetchArticle(page);
         }
         return state;
     }
@@ -57,7 +51,7 @@ export default class Articles extends React.Component<Props> {
     }
 
     renderArticles() {
-        let { list } = this.props;
+        let { list = [] } = this.props;
         return list.map((a, i) => {
             return (
                 <ArticleCard
@@ -73,8 +67,10 @@ export default class Articles extends React.Component<Props> {
     }
 
     render() {
-        let { total } = this.props;
-        let { page } = this.state;
+        let {
+            total,
+            page
+        } = this.props;
         return (
             <section className="admin-article-list">
                 <div className="article-list-wrapper">

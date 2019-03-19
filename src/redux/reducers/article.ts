@@ -5,7 +5,9 @@ import {
     CHANGE_ARTICLE_SAVED,
     CHANGE_ARTICLE_NOT_SAVED,
     FETCH_ARTICLE_BY_ID,
-    FETCH_ARTICLE_BY_ID_STARTED
+    FETCH_ARTICLE_BY_ID_STARTED,
+    ADMIN_UPDATE_ARTICLE_PAGE,
+    EMPTY_ARTICLE
 } from "../actions";
 
 export default function (
@@ -20,7 +22,8 @@ export default function (
         current: null,
         //edit component, if not saved will show prompt before route change
         saved: false,
-        fetchByIdStarted: false
+        fetchByIdStarted: false,
+        page: 1
     }, action
 ) {
     switch (action.type) {
@@ -29,6 +32,17 @@ export default function (
                 ...state,
                 list: action.list,
                 total: action.total
+            };
+        case EMPTY_ARTICLE.type:
+            return {
+                ...state,
+                list: [],
+                total: 0
+            };
+        case ADMIN_UPDATE_ARTICLE_PAGE.type:
+            return {
+                ...state, 
+                page: action.page
             };
         case FETCH_ARTICLE_BY_ID.type:
             return {

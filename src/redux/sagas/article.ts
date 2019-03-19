@@ -28,7 +28,6 @@ function* fetchArticles(action) {
             ...articles
         });
     } catch (error) {
-
     }
     loading.hide();
 }
