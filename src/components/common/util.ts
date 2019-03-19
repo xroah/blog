@@ -20,7 +20,10 @@ function two(num: number) {
     return String(100 + num).substring(1);
 }
 
-function formatDate(date: Date, format: string = "YYYY-MM-DD") {
+function formatDate(date: Date | string, format: string = "YYYY-MM-DD") {
+    if (typeof date === "string") {
+        date = new Date(date);
+    }
     let map = {
         "YYYY": date.getFullYear(),
         "MM": two(date.getMonth() + 1),

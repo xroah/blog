@@ -4,7 +4,8 @@ import {
     HIDE_ARTICLES_DETAILS,
     CHANGE_ARTICLE_SAVED,
     CHANGE_ARTICLE_NOT_SAVED,
-    FETCH_ARTICLE_BY_ID
+    FETCH_ARTICLE_BY_ID,
+    FETCH_ARTICLE_BY_ID_STARTED
 } from "../actions";
 
 export default function (
@@ -17,7 +18,8 @@ export default function (
         //view article component, current article
         current: null,
         //edit component, if not saved will show prompt before route change
-        saved: false
+        saved: false,
+        fetchByIdStarted: false
     }, action
 ) {
     switch (action.type) {
@@ -26,21 +28,27 @@ export default function (
                 ...state,
                 list: action.list
             };
-        case SHOW_ARTICLE_DETAILS.type:
-            return {
-                ...state,
-                index: action.index,
-                visible: true
-            };
         case FETCH_ARTICLE_BY_ID.type:
             return {
                 ...state,
                 current: action.article
             };
+        case FETCH_ARTICLE_BY_ID_STARTED.type:
+            return {
+                ...state,
+                fetchByIdStarted: action.started
+            };
         case HIDE_ARTICLES_DETAILS.type:
             return {
                 ...state,
+                index: -1,
                 visible: false
+            };
+        case SHOW_ARTICLE_DETAILS.type:
+            return {
+                ...state,
+                index: action.index,
+                visible: true
             };
         case CHANGE_ARTICLE_SAVED.type:
             return {

@@ -13,10 +13,8 @@ import { loading } from "@common/loading";
 import _fetch from "@common/fetch";
 import message from "@common/message";
 import ClsList from "@containers/admin/article-edit-cls-list";
-import {
-    UPLOAD_FILE,
-    ADMIN_ARTICLE_URL
-} from "@common/api";
+import NoArticle from "@common/no-article";
+import { UPLOAD_FILE} from "@common/api";
 import "./index.scss";
 import Quill from "quill";
 
@@ -24,7 +22,7 @@ interface Props extends RouteComponentProps {
     saveArticle?: (arg: any) => any;
     changeSaved?: (arg?: any) => any;
     saved?: boolean;
-    fetchArticleById?: (id: string, success: Function, error: Funcion) => any;
+    fetchArticleById?: (id: string, success: Function, error: Function) => any;
 }
 
 export default class ArticleEdit extends React.Component<Props> {
@@ -33,7 +31,9 @@ export default class ArticleEdit extends React.Component<Props> {
         title: "",
         cls: "",
         tags: "",
-        secret: false
+        secret: false,
+        error: false,
+        message: ""
     };
 
     fileEl: React.RefObject<HTMLInputElement> = React.createRef();
@@ -42,6 +42,13 @@ export default class ArticleEdit extends React.Component<Props> {
     id: string;
 
     fetchSuccess = (ret: any) => {
+        if (!ret) {
+            this.setState({
+                error: true,
+                message: "文章不存在"
+            });
+            return;
+        }
         this.setState({
             title: ret.title,
             cls: ret.clsId,
@@ -52,15 +59,10 @@ export default class ArticleEdit extends React.Component<Props> {
     }
 
     fetchError = () => {
-        let {
-            history,
-            changeSaved
-        } = this.props;
-        message.error("文章不存在,跳转到新增文章");
-        changeSaved(true);
-        setTimeout(() => {
-            history.push("/xsys/articles/edit");
-        }, 300);
+        this.setState({
+            error: true,
+            message: "获取文章出错"
+        });
     }
 
     async componentDidMount() {
@@ -177,10 +179,16 @@ export default class ArticleEdit extends React.Component<Props> {
             title,
             cls,
             secret,
-            tags
+            tags,
+            error,
+            message
         } = this.state;
 
         let { saved } = this.props;
+
+        if (error) {
+            return <NoArticle message={message}/>
+        }
 
         return (
             <section className="article-edit-wrapper">

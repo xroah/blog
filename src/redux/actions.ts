@@ -26,6 +26,11 @@ export const FETCH_ARTICLE_BY_ID_START = {
     type: "FETCH_ARTICLE_BY_ID_START"
 };
 
+export const FETCH_ARTICLE_BY_ID_STARTED = {
+    type: "FETCH_ARTICLE_BY_ID_STARTED",
+    started: false
+};
+
 export const FETCH_ARTICLE_ERROR = {
     type: "FETCH_ARTICLES"
 };

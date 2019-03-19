@@ -4,7 +4,8 @@ import { FETCH_ARTICLE_BY_ID_START } from "@redux/actions";
 
 export default connect(
     (state: any) => ({
-        article: state.article.current
+        article: state.article.current,
+        started: state.article.fetchByIdStarted
     }),
     dispatch => ({
         fetchArticle(id) {
