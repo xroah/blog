@@ -14,7 +14,8 @@ export const FETCH_ARTICLES_START = {
 
 export const FETCH_ARTICLES = {
     type: "FETCH_ARTICLES",
-    articles: []
+    list: [],
+    total: 0
 };
 
 export const FETCH_ARTICLE_BY_ID = {

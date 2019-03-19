@@ -4,13 +4,15 @@ import { connect } from "react-redux";
 
 export default connect(
     (state: any) => ({
-        list: state.article.list
+        list: state.article.list,
+        total: state.article.total
     }),
-    {
-        fetchArticle() {
-            return {
-                ...FETCH_ARTICLES_START
-            };
+    dispatch => ({
+        fetchArticle(page: number = 1) {
+            dispatch({
+                ...FETCH_ARTICLES_START,
+                page
+            });
         }
-    }
+    })
 )(Articles);

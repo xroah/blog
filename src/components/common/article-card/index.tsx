@@ -44,7 +44,7 @@ class ArticleCard extends React.Component<Props> {
             id,
             history
         } = this.props;
-        history.push("/xsys/articles/edit", {
+        history.push("/xsys/article/edit", {
             id
         });
     }
@@ -64,7 +64,7 @@ class ArticleCard extends React.Component<Props> {
             id,
             history
         } = this.props;
-        history.push(`/xsys/articles/${id}`);
+        history.push(`/xsys/article/${id}`);
     }
 
     render() {

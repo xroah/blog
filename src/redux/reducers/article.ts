@@ -11,6 +11,7 @@ import {
 export default function (
     state = {
         list: [],
+        total: 0,
         //get article from list by index
         index: -1,
         //whether detail dialog is visible
@@ -26,7 +27,8 @@ export default function (
         case FETCH_ARTICLES.type:
             return {
                 ...state,
-                list: action.list
+                list: action.list,
+                total: action.total
             };
         case FETCH_ARTICLE_BY_ID.type:
             return {

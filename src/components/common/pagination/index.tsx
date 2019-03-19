@@ -13,6 +13,7 @@ interface Props {
     onPageChange?: (arg: number) => any | void;
     pageSize?: number;
     hideOnSinglePage?: boolean;
+    align?: "left" | "center" | "right";
 }
 
 export default class Pagination extends React.Component<Props> {
@@ -20,7 +21,8 @@ export default class Pagination extends React.Component<Props> {
     state = {
         totalPages: 0,
         total: 0,
-        current: 1
+        current: 1,
+        from: "" //distinguish current(props change or state change)
     };
 
     visiblePage = 7;
@@ -29,7 +31,8 @@ export default class Pagination extends React.Component<Props> {
         total: 0,
         current: 1,
         pageSize: 10,
-        hideOnSinglePage: true
+        hideOnSinglePage: true,
+        align: "left"
     };
 
     componentDidMount() {
@@ -44,25 +47,29 @@ export default class Pagination extends React.Component<Props> {
         });
     }
 
-    static getDerivedStateFromProps(props, state) {
+    static getDerivedStateFromProps(props: Props, state) {
+        let current = state.current;
+        let _state = state;
+        if (props.current !== state.current) {
+            if (state.from !== "state") {
+                current = _state.current = props.current;
+            }
+            _state.from = "";
+        }
         if (props.total !== state.total) {
             let totalPages = Math.ceil(props.total / props.pageSize);
-            let current = state.current;
             if (current > totalPages) {
-                current = totalPages;
+                _state.current = totalPages;
             }
-            return {
-                totalPages,
-                current,
-                total: props.total
-            };
+            _state.total = props.total;
+            _state.totalPages = totalPages;
         }
-        return state;
+        return {
+            ..._state
+        };
     }
 
-    handleClick = (page: number) => {
-        return (evt: React.MouseEvent) => this.go(page);
-    }
+    handleClick = (page: number) =>  () => this.go(page)
 
     loop(start: number, end: number) {
         let ret = [];
@@ -143,7 +150,8 @@ export default class Pagination extends React.Component<Props> {
 
     go(page: number) {
         this.setState({
-            current: page
+            current: page,
+            from: "state"
         });
         this.triggerChange(page);
     }
@@ -157,7 +165,10 @@ export default class Pagination extends React.Component<Props> {
     }
 
     render() {
-        let { hideOnSinglePage } = this.props;
+        let { 
+            hideOnSinglePage,
+            align
+         } = this.props;
         let {
             totalPages,
             current
@@ -165,7 +176,7 @@ export default class Pagination extends React.Component<Props> {
         if (totalPages <= 1 && hideOnSinglePage) return null;
         return (
             <div className="pagination-wrapper">
-                <List className="pagination">
+                <List className={classnames("pagination", align)}>
                     <ListItem>
                         <Button
                             onClick={this.goPrev}

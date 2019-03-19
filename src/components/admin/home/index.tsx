@@ -21,9 +21,9 @@ export default class AdminHome extends React.Component {
                         <Route path="/xsys" exact component={HomePage}/>
                         <Route path="/xsys/cls" exact component={Classification}/>
                         <Route path="/xsys/photo-album" exact component={PhotoAlbum}/>
-                        <Route path="/xsys/articles/edit" exact component={ArticleEdit}/>
-                        <Route path="/xsys/articles" exact component={Articles}/>
-                        <Route path="/xsys/articles/:id" exact component={ViewArticle}/>
+                        <Route path="/xsys/article/edit" exact component={ArticleEdit}/>
+                        <Route path="/xsys/articles/:page?" exact component={Articles}/>
+                        <Route path="/xsys/article/:id" exact component={ViewArticle}/>
                         <Redirect to="/404"/>
                     </Switch>
                     <ModifyPwd/>
