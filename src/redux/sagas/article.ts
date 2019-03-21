@@ -13,7 +13,7 @@ import {
     CHANGE_ARTICLE_SAVED,
     FETCH_ARTICLE_BY_ID,
     FETCH_ARTICLE_BY_ID_START,
-    FETCH_ARTICLE_BY_ID_STARTED
+    FETCH_ARTICLE_STARTED
 } from "@redux/actions";
 import { push } from "connected-react-router";
 import message from "@common/message";
@@ -50,15 +50,18 @@ function* delArticle(action) {
 function* fetchArticleById(action) {
     loading.show();
     yield put({
-        ...FETCH_ARTICLE_BY_ID_STARTED,
+        ...FETCH_ARTICLE_STARTED,
         started: true
     });
     yield put({
         ...FETCH_ARTICLE_BY_ID,
         article: null
     });
+    let {
+        id
+    } = action;
     try {
-        let ret = yield call(_fetch, `${ADMIN_ARTICLE_URL}?id=${action.id}`);
+        let ret = yield call(_fetch, `${ADMIN_ARTICLE_URL}?id=${id}`);
         yield put({
             ...FETCH_ARTICLE_BY_ID,
             article: ret
@@ -68,7 +71,7 @@ function* fetchArticleById(action) {
         if (typeof action.error === "function") action.error();
     }
     yield put({
-        ...FETCH_ARTICLE_BY_ID_STARTED,
+        ...FETCH_ARTICLE_STARTED,
         started: false
     });
     loading.hide();

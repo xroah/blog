@@ -2,45 +2,83 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { formatDate } from "@common/util";
 import NotExists from "../no-article";
+import CommentItem from "../comment-item";
+import CommentEditor from "@containers/common/comment-editor";
 import "./index.scss";
 
 interface Props extends RouteComponentProps {
     started?: boolean;
     article?: any;
+    comments?: Array<any>;
     fetchArticle?: (id: string) => any;
+    fetchComments?: (id: string) => any;
+    emptyComments?: () => any;
 }
 
 export default class ViewArticle extends React.Component<Props> {
 
     componentDidMount() {
         let {
-            match: { params },
-            fetchArticle
-        } = this.props as any;
+            match,
+            fetchArticle,
+            fetchComments
+        } = this.props;
+        let params: any = match.params;
         if (params.id) {
             fetchArticle(params.id);
+            fetchComments(params.id);
         }
     }
 
+    renderComments() {
+        let { comments } = this.props;
+        return comments.map(
+            c => (
+                <CommentItem
+                    key={c._id}
+                    articleId={c.articleId}
+                    user={c.username}
+                    time={c.createTime}
+                    replyTo={c.replayTo}
+                    content={c.content} />
+            )
+        );
+    }
+
     render() {
-        let { 
+        let {
             article,
-            started
-         } = this.props;
+            started,
+            comments
+        } = this.props;
         return (
-            <section className="view-article-wrapper">
+            <section className="view-article-container">
                 {
                     started ? null : article ?
                         (
                             <>
-                                <h2 className="text-center article-title">{article.title}</h2>
-                                <div className="text-center other-info">
-                                    <span>日期:{formatDate(article.createTime, "YYYY-MM-DD hh:mm")}</span>
-                                    <span>所属分类:{article.clsName}</span>
+                                <div className="article-content-wrapper">
+                                    <h2 className="text-center article-title">{article.title}</h2>
+                                    <div className="text-center other-info">
+                                        <span>
+                                            日期:{formatDate(article.createTime, "YYYY-MM-DD hh:mm")}
+                                        </span>
+                                        <span>所属分类:{article.clsName}</span>
+                                    </div>
+                                    <div
+                                        dangerouslySetInnerHTML={{ __html: article.content }}
+                                        className="article-content" />
+                                    <h4>发表评论:</h4>
+                                    <CommentEditor articleId={article._id} />
                                 </div>
-                                <div
-                                    dangerouslySetInnerHTML={{ __html: article.content }}
-                                    className="article-content" />
+                                <div className="comment-list-wrapper">
+                                    <div className="comment-header">
+                                        {comments.length}条评论
+                                    </div>
+                                    <div className="comment-body">
+                                        {this.renderComments()}
+                                    </div>
+                                </div>
                             </>
                         )
                         : <NotExists message="文章不存在或被博主删除" />

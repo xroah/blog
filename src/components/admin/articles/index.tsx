@@ -18,7 +18,9 @@ interface Props extends RouteComponentProps {
 
 export default class Articles extends React.Component<Props> {
 
-    state = {};
+    state = {
+        fetched: false
+    };
 
     static getDerivedStateFromProps(props: Props, state) {
         let {
@@ -30,14 +32,17 @@ export default class Articles extends React.Component<Props> {
             emptyArticle
         } = props;
         let _page = Number((params as any).page) || 1;
-        //empty the articles, and update page
-        //when getDerivedStateFromProps called next time
+        //empty the articles, and update the page
+        //when getDerivedStateFromProps was called next time
         //the page will equal to _page and list is empty
+        //state.fetched: prevent from keeping fetching from the server when no article
         if (page !== _page) {
+            state.fetched = false;
             emptyArticle();
             updatePage(_page);
-        } else if (!list.length) {
+        } else if (!list.length && !state.fetched) {
             fetchArticle(page);
+            state.fetched = true;
         }
         return state;
     }

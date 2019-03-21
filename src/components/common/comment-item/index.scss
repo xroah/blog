@@ -1,0 +1,18 @@
+@import "../styles/variables";
+
+.comment-item-wrapper {
+    padding: 10px;
+    & + .comment-item-wrapper {
+        border-top: 1px solid $defaultBorderColor;
+    }
+    .comment-user {
+        margin: 10px;
+        color: $infoColor;
+        &:first-child {
+            margin-left: 0;
+        }
+    }
+    .comment-time {
+        color: #999;
+    }
+}

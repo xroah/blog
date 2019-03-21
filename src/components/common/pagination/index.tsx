@@ -69,8 +69,6 @@ export default class Pagination extends React.Component<Props> {
         };
     }
 
-    handleClick = (page: number) =>  () => this.go(page)
-
     loop(start: number, end: number) {
         let ret = [];
         for (let i = start; i <= end; i++) {
@@ -85,7 +83,7 @@ export default class Pagination extends React.Component<Props> {
         return (
             <ListItem key={key}>
                 <Button
-                    onClick={this.handleClick(key)}
+                    onClick={this.handleClickNumber(key)}
                     color="primary"
                     data-page={key}
                     disabled={current === key}
@@ -163,6 +161,8 @@ export default class Pagination extends React.Component<Props> {
     goNext = () => {
         this.go(this.state.current + 1);
     }
+
+    handleClickNumber = (page: number) =>  () => this.go(page)
 
     render() {
         let { 

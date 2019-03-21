@@ -38,7 +38,12 @@ function formatDate(date: Date | string, format: string = "YYYY-MM-DD") {
     );
 }
 
+function isFunc(arg: any) {
+    return typeof arg === "function";
+}
+
 export {
     encrypt,
-    formatDate
+    formatDate,
+    isFunc
 };

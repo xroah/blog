@@ -1,18 +1,43 @@
-.view-article-wrapper {
+@import "../styles/variables";
+
+.view-article-container {
+    
+    .article-content-wrapper,
+    .comment-list-wrapper {
+        padding: 10px;
+        background-color: #fff;
+    }
+
     .article-title {
         margin: 15px 0 0;
     }
+
     .other-info {
         color: #999;
         margin-bottom: 15px;
-        span + span {
+
+        span+span {
             margin-left: 15px;
         }
     }
+
     .article-content {
         white-space: pre-wrap;
+        padding-bottom: 10px;
+        border-bottom: 1px solid $defaultBorderColor;
+
         img {
             max-width: 100%;
+        }
+    }
+
+    .comment-list-wrapper {
+        margin-top: 10px;
+        padding: 0;
+        .comment-header {
+            padding: 10px;
+            background-color: #eee;
+            color: #333;
         }
     }
 }

@@ -7,7 +7,7 @@ import PhotoAlbum from "@common/photo-album";
 import ModifyPwd from "@containers/admin/modify-pwd";
 import ArticleEdit from "@containers/admin/article-edit";
 import HomePage from "../home-page";
-import ViewArticle from "@containers/admin/view-article";
+import ViewArticle from "@containers/common/view-article";
 import "./index.scss";
 
 export default class AdminHome extends React.Component {

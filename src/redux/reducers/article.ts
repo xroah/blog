@@ -5,7 +5,7 @@ import {
     CHANGE_ARTICLE_SAVED,
     CHANGE_ARTICLE_NOT_SAVED,
     FETCH_ARTICLE_BY_ID,
-    FETCH_ARTICLE_BY_ID_STARTED,
+    FETCH_ARTICLE_STARTED,
     ADMIN_UPDATE_ARTICLE_PAGE,
     EMPTY_ARTICLE
 } from "../actions";
@@ -49,7 +49,7 @@ export default function (
                 ...state,
                 current: action.article
             };
-        case FETCH_ARTICLE_BY_ID_STARTED.type:
+        case FETCH_ARTICLE_STARTED.type:
             return {
                 ...state,
                 fetchByIdStarted: action.started

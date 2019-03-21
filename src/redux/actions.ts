@@ -31,13 +31,9 @@ export const FETCH_ARTICLE_BY_ID_START = {
     type: "FETCH_ARTICLE_BY_ID_START"
 };
 
-export const FETCH_ARTICLE_BY_ID_STARTED = {
+export const FETCH_ARTICLE_STARTED = {
     type: "FETCH_ARTICLE_BY_ID_STARTED",
     started: false
-};
-
-export const FETCH_ARTICLE_ERROR = {
-    type: "FETCH_ARTICLES"
 };
 
 export const ADMIN_UPDATE_ARTICLE_PAGE = {
@@ -45,13 +41,22 @@ export const ADMIN_UPDATE_ARTICLE_PAGE = {
     page: 1
 };
 
+export const FETCH_ARTICLE_COMMENTS = {
+    type: "FETCH_ARTICLE_COMMENTS",
+    comments: []
+};
+
+export const FETCH_ARTICLE_COMMENTS_START = {
+    type: "FETCH_ARTICLE_COMMENTS_START"
+};
+
+export const SAVE_ARTICLE_COMMENTS_START = {
+    type: "SAVE_ARTICLE_COMMENTS_START"
+};
+
 export const DELETE_ARTICLE_START = {
     type: "DELETE_ARTICLES_START",
     id: ""
-};
-
-export const CLEAR_FETCHED_BY_ID = {
-    type: "CLEAR_FETCHED_BY_ID"
 };
 
 export const EDIT_ARTICLE = {
