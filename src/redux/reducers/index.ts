@@ -1,14 +1,18 @@
 import { combineReducers } from "redux";
 import { connectRouter } from "connected-react-router";
-import article from "./article";
+import adminArticle from "./admin-article";
+import commonArticle from "./common-article";
 import modifyPwd from "./modify-pwd";
 import cls from "./classification";
 import comment from "./comment";
+import publicArticle from "./public-article";
 
 export default history => combineReducers({
     router: connectRouter(history),
-    article,
+    adminArticle,
+    commonArticle,
     modifyPwd,
     cls,
-    comment
+    comment,
+    publicArticle
 });

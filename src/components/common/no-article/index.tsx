@@ -5,27 +5,42 @@ import {
 } from "react-router-dom";
 import { Button } from "@material-ui/core";
 
-const img = require("@images/no_article.png");
+const noArticle = require("@images/no_article.png");
+const noResult = require("@images/no_result.png");
+
+let imgMap = {
+    noArticle,
+    noResult
+};
 
 interface Props extends RouteComponentProps {
     message: string;
+    img?: string;
 }
 
 class NotExists extends React.Component<Props> {
+
+    static defaultProps = {
+        img: "noArticle"
+    };
 
     goBack = () => {
         this.props.history.goBack();
     }
 
     render() {
+        let {
+            message,
+            img
+        } = this.props;
         return (
             <div
-                style={{ marginTop: 15 }}
+                style={{ paddingTop: 15, margin: "0 auto" }}
                 className="text-center">
-                <img src={img} />
+                <img src={imgMap[img]} />
                 <p
                     style={{ color: "#d93025", margin: "15px 0" }}
-                    className="hint-message">{this.props.message}</p>
+                    className="hint-message">{message}</p>
                 <Button variant="contained" onClick={this.goBack}>返回</Button>
             </div>
         );

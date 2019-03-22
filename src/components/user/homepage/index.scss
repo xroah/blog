@@ -1,0 +1,23 @@
+@import "../../common/styles/variables";
+
+.article-container {
+    display: flex;
+
+    .article-card {
+        margin: 15px 0;
+    }
+
+    .scroll-wrapper {
+        flex: 1;
+    }
+
+    .right-info {
+        width: 200px;
+    }
+}
+
+@media screen and (max-width: #{$maxResolution}) {
+    .right-info {
+        display: none;
+    }
+}

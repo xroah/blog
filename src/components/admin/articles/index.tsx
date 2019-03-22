@@ -5,12 +5,14 @@ import { Add } from "@material-ui/icons";
 import { RouteComponentProps } from "react-router-dom";
 import ArticleDetails from "@containers/admin/articles-details";
 import Pagination from "@common/pagination";
+import NoArticle from "@common/no-article";
 import "./index.scss";
 
 interface Props extends RouteComponentProps {
     total?: number;
     list?: Array<any>;
     page?: number;
+    started?: boolean;
     updatePage?: (page: number) => any;
     fetchArticle?: (page?: number) => void;
     emptyArticle?: () => any;
@@ -56,17 +58,18 @@ export default class Articles extends React.Component<Props> {
     }
 
     renderArticles() {
-        let { list = [] } = this.props;
+        let {
+            list = []
+        } = this.props;
         return list.map((a, i) => {
             return (
                 <ArticleCard
                     key={a._id}
                     id={a._id}
+                    viewPath="/xsys/article"
                     article={a}
                     isAdmin={true}
-                    timeout={50 + i * 50}>
-                    {a.summary}
-                </ArticleCard>
+                    timeout={50 + i * 50} />
             );
         });
     }
@@ -74,13 +77,32 @@ export default class Articles extends React.Component<Props> {
     render() {
         let {
             total,
-            page
+            page,
+            started,
+            list
         } = this.props;
         return (
             <section className="admin-article-list">
-                <div className="article-list-wrapper">
-                    {this.renderArticles()}
-                </div>
+                {
+                    list.length ?
+                        (
+                            <>
+
+                                <div className="article-list-wrapper">
+                                    {this.renderArticles()}
+
+                                </div>
+                                <Pagination
+                                    align="right"
+                                    onPageChange={this.handlePageChange}
+                                    current={page}
+                                    total={total} />
+                            </>
+                        ) :
+                        !started ?
+                            <NoArticle message="无记录!" img="noResult" />
+                            : null
+                }
                 <ArticleDetails />
                 <Button
                     onClick={this.toAdd}
@@ -89,11 +111,6 @@ export default class Articles extends React.Component<Props> {
                     color="primary">
                     <Add fontSize="large" />
                 </Button>
-                <Pagination
-                    align="right"
-                    onPageChange={this.handlePageChange}
-                    current={page}
-                    total={total} />
             </section>
         );
     }

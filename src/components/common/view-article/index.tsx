@@ -1,5 +1,8 @@
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
+import {
+    RouteComponentProps,
+    withRouter
+} from "react-router";
 import { formatDate } from "@common/util";
 import NotExists from "../no-article";
 import CommentItem from "../comment-item";
@@ -7,15 +10,17 @@ import CommentEditor from "@containers/common/comment-editor";
 import "./index.scss";
 
 interface Props extends RouteComponentProps {
+    fetchUrl?: string;
     started?: boolean;
     article?: any;
     comments?: Array<any>;
     fetchArticle?: (id: string) => any;
     fetchComments?: (id: string) => any;
     emptyComments?: () => any;
+    updateViewedTimes?: boolean;
 }
 
-export default class ViewArticle extends React.Component<Props> {
+class ViewArticle extends React.Component<Props> {
 
     componentDidMount() {
         let {
@@ -90,3 +95,5 @@ export default class ViewArticle extends React.Component<Props> {
         );
     }
 }
+
+export default withRouter(ViewArticle);

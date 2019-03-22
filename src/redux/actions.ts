@@ -18,8 +18,8 @@ export const FETCH_ARTICLES = {
     total: 0
 };
 
-export const EMPTY_ARTICLE = {
-    type: "EMPTY_ARTICLE"
+export const EMPTY_ADMIN_ARTICLES = {
+    type: "EMPTY_ADMIN_ARTICLES"
 };
 
 export const FETCH_ARTICLE_BY_ID = {
@@ -28,16 +28,35 @@ export const FETCH_ARTICLE_BY_ID = {
 };
 
 export const FETCH_ARTICLE_BY_ID_START = {
-    type: "FETCH_ARTICLE_BY_ID_START"
+    type: "FETCH_ARTICLE_BY_ID_START",
+    id: ""
 };
 
 export const FETCH_ARTICLE_STARTED = {
-    type: "FETCH_ARTICLE_BY_ID_STARTED",
+    type: "FETCH_ARTICLE_STARTED",
     started: false
 };
 
 export const ADMIN_UPDATE_ARTICLE_PAGE = {
     type: "ADMIN_UPDATE_ARTICLE_PAGE",
+    page: 1
+};
+
+export const FETCH_PUBLIC_ARTICLES = {
+    type: "FETCH_PUBLIC_ARTICLES",
+    list: []
+};
+
+export const FETCH_PUBLIC_ARTICLES_START = {
+    type: "FETCH_PUBLIC_ARTICLES_START"
+};
+
+export const EMPTY_PUBLIC_ARTICLES = {
+    type: "EMPTY_PUBLIC_ARTICLES"
+};
+
+export const UPDATE_PUBLIC_ARTICLE_PAGE = {
+    type: "UPDATE_PUBLIC_ARTICLE_PAGE",
     page: 1
 };
 

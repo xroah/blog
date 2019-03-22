@@ -4,9 +4,9 @@ import ArticleDetails from "@components/admin/article-details";
 
 export default connect(
     (state: any) => ({
-        index: state.article.index,
-        visible: state.article.visible,
-        list: state.article.list
+        index: state.adminArticle.index,
+        visible: state.adminArticle.visible,
+        list: state.adminArticle.list
     }),
     dispatch => ({
         hideDialog() {

@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import {
     AppBar,
     Toolbar,
-    Button,
+    IconButton,
     List,
     ListItem,
     Drawer
@@ -61,21 +61,21 @@ export default class NavBar extends React.Component {
                     className="nav-bar"
                     position="fixed">
                     <Toolbar className="toolbar">
-                        <Button
+                        <IconButton
                             onClick={this.openMenu}
                             className="show-menu-btn"
                             style={{ color: "#fff" }}>
                             <Menu color="inherit" />
-                        </Button>
+                        </IconButton>
                         <div className="nav-menu">
                             <NavLink to="/" exact className="nav-link">首页</NavLink>
                             <NavLink to="/photo-album" exact className="nav-link">相册</NavLink>
                         </div>
                     </Toolbar>
                     <Drawer className="drawer-nav" open={visible}>
-                        <Button className="hide-menu-btn" onClick={this.closeMenu}>
+                        <IconButton className="hide-menu-btn" onClick={this.closeMenu}>
                             <Clear fontSize="large" />
-                        </Button>
+                        </IconButton>
                         <List className="drawer-menu" onClick={this.closeMenu}>
                             <ListItem>
                                 <NavLink to="/" exact className="nav-link">首页</NavLink>

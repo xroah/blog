@@ -1,11 +1,44 @@
 import * as React from "react";
+import {
+    RouteComponentProps,
+    withRouter
+} from "react-router-dom";
+import ArticleCard from "@common/article-card";
 
-export default class Articles extends React.Component {
+interface Props extends RouteComponentProps {
+    list?: Array<any>;
+    started?: boolean;
+    page?: number;
+    fetchArticle?: (page: number) => any;
+    updatePage?: (page: number) => any;
+}
+
+class Articles extends React.Component<Props> {
+
+    componentDidMount() {
+        this.props.fetchArticle(1);
+    }
+
+    renderArticle() {
+        let { list = [] } = this.props;
+        return list.map(
+            a => (
+                <ArticleCard
+                    viewPath="/article"
+                    key={a._id}
+                    id={a._id}
+                    article={a} />
+            )
+        );
+    }
+
     render() {
         return (
-            <div>
-                文章列表
+            <div className="scroll-wrapper">
+                {this.renderArticle()}
             </div>
         );
     }
 }
+
+export default withRouter(Articles);

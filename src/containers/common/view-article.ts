@@ -8,15 +8,16 @@ import {
 
 export default connect(
     (state: any) => ({
-        article: state.article.current,
-        started: state.article.fetchByIdStarted,
+        article: state.commonArticle.current,
+        started: state.commonArticle.started,
         comments: state.comment.list
     }),
-    dispatch => ({
+    (dispatch, ownProps: any) => ({
         fetchArticle(id) {
             dispatch({
                 ...FETCH_ARTICLE_BY_ID_START,
-                id
+                id,
+                url: ownProps.fetchUrl
             });
         },
         fetchComments(articleId) {

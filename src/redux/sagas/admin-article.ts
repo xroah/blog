@@ -11,8 +11,6 @@ import {
     DELETE_ARTICLE_START,
     EDIT_ARTICLE_START,
     CHANGE_ARTICLE_SAVED,
-    FETCH_ARTICLE_BY_ID,
-    FETCH_ARTICLE_BY_ID_START,
     FETCH_ARTICLE_STARTED
 } from "@redux/actions";
 import { push } from "connected-react-router";
@@ -21,6 +19,10 @@ import { loading } from "@common/loading";
 
 function* fetchArticles(action) {
     loading.show();
+    yield put({
+        ...FETCH_ARTICLE_STARTED,
+        started: true
+    });
     try {
         let articles = yield call(_fetch, `${ADMIN_ARTICLE_URL}?page=${action.page}`);
         yield put({
@@ -29,6 +31,10 @@ function* fetchArticles(action) {
         });
     } catch (error) {
     }
+    yield put({
+        ...FETCH_ARTICLE_STARTED,
+        started: false
+    });
     loading.hide();
 }
 
@@ -45,36 +51,6 @@ function* delArticle(action) {
     } catch (error) {
 
     }
-}
-
-function* fetchArticleById(action) {
-    loading.show();
-    yield put({
-        ...FETCH_ARTICLE_STARTED,
-        started: true
-    });
-    yield put({
-        ...FETCH_ARTICLE_BY_ID,
-        article: null
-    });
-    let {
-        id
-    } = action;
-    try {
-        let ret = yield call(_fetch, `${ADMIN_ARTICLE_URL}?id=${id}`);
-        yield put({
-            ...FETCH_ARTICLE_BY_ID,
-            article: ret
-        });
-        if (typeof action.success === "function") action.success(ret);
-    } catch (error) {
-        if (typeof action.error === "function") action.error();
-    }
-    yield put({
-        ...FETCH_ARTICLE_STARTED,
-        started: false
-    });
-    loading.hide();
 }
 
 function* editArticle(action) {
@@ -109,13 +85,8 @@ function* watchEditArticle() {
     yield takeLatest(EDIT_ARTICLE_START.type, editArticle);
 }
 
-function* watchFetchArticleById() {
-    yield takeLatest(FETCH_ARTICLE_BY_ID_START.type, fetchArticleById);
-}
-
 export default [
     watchFetchArticles(),
     watchDelArticle(),
-    watchEditArticle(),
-    watchFetchArticleById()
+    watchEditArticle()
 ]

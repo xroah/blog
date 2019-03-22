@@ -2,15 +2,16 @@ import Articles from "@components/admin/articles";
 import { 
     FETCH_ARTICLES_START,
     ADMIN_UPDATE_ARTICLE_PAGE,
-    EMPTY_ARTICLE
+    EMPTY_ADMIN_ARTICLES
  } from "@redux/actions";
 import { connect } from "react-redux";
 
 export default connect(
     (state: any) => ({
-        page: state.article.page,
-        list: state.article.list,
-        total: state.article.total
+        page: state.adminArticle.page,
+        list: state.adminArticle.list,
+        total: state.adminArticle.total,
+        started: state.commonArticle.started
     }),
     dispatch => ({
         fetchArticle(page: number = 1) {
@@ -27,7 +28,7 @@ export default connect(
         },
         emptyArticle() {
             dispatch({
-                ...EMPTY_ARTICLE
+                ...EMPTY_ADMIN_ARTICLES
             });
         }
     })

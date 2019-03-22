@@ -27,7 +27,8 @@ export interface Props extends React.HTMLAttributes<any>, RouteComponentProps {
     id: string;
     isAdmin?: boolean;
     timeout?: number;
-    article?: any;
+    article: any;
+    viewPath: string;
     showDetails?: (arg: any) => void;
     delArticle?: (id: string) => void;
 }
@@ -36,7 +37,9 @@ class ArticleCard extends React.Component<Props> {
 
     static defaultProps = {
         isAdmin: false,
-        timeout: 0
+        timeout: 0,
+        showDetails: () => 0,
+        delArticle: () => 0
     };
 
     handleEdit = () => {
@@ -62,14 +65,14 @@ class ArticleCard extends React.Component<Props> {
     viewArticle = () => {
         let {
             id,
-            history
+            history,
+            viewPath
         } = this.props;
-        history.push(`/xsys/article/${id}`);
+        history.push(`${viewPath}/${id}`);
     }
 
     render() {
         let {
-            children,
             isAdmin,
             showDetails,
             timeout,
@@ -96,7 +99,7 @@ class ArticleCard extends React.Component<Props> {
                                     ) : null
                             } />
                         <CardContent style={{ paddingTop: 0 }}>
-                            <div onClick={this.viewArticle} className="article-summary">{children}</div>
+                            <div onClick={this.viewArticle} className="article-summary">{article.summary}</div>
                             <div className="tag-list">
                                 {
                                     Array.isArray(article.tags) &&

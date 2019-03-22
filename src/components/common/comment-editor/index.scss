@@ -1,3 +1,5 @@
+@import "../styles/variables";
+
 .comment-editor-wrapper {
     margin: 10px 0;
     .user-info .form-control {
@@ -28,7 +30,7 @@
     }
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: #{$maxResolution}) {
     .responsible {
         .comment-editor-wrapper {
             .user-info .form-control {

@@ -110,7 +110,7 @@ select {
 }
 
 @media screen and (max-width: #{$maxPageWidth}) {
-    .container {
+    .responsive {
         width: 100%;
     }
 }

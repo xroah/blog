@@ -4,10 +4,8 @@ import {
     HIDE_ARTICLES_DETAILS,
     CHANGE_ARTICLE_SAVED,
     CHANGE_ARTICLE_NOT_SAVED,
-    FETCH_ARTICLE_BY_ID,
-    FETCH_ARTICLE_STARTED,
     ADMIN_UPDATE_ARTICLE_PAGE,
-    EMPTY_ARTICLE
+    EMPTY_ADMIN_ARTICLES
 } from "../actions";
 
 export default function (
@@ -18,11 +16,8 @@ export default function (
         index: -1,
         //whether detail dialog is visible
         visible: false,
-        //view article component, current article
-        current: null,
         //edit component, if not saved will show prompt before route change
         saved: false,
-        fetchByIdStarted: false,
         page: 1
     }, action
 ) {
@@ -33,7 +28,7 @@ export default function (
                 list: action.list,
                 total: action.total
             };
-        case EMPTY_ARTICLE.type:
+        case EMPTY_ADMIN_ARTICLES.type:
             return {
                 ...state,
                 list: [],
@@ -41,18 +36,8 @@ export default function (
             };
         case ADMIN_UPDATE_ARTICLE_PAGE.type:
             return {
-                ...state, 
+                ...state,
                 page: action.page
-            };
-        case FETCH_ARTICLE_BY_ID.type:
-            return {
-                ...state,
-                current: action.article
-            };
-        case FETCH_ARTICLE_STARTED.type:
-            return {
-                ...state,
-                fetchByIdStarted: action.started
             };
         case HIDE_ARTICLES_DETAILS.type:
             return {

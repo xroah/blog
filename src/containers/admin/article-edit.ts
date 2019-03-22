@@ -9,7 +9,7 @@ import {
 
 export default connect(
     (state: any) => ({
-        saved: state.article.saved
+        saved: state.adminArticle.saved
     }),
     dispatch => ({
         saveArticle(body) {
