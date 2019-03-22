@@ -2,16 +2,28 @@
 
 .comment-item-wrapper {
     padding: 10px;
-    & + .comment-item-wrapper {
+
+    &+.comment-item-wrapper {
         border-top: 1px solid $defaultBorderColor;
     }
+
+    .comment-content {
+        margin: 10px 0;
+    }
+
     .comment-user {
         margin: 10px;
-        color: $infoColor;
+        color: #666;
+
         &:first-child {
             margin-left: 0;
         }
     }
+
+    a.comment-user {
+        color: $infoColor;
+    }
+
     .comment-time {
         color: #999;
     }

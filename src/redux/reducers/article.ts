@@ -57,7 +57,7 @@ export default function (
         case HIDE_ARTICLES_DETAILS.type:
             return {
                 ...state,
-                index: -1,
+                // index: -1,
                 visible: false
             };
         case SHOW_ARTICLE_DETAILS.type:

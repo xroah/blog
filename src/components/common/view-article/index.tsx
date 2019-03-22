@@ -37,9 +37,12 @@ export default class ViewArticle extends React.Component<Props> {
                 <CommentItem
                     key={c._id}
                     articleId={c.articleId}
+                    userHomepage={c.userHomepage}
                     user={c.username}
                     time={c.createTime}
-                    replyTo={c.replayTo}
+                    commentId={c._id}
+                    rootComment={c.rootComment || c._id}
+                    replyUser={c.replyToUser}
                     content={c.content} />
             )
         );

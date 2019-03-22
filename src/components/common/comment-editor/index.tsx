@@ -5,14 +5,13 @@ import {
     Checkbox,
     FormControlLabel
 } from "@material-ui/core";
-import { FETCH_COMMENT } from "@common/api";
-import _fetch from "@common/fetch";
-import message from "@common/message";
 import "./index.scss";
 
 interface Props {
     articleId: string;
     replyTo?: string;
+    rootComment?: string;
+    onSuccess: () => any;
     saveComment?: (body: any, success?: Function, error?: Function) => any;
 }
 
@@ -35,7 +34,8 @@ export default class CommentEditor extends React.Component<Props> {
         if (info) {
             this.setState({
                 username: info.username,
-                homepage: info.homepage
+                homepage: info.homepage,
+                saveInfo: true
             });
         }
     }
@@ -47,10 +47,14 @@ export default class CommentEditor extends React.Component<Props> {
     }
 
     success = () => {
+        let { onSuccess } = this.props;
         this.setState({
             content: ""
         });
         this.enable();
+        if (typeof onSuccess === "function") {
+            onSuccess();
+        }
     }
 
     handleClick = async () => {
@@ -63,7 +67,8 @@ export default class CommentEditor extends React.Component<Props> {
         let {
             articleId,
             replyTo,
-            saveComment
+            saveComment,
+            rootComment
         } = this.props;
         username = username.trim();
         homepage = homepage.trim();
@@ -82,14 +87,15 @@ export default class CommentEditor extends React.Component<Props> {
         });
         saveComment(
             {
-            username,
-            userHomepage: homepage,
-            content,
-            articleId,
-            replyTo
-        },
-        this.success,
-        this.enable
+                username,
+                userHomepage: homepage,
+                content,
+                articleId,
+                replyTo,
+                rootComment
+            },
+            this.success,
+            this.enable
         );
     }
 

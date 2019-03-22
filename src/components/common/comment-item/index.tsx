@@ -1,39 +1,88 @@
 import * as React from "react";
-import { Button } from "@material-ui/core";
+import {
+    Button,
+    Collapse
+} from "@material-ui/core";
 import { Reply } from "@material-ui/icons";
 import { formatDate } from "@common/util";
+import CommentEditor from "@containers/common/comment-editor";
 import "./index.scss";
 
 interface Props {
     user: string;
-    replyTo?: string;
+    commentId?: string;
+    replyUser?: any;
+    rootComment?: string;
     content: string;
     time: string;
     articleId: string;
+    userHomepage?: string;
 }
 
 export default class CommentItem extends React.Component<Props> {
 
-    handleReply() {
+    state = {
+        editorVisible: false
+    };
 
+    handleReply = () => {
+        let { editorVisible } = this.state;
+
+        this.setState({
+            editorVisible: !editorVisible
+        });
+    }
+
+    handleUrl(url: string) {
+        let reg = /^https?:\/\//;
+        let reg2 = /[\\\/]+/;
+        if (reg.test(url)) {
+            return url;
+        } else if (reg2.test(url)) {
+            return url.replace(reg2, "//");
+        }
+        return `//${url}`;
+    }
+
+    getUser(username, homepage: string) {
+        if (!username) {
+            username = "路人甲";
+        }
+        return (
+            !!homepage ?
+                <a
+                    href={this.handleUrl(homepage)}
+                    className="comment-user"
+                    target="_blank">
+                    {username}
+                </a> :
+                <span className="comment-user">
+                    {username}
+                </span>
+        );
     }
 
     render() {
         let {
             user,
-            replyTo,
+            replyUser,
             content,
-            time
+            time,
+            articleId,
+            commentId,
+            rootComment,
+            userHomepage
         } = this.props;
+        let { editorVisible } = this.state;
         return (
             <div className="comment-item-wrapper">
                 <p className="comment-info">
-                    <span className="comment-user">{user}</span>
+                    {this.getUser(user, userHomepage)}
                     {
-                        replyTo && (
+                        replyUser && (
                             <>
                                 <span>回复</span>
-                                <span className="comment-user">{replyTo}</span>
+                                {this.getUser(replyUser.username, replyUser.userHomepage)}
                             </>
                         )
                     }
@@ -43,11 +92,19 @@ export default class CommentItem extends React.Component<Props> {
                 </p>
                 <p className="comment-content">{content}</p>
                 <div className="comment-action">
-                    <Button color="primary">
-                        <Reply />回复
+                    <Button onClick={this.handleReply} color="primary">
+                        <Reply />{editorVisible ? "取消回复" : "回复"}
                     </Button>
                 </div>
+                <Collapse in={editorVisible}>
+                    <CommentEditor
+                        onSuccess={this.handleReply}
+                        className="comment-list-editor"
+                        articleId={articleId}
+                        rootComment={rootComment}
+                        replyTo={commentId} />
+                </Collapse>
             </div>
         );
-    };
+    }
 }
