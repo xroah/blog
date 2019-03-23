@@ -9,7 +9,8 @@ export default connect(
     (state: any) => ({
         list: state.publicArticle.list,
         page: state.publicArticle.page,
-        started: state.commonArticle.started
+        started: state.commonArticle.started,
+        hasMore: state.publicArticle.hasMore
     }),
     dispatch => ({
         fetchArticle(page: number = 1) {

@@ -4,14 +4,20 @@ import {
     withRouter
 } from "react-router-dom";
 import ArticleCard from "@common/article-card";
+import InlineLoading from "../loading";
+import "./index.scss";
 
 interface Props extends RouteComponentProps {
     list?: Array<any>;
     started?: boolean;
     page?: number;
+    hasMore?: boolean;
     fetchArticle?: (page: number) => any;
     updatePage?: (page: number) => any;
 }
+
+const win = window;
+const LOAD_DISTANCE = 50;
 
 class Articles extends React.Component<Props> {
 
@@ -24,7 +30,33 @@ class Articles extends React.Component<Props> {
         if (!list.length) {
             fetchArticle(page);
         }
+        win.addEventListener("scroll", this.handleScroll);
     }
+
+    componentWillUnmount() {
+        win.removeEventListener("scroll", this.handleScroll);
+    }
+
+    handleScroll = () => {
+        let {
+            page,
+            hasMore,
+            fetchArticle,
+            updatePage,
+            started
+        } = this.props;
+        if (!hasMore || started) return;
+        let htmlEl = win.document.documentElement
+        let scrollH = htmlEl.scrollHeight;
+        let sTop = htmlEl.scrollTop || win.document.body.scrollTop;
+        let winH = win.innerHeight;
+        let dis = scrollH - winH - sTop;
+        if (dis <= LOAD_DISTANCE) {
+            page++;
+            updatePage(page);
+            fetchArticle(page);
+        }
+    };
 
     renderArticle() {
         let { list = [] } = this.props;
@@ -40,9 +72,20 @@ class Articles extends React.Component<Props> {
     }
 
     render() {
+        let {
+            started,
+            hasMore
+        } = this.props;
         return (
-            <div className="scroll-wrapper">
+            <div className="article-list">
                 {this.renderArticle()}
+                {started && <InlineLoading />}
+                {
+                    !hasMore &&
+                    <div className="no-more">
+                        <span>没有更多了</span>
+                    </div>
+                }
             </div>
         );
     }

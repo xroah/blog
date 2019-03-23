@@ -2,12 +2,15 @@
 
 .article-container {
     display: flex;
+    padding: 10px 0;
 
     .article-card {
-        margin: 15px 0;
+        & ~ .article-card {
+            margin-top: 15px;
+        }
     }
 
-    .scroll-wrapper {
+    .article-list {
         flex: 1;
     }
 

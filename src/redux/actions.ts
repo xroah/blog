@@ -60,6 +60,11 @@ export const UPDATE_PUBLIC_ARTICLE_PAGE = {
     page: 1
 };
 
+export const UPDATE_NO_MORE_ARTICLE= {
+    type: "UPDATE_NO_MORE_ARTICLE",
+    hasMore: true
+};
+
 export const FETCH_ARTICLE_COMMENTS = {
     type: "FETCH_ARTICLE_COMMENTS",
     comments: []
