@@ -1,5 +1,5 @@
 import * as React from "react";
-import Articles from "@containers/user/public-article";
+import Articles from "@containers/visitor/public-article";
 import RightInfo from "../right-info";
 import "./index.scss";
 

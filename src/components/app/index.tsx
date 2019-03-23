@@ -23,7 +23,7 @@ const AdminLogin = Loadable({
 });
 
 const UserHome = Loadable({
-    loader: () => import("../user/home"),
+    loader: () => import("../visitor/home"),
     ..._loading
 });
 

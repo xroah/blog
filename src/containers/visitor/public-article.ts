@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import Articles from "@components/user/articles";
+import Articles from "@components/visitor/articles";
 import {
     FETCH_PUBLIC_ARTICLES_START,
     UPDATE_PUBLIC_ARTICLE_PAGE
