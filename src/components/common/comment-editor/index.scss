@@ -1,13 +1,17 @@
 @import "../styles/variables";
-
 .comment-editor-wrapper {
     margin: 10px 0;
     .user-info .form-control {
         width: 200px;
         margin-right: 15px;
     }
-    .remember span:first-child {
-        padding: 0 0 0 5px;
+    .remember {
+        label {
+            margin-left: 0;
+        }
+        span:first-child {
+            padding: 0;
+        }
     }
     .comment-actions {
         display: flex;
@@ -31,7 +35,7 @@
 }
 
 @media screen and (max-width: #{$maxResolution}) {
-    .responsible {
+    .responsive {
         .comment-editor-wrapper {
             .user-info .form-control {
                 display: block;
