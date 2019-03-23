@@ -1,5 +1,6 @@
 import {
-    FETCH_ARTICLE_COMMENTS
+    FETCH_ARTICLE_COMMENTS,
+    EMPTY_COMMENT
 } from "../actions";
 
 export default (state = {
@@ -10,6 +11,11 @@ export default (state = {
             return {
                 ...state,
                 list: action.comments
+            };
+        case EMPTY_COMMENT.type:
+            return {
+                ...state,
+                list: []
             };
         default:
             return state;

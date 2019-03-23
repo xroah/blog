@@ -73,6 +73,10 @@ export const SAVE_ARTICLE_COMMENTS_START = {
     type: "SAVE_ARTICLE_COMMENTS_START"
 };
 
+export const EMPTY_COMMENT = {
+    type: "EMPTY_COMMENT"
+};
+
 export const DELETE_ARTICLE_START = {
     type: "DELETE_ARTICLES_START",
     id: ""

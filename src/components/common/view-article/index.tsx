@@ -7,6 +7,8 @@ import { formatDate } from "@common/util";
 import NotExists from "../no-article";
 import CommentItem from "../comment-item";
 import CommentEditor from "@containers/common/comment-editor";
+import { UPDATE_VIEWED_TIME } from "@common/api";
+import _fetch from "@common/fetch";
 import "./index.scss";
 
 interface Props extends RouteComponentProps {
@@ -14,25 +16,41 @@ interface Props extends RouteComponentProps {
     started?: boolean;
     article?: any;
     comments?: Array<any>;
+    updateViewedTime?: boolean;
     fetchArticle?: (id: string) => any;
     fetchComments?: (id: string) => any;
     emptyComments?: () => any;
-    updateViewedTimes?: boolean;
 }
 
 class ViewArticle extends React.Component<Props> {
+
+    componentWillMount() {
+        this.props.emptyComments();
+    }
 
     componentDidMount() {
         let {
             match,
             fetchArticle,
-            fetchComments
+            fetchComments,
+            updateViewedTime
         } = this.props;
         let params: any = match.params;
-        if (params.id) {
-            fetchArticle(params.id);
-            fetchComments(params.id);
+        fetchArticle(params.id);
+        fetchComments(params.id);
+        if (updateViewedTime) {
+            _fetch(UPDATE_VIEWED_TIME, {
+                method: "post",
+                noErrorHint: true,
+                body: {
+                    articleId: params.id
+                }
+            }).catch(e => e);
         }
+    }
+
+    updateTimes() {
+
     }
 
     renderComments() {

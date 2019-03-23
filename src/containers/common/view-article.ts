@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import { 
     FETCH_ARTICLE_BY_ID_START,
     FETCH_ARTICLE_COMMENTS_START,
-    FETCH_ARTICLE_COMMENTS
+    FETCH_ARTICLE_COMMENTS,
+    EMPTY_COMMENT
  } from "@redux/actions";
 
 export default connect(
@@ -28,8 +29,7 @@ export default connect(
         },
         emptyComments() {
             dispatch({
-                ...FETCH_ARTICLE_COMMENTS,
-                comments: []
+                ...EMPTY_COMMENT
             });
         }
     })

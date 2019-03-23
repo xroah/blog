@@ -11,7 +11,7 @@ import ViewArticle from "@containers/common/view-article";
 import { FETCH_PUBLIC_ARTICLE } from "@common/api";
 
 function _ViewArticle() {
-    return <ViewArticle fetchUrl={FETCH_PUBLIC_ARTICLE} />;
+    return <ViewArticle fetchUrl={FETCH_PUBLIC_ARTICLE} updateViewedTime={true} />;
 }
 
 export default class UserHome extends React.Component {

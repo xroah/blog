@@ -11,7 +11,8 @@ interface FetchOptions {
     credentials?: "omit" | "same-origin" | "include",
     cache?: "default" | "no-store" | "reload" | "no-cache" | "force-cache" | "only-if-=cached",
     redirect?: "follow" | "error" | "manual",
-    referer?: string
+    referer?: string,
+    noErrorHint?: boolean;
 }
 
 const DEFAULT_CONFIG: FetchOptions = {
@@ -21,14 +22,16 @@ const DEFAULT_CONFIG: FetchOptions = {
     headers: {
         "X-Requested-With": "XMLHttpRequest",
         "Content-Type": "application/x-www-form-urlencoded"
-    }
+    },
+    noErrorHint: false
 };
 
 function isObject(obj) {
     return Object.prototype.toString.call(obj) === "[object Object]";
 }
 
-function errorAlert(err: any = {}) {
+function errorAlert(err: any = {}, config: FetchOptions) {
+    if (config.noErrorHint) return;
     message.error(
         err.errMsg // error message from server
         ||
@@ -66,12 +69,12 @@ function polyfill(url: string, config = {}) {
                 resolve(res.data);
             } else {
                 reject(res);
-                errorAlert(res);
+                errorAlert(res, conf);
             }
         }
         xhr.onerror = () => {
             reject(xhr);
-            errorAlert(xhr);
+            errorAlert(xhr, conf);
         }
         xhr.open(method, url, true);
         if (isObject(body)) {
@@ -128,14 +131,14 @@ function _fetch(url: string, config?: Object) {
                         );
                 } else {
                     reject(res.data);
-                    errorAlert(res);
+                    errorAlert(res, conf);
                 }
                 return;
             }
             reject(response);
-            errorAlert(response);
+            errorAlert(response, conf);
         }).catch(err => {
-            errorAlert(err);
+            errorAlert(err, conf);
             reject(err);
         });
     });

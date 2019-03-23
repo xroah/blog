@@ -8,3 +8,4 @@ export const UPLOAD_FILE = "/api/xsys/upload";
 
 export const FETCH_COMMENT = "/api/comment";
 export const FETCH_PUBLIC_ARTICLE = "/api/articles/list";
+export const UPDATE_VIEWED_TIME = "/api/updateViewedTime";

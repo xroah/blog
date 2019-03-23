@@ -16,7 +16,14 @@ interface Props extends RouteComponentProps {
 class Articles extends React.Component<Props> {
 
     componentDidMount() {
-        this.props.fetchArticle(1);
+        let {
+            list,
+            page,
+            fetchArticle
+        } = this.props;
+        if (!list.length) {
+            fetchArticle(page);
+        }
     }
 
     renderArticle() {

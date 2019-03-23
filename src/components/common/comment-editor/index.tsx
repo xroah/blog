@@ -114,6 +114,13 @@ export default class CommentEditor extends React.Component<Props> {
         }
     }
 
+    handleKeyDown = (evt: React.KeyboardEvent) => {
+        let key = evt.key.toLowerCase();
+        if (key === "enter" && evt.ctrlKey) {
+            this.handleClick();
+        }
+    }
+
     render() {
         let {
             username,
@@ -154,6 +161,7 @@ export default class CommentEditor extends React.Component<Props> {
                         maxLength={200}
                         value={content}
                         onChange={this.handleChange("content")}
+                        onKeyDown={this.handleKeyDown}
                         placeholder="写下您的评论..."
                         className="form-control comment-content" />
                     <Button
