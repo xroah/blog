@@ -23,6 +23,8 @@ import classnames from "classnames";
 import hint from "@common/hint-dialog";
 import "./index.scss";
 
+const tag = require("@images/tag.png");
+
 export interface Props extends React.HTMLAttributes<any>, RouteComponentProps {
     id: string;
     isAdmin?: boolean;
@@ -98,14 +100,18 @@ class ArticleCard extends React.Component<Props> {
                                         </IconButton>
                                     ) : null
                             } />
-                        <CardContent style={{ paddingTop: 0 }}>
-                            <div onClick={this.viewArticle} className="article-summary">{article.summary}</div>
+                        <CardContent className="card-content">
+                            <div onClick={this.viewArticle} className="article-summary">                {article.summary}
+                            </div>
                             <div className="tag-list">
                                 {
                                     Array.isArray(article.tags) &&
-                                    article.tags.map(
-                                        t => t ? <span className="tag" key={t}>{t}</span> : null
-                                    )
+                                    <>
+                                        <img src={tag} />
+                                        {article.tags.map(
+                                            t => t ? <span className="tag" key={t}>{t}</span> : null
+                                        )}
+                                    </>
                                 }
                             </div>
                         </CardContent>

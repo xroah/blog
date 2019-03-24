@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 import ArticleCard from "@common/article-card";
 import InlineLoading from "../loading";
+import NoResult from "@common/no-article";
 import "./index.scss";
 
 interface Props extends RouteComponentProps {
@@ -74,14 +75,18 @@ class Articles extends React.Component<Props> {
     render() {
         let {
             started,
-            hasMore
+            hasMore,
+            list
         } = this.props;
         return (
             <div className="article-list">
-                {this.renderArticle()}
-                {started && <InlineLoading />}
                 {
-                    !hasMore &&
+                    started ? <InlineLoading /> :
+                        list.length ? this.renderArticle() :
+                            <NoResult message="没有文章" img="noResult" />
+                }
+                {
+                    !hasMore && list.length > 0 &&
                     <div className="no-more">
                         <span>没有更多了</span>
                     </div>

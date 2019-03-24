@@ -19,7 +19,7 @@ export default class NavBar extends React.Component {
                             <NavLink to="/xsys" exact className="nav-link">首页</NavLink>
                             <NavLink to="/xsys/articles" className="nav-link">文章</NavLink>
                             <NavLink to="/xsys/cls" exact className="nav-link">分类</NavLink>
-                            <NavLink to="/xsys/comments" exact className="nav-link">评论</NavLink>
+                            <NavLink to="/xsys/comments" className="nav-link">评论</NavLink>
                             <NavLink to="/xsys/photo-album" exact className="nav-link">相册</NavLink>
                         </div>
                         <div className="nav-right">

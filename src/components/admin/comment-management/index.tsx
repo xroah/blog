@@ -81,19 +81,19 @@ export default class CommentManagement extends React.Component<RouteComponentPro
         } = this.state;
         loading.show();
         try {
-        await _fetch(ADMIN_COMMENTS, {
-            method: "delete",
-            body: {
-                ids: selected
-            }
-        });
-        message.success("删除成功!");
-        this.fetchComments(page);
-        this.setState({
-            selected: [],
-            allChecked: false
-        });
-        } catch (error) {}
+            await _fetch(ADMIN_COMMENTS, {
+                method: "delete",
+                body: {
+                    ids: selected
+                }
+            });
+            message.success("删除成功!");
+            this.fetchComments(page);
+            this.setState({
+                selected: [],
+                allChecked: false
+            });
+        } catch (error) { }
         loading.hide();
     }
 
@@ -164,43 +164,53 @@ export default class CommentManagement extends React.Component<RouteComponentPro
         if (!comments.length) {
             return (
                 <TableRow>
-                    <TableCell className="text-center" colSpan={6}>
-                        <Typography variant="subtitle1">无记录</Typography>a!tota
+                    <TableCell colSpan={6}>
+                        <Typography
+                            className="text-center"
+                            variant="subtitle1">无记录</Typography>
                     </TableCell>
                 </TableRow>
             );
         }
         return comments.map(
-            c => (
-                <TableRow key={c._id} hover onClick={() => this.handleCheckRow(c._id)}>
-                    <TableCell>
-                        <Checkbox checked={this.index(c._id) >= 0} />
-                    </TableCell>
-                    <TableCell>
-                        <Tooltip title={c.article.title}>
-                            <span>{c.article.title}</span>
-                        </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                        <Tooltip title={c.content}>
-                            <span>{c.content}</span>
-                        </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                        {formatDate(c.createTime, "YYYY-MM-DD hh:mm:ss")}
-                    </TableCell>
-                    <TableCell>
-                        <Tooltip title={c.username}>
-                            <span>{c.username}</span>
-                        </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                        <Tooltip title={c.userHomepage}>
-                            <span>{c.userHomepage}</span>
-                        </Tooltip>
-                    </TableCell>
-                </TableRow>
-            )
+            c => {
+                let selected = this.index(c._id) >= 0;
+                return (
+                    <TableRow
+                        className="comment-row"
+                        key={c._id}
+                        selected={selected}
+                        hover
+                        onClick={() => this.handleCheckRow(c._id)}>
+                        <TableCell>
+                            <Checkbox checked={selected} />
+                        </TableCell>
+                        <TableCell>
+                            <Tooltip title={c.article.title}>
+                                <span>{c.article.title}</span>
+                            </Tooltip>
+                        </TableCell>
+                        <TableCell>
+                            <Tooltip title={c.content}>
+                                <span>{c.content}</span>
+                            </Tooltip>
+                        </TableCell>
+                        <TableCell>
+                            {formatDate(c.createTime, "YYYY-MM-DD hh:mm:ss")}
+                        </TableCell>
+                        <TableCell>
+                            <Tooltip title={c.username}>
+                                <span>{c.username}</span>
+                            </Tooltip>
+                        </TableCell>
+                        <TableCell>
+                            <Tooltip title={c.userHomepage}>
+                                <span>{c.userHomepage}</span>
+                            </Tooltip>
+                        </TableCell>
+                    </TableRow>
+                );
+            }
         );
     }
 

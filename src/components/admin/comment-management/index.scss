@@ -10,7 +10,8 @@
     }
     .comment-table {
         table-layout: fixed;
-        td, th {
+        td,
+        th {
             padding: 5px 12px;
         }
         th {
@@ -31,6 +32,9 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+    }
+    .comment-row {
+        cursor: pointer;
     }
     .pagination {
         display: flex;

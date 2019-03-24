@@ -15,14 +15,10 @@ let imgMap = {
 
 interface Props extends RouteComponentProps {
     message: string;
-    img?: string;
+    img?: "noArticle" | "noResult";
 }
 
 class NotExists extends React.Component<Props> {
-
-    static defaultProps = {
-        img: "noArticle"
-    };
 
     goBack = () => {
         this.props.history.goBack();
@@ -31,7 +27,7 @@ class NotExists extends React.Component<Props> {
     render() {
         let {
             message,
-            img
+            img = "noArticle"
         } = this.props;
         return (
             <div
