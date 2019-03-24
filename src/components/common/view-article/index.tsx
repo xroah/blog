@@ -37,7 +37,7 @@ class ViewArticle extends React.Component<Props> {
         fetchArticle(id);
         fetchComments(id);
         if (updateViewedTime) {
-
+            this.updateTimes();
         }
     }
 

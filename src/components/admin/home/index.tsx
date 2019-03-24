@@ -8,6 +8,7 @@ import ModifyPwd from "@containers/admin/modify-pwd";
 import ArticleEdit from "@containers/admin/article-edit";
 import HomePage from "../home-page";
 import ViewArticle from "@containers/common/view-article";
+import CommentsManagement from "../comment-management";
 import { ADMIN_ARTICLE_URL } from "@common/api";
 import "./index.scss";
 
@@ -26,6 +27,7 @@ export default class AdminHome extends React.Component {
                     <Switch>
                         <Route path="/xsys" exact component={HomePage} />
                         <Route path="/xsys/cls" exact component={Classification} />
+                        <Route path="/xsys/comments/:page?" component={CommentsManagement}/>
                         <Route path="/xsys/photo-album" exact component={PhotoAlbum} />
                         <Route path="/xsys/article/edit" exact component={ArticleEdit} />
                         <Route path="/xsys/articles/:page?" exact component={Articles} />
