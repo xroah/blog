@@ -24,33 +24,34 @@ interface Props extends RouteComponentProps {
 
 class ViewArticle extends React.Component<Props> {
 
-    componentWillMount() {
-        this.props.emptyComments();
-    }
-
     componentDidMount() {
         let {
-            match,
+            match: {params},
             fetchArticle,
             fetchComments,
-            updateViewedTime
+            updateViewedTime,
+            emptyComments
         } = this.props;
-        let params: any = match.params;
-        fetchArticle(params.id);
-        fetchComments(params.id);
+        let id = (params as any).id;
+        emptyComments();
+        fetchArticle(id);
+        fetchComments(id);
         if (updateViewedTime) {
-            _fetch(UPDATE_VIEWED_TIME, {
-                method: "post",
-                noErrorHint: true,
-                body: {
-                    articleId: params.id
-                }
-            }).catch(e => e);
+
         }
     }
 
     updateTimes() {
-
+        let {
+            match: {params}
+        } = this.props;
+        _fetch(UPDATE_VIEWED_TIME, {
+            method: "post",
+            noErrorHint: true,
+            body: {
+                articleId: (params as any).id
+            }
+        }).catch(e => e);
     }
 
     renderComments() {
