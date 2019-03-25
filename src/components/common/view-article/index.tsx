@@ -26,7 +26,7 @@ class ViewArticle extends React.Component<Props> {
 
     componentDidMount() {
         let {
-            match: {params},
+            match: { params },
             fetchArticle,
             fetchComments,
             updateViewedTime,
@@ -39,11 +39,12 @@ class ViewArticle extends React.Component<Props> {
         if (updateViewedTime) {
             this.updateTimes();
         }
+        console.log(this)
     }
 
     updateTimes() {
         let {
-            match: {params}
+            match: { params }
         } = this.props;
         _fetch(UPDATE_VIEWED_TIME, {
             method: "post",
@@ -58,18 +59,48 @@ class ViewArticle extends React.Component<Props> {
         let { comments } = this.props;
         return comments.map(
             c => (
-                <CommentItem
-                    key={c._id}
-                    articleId={c.articleId}
-                    userHomepage={c.userHomepage}
-                    user={c.username}
-                    time={c.createTime}
-                    commentId={c._id}
-                    rootComment={c.rootComment || c._id}
-                    replyUser={c.replyToUser}
-                    content={c.content} />
+                <div key={c._id} className="root-comment">
+                    <CommentItem
+                        articleId={c.articleId}
+                        userHomepage={c.userHomepage}
+                        user={c.username}
+                        time={c.createTime}
+                        commentId={c._id}
+                        rootComment={c.rootComment || c._id}
+                        replyUser={c.replyToUser}
+                        content={c.content} />
+                    {
+                        !!c.repliers.length &&
+                        c.repliers.map(
+                            c => (
+                                <div className="comment-replier">
+                                    {
+                                        <CommentItem
+                                            articleId={c.articleId}
+                                            userHomepage={c.replyToUser.userHomepage}
+                                            user={c.username}
+                                            time={c.createTime}
+                                            commentId={c._id}
+                                            rootComment={c.rootComment || c._id}
+                                            replyUser={c.replyToUser.username}
+                                            content={c.content} />
+                                    }
+                                </div>
+                            )
+                        )
+                    }
+                </div>
             )
         );
+    }
+
+    getCount() {
+        let { comments } = this.props;
+        let ret = 0;
+        comments.forEach((c) => {
+            ret += c.repliers.length + 1;
+        });
+        return ret;
     }
 
     render() {
@@ -100,7 +131,7 @@ class ViewArticle extends React.Component<Props> {
                                 </div>
                                 <div className="comment-list-wrapper">
                                     <div className="comment-header">
-                                        {comments.length}条评论
+                                        {this.getCount()}条评论
                                     </div>
                                     <div className="comment-body">
                                         {this.renderComments()}

@@ -80,9 +80,10 @@ class Articles extends React.Component<Props> {
         } = this.props;
         return (
             <div className="article-list">
+                {this.renderArticle()}
                 {
                     started ? <InlineLoading /> :
-                        list.length ? this.renderArticle() :
+                        list.length ? null :
                             <NoResult message="没有文章" img="noResult" />
                 }
                 {
