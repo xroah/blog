@@ -68,7 +68,7 @@ export default class CommentItem extends React.Component<Props> {
 
     getUser(username, homepage: string) {
         if (!username) {
-            username = "路人甲";
+            username = "游客";
         }
         return (
             !!homepage ?

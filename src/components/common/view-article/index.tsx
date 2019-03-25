@@ -66,7 +66,6 @@ class ViewArticle extends React.Component<Props> {
                         time={c.createTime}
                         commentId={c._id}
                         rootComment={c.rootComment || c._id}
-                        replyUser={c.replyToUser}
                         content={c.content} />
                     {
                         !!c.repliers.length &&
@@ -76,12 +75,12 @@ class ViewArticle extends React.Component<Props> {
                                     {
                                         <CommentItem
                                             articleId={c.articleId}
-                                            userHomepage={c.replyToUser.userHomepage}
+                                            userHomepage={c.userHomepage}
                                             user={c.username}
                                             time={c.createTime}
                                             commentId={c._id}
                                             rootComment={c.rootComment || c._id}
-                                            replyUser={c.replyToUser.username}
+                                            replyUser={c.replyToUser}
                                             content={c.content} />
                                     }
                                 </div>
