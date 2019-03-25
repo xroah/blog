@@ -39,7 +39,6 @@ class ViewArticle extends React.Component<Props> {
         if (updateViewedTime) {
             this.updateTimes();
         }
-        console.log(this)
     }
 
     updateTimes() {
@@ -73,7 +72,7 @@ class ViewArticle extends React.Component<Props> {
                         !!c.repliers.length &&
                         c.repliers.map(
                             c => (
-                                <div className="comment-replier">
+                                <div key={c._id} className="comment-replier">
                                     {
                                         <CommentItem
                                             articleId={c.articleId}
