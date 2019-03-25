@@ -1,0 +1,30 @@
+@import "../styles/variables";
+
+.image-viewer-wrapper {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .3);
+    z-index: 999999;
+
+    .close-btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    .tool-bar {
+        display: flex;
+        justify-content: center;
+        position: absolute;
+        left: 50%;
+        bottom: 30px;
+        transform: translateX(-50%);
+        z-index: 99;
+        button {
+            color: #fff;
+        }
+    }
+}
