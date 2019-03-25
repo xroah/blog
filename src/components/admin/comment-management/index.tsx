@@ -106,7 +106,9 @@ export default class CommentManagement extends React.Component<RouteComponentPro
         let { history } = this.props;
         page += 1;
         this.setState({
-            page
+            page,
+            allChecked: false,
+            selected: []
         });
         this.fetchComments(page);
         history.push(`/xsys/comments/${page}`);
@@ -199,12 +201,12 @@ export default class CommentManagement extends React.Component<RouteComponentPro
                             {formatDate(c.createTime, "YYYY-MM-DD hh:mm:ss")}
                         </TableCell>
                         <TableCell>
-                            <Tooltip title={c.username}>
+                            <Tooltip title={c.username || ""}>
                                 <span>{c.username}</span>
                             </Tooltip>
                         </TableCell>
                         <TableCell>
-                            <Tooltip title={c.userHomepage}>
+                            <Tooltip title={c.userHomepage || ""}>
                                 <span>{c.userHomepage}</span>
                             </Tooltip>
                         </TableCell>
