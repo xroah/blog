@@ -4,9 +4,11 @@ import {
     ZoomOut,
     RotateLeft,
     RotateRight,
-    ArrowBack,
-    ArrowForward,
+    NavigateBefore,
+    NavigateNext,
     Fullscreen,
+    PhotoSizeSelectActual,
+    CropSquare,
     SaveAlt,
     Close
 } from "@material-ui/icons";
@@ -16,16 +18,20 @@ import {
 } from "@material-ui/core";
 import "./index.scss";
 
-export default class ImageViewer extends React.Component {
+interface Props {
+    image?: string | HTMLImageElement | null;
+    imageName?: string;
+}
 
-    canvas: React.RefObject<HTMLCanvasElement> = React.createRef();
+export default class ImageViewer extends React.Component<Props> {
+
     timer: NodeJS.Timeout;
-    state = {
-        currentImage: HTMLImageElement
-    };
+    image: React.RefObject<HTMLImageElement> = React.createRef();
+    imageLeft: number = 0;
+    imageTop: number = 0;
+    imageLoaded: boolean = false;
 
     componentDidMount() {
-        this.resize();
         window.addEventListener("resize", this.handleResize);
         this.loadImag();
     }
@@ -41,67 +47,164 @@ export default class ImageViewer extends React.Component {
         this.timer = setTimeout(this.resize, 300);
     }
 
-    resize = () => {
-        let canvas = this.canvas.current;
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        this.loadImag();
+    resize = (isScale: boolean = true) => {
+        let {
+            imageLoaded,
+            image: { current: img }
+        } = this;
+        if (imageLoaded) {
+            this.calcScale(isScale);
+            let left = (window.innerWidth - img.width) / 2;
+            let top = (window.innerHeight - img.height) / 2;
+            img.style.left = `${left}px`;
+            img.style.top = `${top}px`;
+        }
     }
 
-    drawImage = (image: HTMLImageElement) => {
-        let canvas = this.canvas.current;
-        let ctx = canvas.getContext("2d");
-        let imgWidth = image.naturalWidth;
-        let imgHeight = image.naturalHeight;
-        let wScale = imgWidth / canvas.width;
-        let hScale = imgHeight / canvas.height;
-        let scale = 1;
-        if (wScale > 1 && hScale > 1) {
-            if (wScale > hScale) {
-                scale = wScale;
+    calcScale = (isScale: boolean = true) => {
+        let {
+            image: { current: img }
+        } = this;
+        let imgWidth = img.naturalWidth;
+        let imgHeight = img.naturalHeight;
+        let wScale = imgWidth / window.innerWidth;
+        let hScale = imgHeight / window.innerHeight;
+        let imgScale = 1;
+        if (isScale) {
+            if (wScale > 1 && hScale > 1) {
+                if (wScale > hScale) {
+                    imgScale = wScale;
+                } else {
+                    imgScale = hScale;
+                }
             } else {
-                scale = hScale;
+                imgScale = wScale > 1 ? wScale : hScale > 1 ? hScale : 1;
             }
-        } else {
-            scale = wScale > 1 ? wScale : hScale > 1 ? hScale : 1;
         }
-        imgWidth /= scale;
-        imgHeight /= scale;
-        ctx.drawImage(image, (canvas.width - imgWidth) / 2, (canvas.height - imgHeight) / 2, imgWidth, imgHeight);
-        console.log()
+        img.width = imgWidth / imgScale;
+        img.height = imgHeight / imgScale;
     }
 
     loadImag() {
-        let image = new Image();
-        image.onload = () => {
-            this.drawImage(image);
-            image.onload = null;
+        let { image: { current: img } } = this;
+        this.imageLoaded = false;
+        img.onload = () => {
+            img.onload = null;
+            this.imageLoaded = true;
+            this.resize();
         };
-        image.src = "https://cn.bing.com/th?id=OHR.TashkurganGrasslands_ZH-CN1141881683_1920x1080.jpg&rf=NorthMale_1920x1080.jpg";
+        img.src = "https://cn.bing.com/th?id=OHR.AthensNight_ZH-CN1280970241_1920x1080.jpg&rf=NorthMale_1920x1080.jpg&pid=hp";
+    }
+
+    zoom = (ratio: number, baseX?: number, baseY?: number, scale: number = 2) => {
+        let {
+            image: { current: img }
+        } = this;
+
+        let style = getComputedStyle(img);
+        let origW = baseX || img.width;
+        let origH = baseY || img.height;
+        let w = origW * ratio;
+        let h = origH * ratio;
+        let l = parseFloat(style.getPropertyValue("left")) - (w - origW) / scale;
+        let t = parseFloat(style.getPropertyValue("top")) - (h - origH) / scale;
+        img.width *= ratio;
+        img.height *= ratio;
+        img.style.left = `${l}px`;
+        img.style.top = `${t}px`;
+    }
+
+    zoomIn = (baseX?: number, baseY?: number, scale?: number) => {
+        let img = this.image.current;
+        if (img.width / img.naturalWidth > 20) return;
+        this.zoom(1.1, baseX, baseY, scale);
+    }
+
+    zoomOut = (baseX?: number, baseY?: number, scale?: number) => {
+        let img = this.image.current;
+        if (img.naturalWidth / img.width > 20) return;
+        this.zoom(.9, baseX, baseY, scale);
+    }
+
+    handleZoomIn = () => {
+        this.zoomIn();
+    }
+
+    handleZoomOut = () => {
+        this.zoomOut();
+    }
+
+    reset = () => {
+        this.resize(false);
+    }
+
+    handleMouseWheel = (evt: React.WheelEvent) => {
+        let img = this.image.current;
+        let dir = evt.deltaY;
+        let x = evt.clientX;
+        let y = evt.clientY;
+        let rect = img.getBoundingClientRect();
+        x = x - rect.left;
+        y = y - rect.top;
+        console.log(x, y)
+        if (dir < 0) {
+            this.zoomIn(x, y, 1);
+        } else {
+            this.zoomOut(x, y, 1);
+        }
+    }
+
+    download = () => {
+        let a = document.createElement("a");
+        let { imageName = Date.now() } = this.props;
+        a.href = this.image.current.src;
+        a.download = String(imageName);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    handleDragStart = (evt: React.DragEvent) => {
+        evt.preventDefault();
     }
 
     render() {
         const btns = [{
             icon: ZoomIn,
-            title: "放大"
+            title: "放大",
+            handler: this.handleZoomIn
         }, {
             icon: ZoomOut,
-            title: "缩小"
+            title: "缩小",
+            handler: this.handleZoomOut
+        }, {
+            icon: PhotoSizeSelectActual,
+            title: "原始大小",
+            handler: this.reset
+        }, {
+            icon: CropSquare,
+            title: "适应屏幕",
+            handler: this.resize
         }, {
             icon: RotateLeft,
-            title: "左旋转90度"
+            title: "左旋转90度",
+            handler: () => 0
         }, {
             icon: RotateRight,
-            title: "右旋转90度"
+            title: "右旋转90度",
+            handler: () => 0
         }, {
-            icon: ArrowBack,
-            title: "上一张"
+            icon: NavigateBefore,
+            title: "上一张",
+            handler: () => 0
         }, {
-            icon: ArrowForward,
-            title: "下一张"
+            icon: NavigateNext,
+            title: "下一张",
+            handler: () => 0
         }, {
             icon: SaveAlt,
-            title: "下载"
+            title: "下载",
+            handler: this.download
         }];
 
         return (
@@ -109,12 +212,15 @@ export default class ImageViewer extends React.Component {
                 <IconButton className="close-btn" color="inherit">
                     <Close fontSize="large" />
                 </IconButton>
-                <canvas ref={this.canvas}></canvas>
+                <img
+                    onDragStart={this.handleDragStart}
+                    onWheel={this.handleMouseWheel}
+                    ref={this.image} />
                 <Toolbar className="tool-bar">
                     {
                         btns.map(
                             btn => (
-                                <IconButton key={btn.title}>
+                                <IconButton onClick={btn.handler} key={btn.title}>
                                     {React.createElement(btn.icon, { fontSize: "large" })}
                                 </IconButton>
                             )
