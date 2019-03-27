@@ -27,9 +27,9 @@ export default class ImageViewer extends React.Component<Props> {
 
     timer: NodeJS.Timeout;
     image: React.RefObject<HTMLImageElement> = React.createRef();
-    imageLeft: number = 0;
-    imageTop: number = 0;
+    imgWrapper: React.RefObject<HTMLDivElement> = React.createRef();
     imageLoaded: boolean = false;
+    rotateAngle: number = 0;
 
     componentDidMount() {
         window.addEventListener("resize", this.handleResize);
@@ -47,15 +47,29 @@ export default class ImageViewer extends React.Component<Props> {
         this.timer = setTimeout(this.resize, 300);
     }
 
+    //fit screen or real size
     resize = (isScale: boolean = true) => {
         let {
             imageLoaded,
-            image: { current: img }
+            image: { current: img },
+            imgWrapper: { current: wrapper },
+            rotateAngle
         } = this;
         if (imageLoaded) {
+            let width;
+            let height;
+            if (rotateAngle / 90 % 2 === 0) {
+                width = window.innerWidth;
+                height = window.innerHeight;
+            } else {
+                width = window.innerHeight;
+                height = window.innerWidth;
+            }
+            wrapper.style.width = `${width}px`;
+            wrapper.style.height = `${height}px`;
             this.calcScale(isScale);
-            let left = (window.innerWidth - img.width) / 2;
-            let top = (window.innerHeight - img.height) / 2;
+            let left = (wrapper.offsetWidth - img.width) / 2;
+            let top = (wrapper.offsetHeight - img.height) / 2;
             img.style.left = `${left}px`;
             img.style.top = `${top}px`;
         }
@@ -63,12 +77,13 @@ export default class ImageViewer extends React.Component<Props> {
 
     calcScale = (isScale: boolean = true) => {
         let {
-            image: { current: img }
+            image: { current: img },
+            imgWrapper: { current: wrapper }
         } = this;
         let imgWidth = img.naturalWidth;
         let imgHeight = img.naturalHeight;
-        let wScale = imgWidth / window.innerWidth;
-        let hScale = imgHeight / window.innerHeight;
+        let wScale = imgWidth / wrapper.offsetWidth;
+        let hScale = imgHeight / wrapper.offsetHeight;
         let imgScale = 1;
         if (isScale) {
             if (wScale > 1 && hScale > 1) {
@@ -91,11 +106,12 @@ export default class ImageViewer extends React.Component<Props> {
         img.onload = () => {
             img.onload = null;
             this.imageLoaded = true;
-            this.resize();
+            this.rotate(0);
         };
-        img.src = "https://cn.bing.com/th?id=OHR.AthensNight_ZH-CN1280970241_1920x1080.jpg&rf=NorthMale_1920x1080.jpg&pid=hp";
+        img.src = "/uploads/2019/3/th.jpg";
     }
 
+    //scale=2: scale based on the img center
     zoom = (ratio: number, baseX?: number, baseY?: number, scale: number = 2) => {
         let {
             image: { current: img }
@@ -134,8 +150,40 @@ export default class ImageViewer extends React.Component<Props> {
         this.zoomOut();
     }
 
+    //reset to real size
     reset = () => {
         this.resize(false);
+    }
+
+    rotate = (angle: number) => {
+        let {
+            imageLoaded,
+            imgWrapper: { current: wrapper }
+        } = this;
+        if (!imageLoaded) return;
+        this.rotateAngle = angle;
+        wrapper.style.transform = `rotate(${angle}deg)`;
+        this.resize();
+    }
+
+    rotateLeft = () => {
+        let angle = this.rotateAngle;
+        if (angle === 0) {
+            angle = 270;
+        } else {
+            angle -= 90;
+        }
+        this.rotate(angle);
+    }
+
+    rotateRight = () => {
+        let angle = this.rotateAngle;
+        if (angle === 270) {
+            angle = 0;
+        } else {
+            angle += 90;
+        }
+        this.rotate(angle);
     }
 
     handleMouseWheel = (evt: React.WheelEvent) => {
@@ -144,9 +192,24 @@ export default class ImageViewer extends React.Component<Props> {
         let x = evt.clientX;
         let y = evt.clientY;
         let rect = img.getBoundingClientRect();
-        x = x - rect.left;
-        y = y - rect.top;
-        console.log(x, y)
+        let angle = this.rotateAngle;
+        switch (angle) {
+            case 90:
+                x = y - rect.top;
+                y = rect.right - x;
+                break;
+            case 180:
+                x = rect.right - x;
+                y = rect.bottom - y;
+                break;
+            case 270:
+                y = x - rect.left;
+                x = rect.bottom - y;
+                break;
+            default:
+                x = x - rect.left;
+                y = y - rect.top;
+        };
         if (dir < 0) {
             this.zoomIn(x, y, 1);
         } else {
@@ -188,11 +251,11 @@ export default class ImageViewer extends React.Component<Props> {
         }, {
             icon: RotateLeft,
             title: "左旋转90度",
-            handler: () => 0
+            handler: this.rotateLeft
         }, {
             icon: RotateRight,
             title: "右旋转90度",
-            handler: () => 0
+            handler: this.rotateRight
         }, {
             icon: NavigateBefore,
             title: "上一张",
@@ -212,10 +275,9 @@ export default class ImageViewer extends React.Component<Props> {
                 <IconButton className="close-btn" color="inherit">
                     <Close fontSize="large" />
                 </IconButton>
-                <img
-                    onDragStart={this.handleDragStart}
-                    onWheel={this.handleMouseWheel}
-                    ref={this.image} />
+                <div ref={this.imgWrapper} className="img-wrapper">
+                    <img onWheel={this.handleMouseWheel} ref={this.image} />
+                </div>
                 <Toolbar className="tool-bar">
                     {
                         btns.map(
