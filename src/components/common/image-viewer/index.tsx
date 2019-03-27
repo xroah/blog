@@ -96,18 +96,19 @@ export default class ImageViewer extends React.Component<Props> {
         img.src = "https://cn.bing.com/th?id=OHR.AthensNight_ZH-CN1280970241_1920x1080.jpg&rf=NorthMale_1920x1080.jpg&pid=hp";
     }
 
-    zoom = (ratio: number, baseX?: number, baseY?: number, scale: number = 2) => {
+    zoom = (ratio: number, baseX?: number, baseY?: number) => {
         let {
             image: { current: img }
         } = this;
-
         let style = getComputedStyle(img);
-        let origW = baseX || img.width;
-        let origH = baseY || img.height;
+        let origW = img.width;
+        let origH = img.height;
+        baseX = baseX || origW / 2;
+        baseY = baseY || origH / 2;
         let w = origW * ratio;
         let h = origH * ratio;
-        let l = parseFloat(style.getPropertyValue("left")) - (w - origW) / scale;
-        let t = parseFloat(style.getPropertyValue("top")) - (h - origH) / scale;
+        let l = parseFloat(style.getPropertyValue("left")) + baseX - baseX * ratio;
+        let t = parseFloat(style.getPropertyValue("top")) + baseY - baseY * ratio;
         img.width *= ratio;
         img.height *= ratio;
         img.style.left = `${l}px`;
@@ -117,13 +118,13 @@ export default class ImageViewer extends React.Component<Props> {
     zoomIn = (baseX?: number, baseY?: number, scale?: number) => {
         let img = this.image.current;
         if (img.width / img.naturalWidth > 20) return;
-        this.zoom(1.1, baseX, baseY, scale);
+        this.zoom(1.1, baseX, baseY);
     }
 
     zoomOut = (baseX?: number, baseY?: number, scale?: number) => {
         let img = this.image.current;
         if (img.naturalWidth / img.width > 20) return;
-        this.zoom(.9, baseX, baseY, scale);
+        this.zoom(.9, baseX, baseY);
     }
 
     handleZoomIn = () => {
