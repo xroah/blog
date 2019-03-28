@@ -26,9 +26,25 @@
             position: absolute;
             cursor: grab;
 
-            &:active {
+            &:active,
+            &.dragging {
                 cursor: grabbing;
             }
+        }
+    }
+
+    .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%, -50%);
+        z-index: 10;
+
+        &.nav-prev {
+            left: 0;
+        }
+
+        &.nav-next {
+            right: 0;
         }
     }
 
@@ -40,9 +56,9 @@
         bottom: 30px;
         transform: translateX(-50%);
         z-index: 99;
+    }
 
-        button {
-            color: #fff;
-        }
+    button {
+        color: #fff;
     }
 }

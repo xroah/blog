@@ -6,7 +6,6 @@ import {
     RotateRight,
     NavigateBefore,
     NavigateNext,
-    Fullscreen,
     PhotoSizeSelectActual,
     CropSquare,
     SaveAlt,
@@ -30,6 +29,11 @@ export default class ImageViewer extends React.Component<Props> {
     imgWrapper: React.RefObject<HTMLDivElement> = React.createRef();
     imageLoaded: boolean = false;
     rotateAngle: number = 0;
+    mouseDowned: boolean = false;
+    startX: number = 0;
+    startY: number = 0;
+    startLeft: number = 0;
+    startTop: number = 0;
 
     componentDidMount() {
         window.addEventListener("resize", this.handleResize);
@@ -48,7 +52,7 @@ export default class ImageViewer extends React.Component<Props> {
     }
 
     //fit screen or real size
-    resize = (isScale: boolean = true) => {
+    resize = (fit: boolean = true) => {
         let {
             imageLoaded,
             image: { current: img },
@@ -67,7 +71,7 @@ export default class ImageViewer extends React.Component<Props> {
             }
             wrapper.style.width = `${width}px`;
             wrapper.style.height = `${height}px`;
-            this.calcScale(isScale);
+            this.calcScale(fit);
             let left = (wrapper.offsetWidth - img.width) / 2;
             let top = (wrapper.offsetHeight - img.height) / 2;
             img.style.left = `${left}px`;
@@ -75,7 +79,7 @@ export default class ImageViewer extends React.Component<Props> {
         }
     }
 
-    calcScale = (isScale: boolean = true) => {
+    calcScale = (fit: boolean = true) => {
         let {
             image: { current: img },
             imgWrapper: { current: wrapper }
@@ -85,7 +89,7 @@ export default class ImageViewer extends React.Component<Props> {
         let wScale = imgWidth / wrapper.offsetWidth;
         let hScale = imgHeight / wrapper.offsetHeight;
         let imgScale = 1;
-        if (isScale) {
+        if (fit) {
             if (wScale > 1 && hScale > 1) {
                 if (wScale > hScale) {
                     imgScale = wScale;
@@ -111,35 +115,33 @@ export default class ImageViewer extends React.Component<Props> {
         img.src = "/uploads/2019/3/th.jpg";
     }
 
-    //scale=2: scale based on the img center
-    zoom = (ratio: number, baseX?: number, baseY?: number, scale: number = 2) => {
+    zoom = (ratio: number, baseX?: number, baseY?: number) => {
         let {
             image: { current: img }
         } = this;
-
         let style = getComputedStyle(img);
-        let origW = baseX || img.width;
-        let origH = baseY || img.height;
-        let w = origW * ratio;
-        let h = origH * ratio;
-        let l = parseFloat(style.getPropertyValue("left")) - (w - origW) / scale;
-        let t = parseFloat(style.getPropertyValue("top")) - (h - origH) / scale;
+        let origW = img.width;
+        let origH = img.height;
+        baseX = baseX || origW / 2;
+        baseY = baseY || origH / 2;
+        let l = parseFloat(style.getPropertyValue("left")) + baseX - baseX * ratio;
+        let t = parseFloat(style.getPropertyValue("top")) + baseY - baseY * ratio;
         img.width *= ratio;
         img.height *= ratio;
         img.style.left = `${l}px`;
         img.style.top = `${t}px`;
     }
 
-    zoomIn = (baseX?: number, baseY?: number, scale?: number) => {
+    zoomIn = (baseX?: number, baseY?: number) => {
         let img = this.image.current;
         if (img.width / img.naturalWidth > 20) return;
-        this.zoom(1.1, baseX, baseY, scale);
+        this.zoom(1.1, baseX, baseY);
     }
 
-    zoomOut = (baseX?: number, baseY?: number, scale?: number) => {
+    zoomOut = (baseX?: number, baseY?: number) => {
         let img = this.image.current;
         if (img.naturalWidth / img.width > 20) return;
-        this.zoom(.9, baseX, baseY, scale);
+        this.zoom(.91, baseX, baseY);
     }
 
     handleZoomIn = () => {
@@ -187,34 +189,63 @@ export default class ImageViewer extends React.Component<Props> {
     }
 
     handleMouseWheel = (evt: React.WheelEvent) => {
-        let img = this.image.current;
         let dir = evt.deltaY;
+        let x = evt.nativeEvent.offsetX;
+        let y = evt.nativeEvent.offsetY;
+        if (dir < 0) {
+            this.zoomIn(x, y);
+        } else {
+            this.zoomOut(x, y);
+        }
+    }
+
+    handleMouseDown = (evt: React.MouseEvent) => {
+        let style = getComputedStyle(this.image.current);
+        this.mouseDowned = true;
+        this.startX = evt.clientX;
+        this.startY = evt.clientY;
+        this.startLeft = parseFloat(style.getPropertyValue("left"));
+        this.startTop = parseFloat(style.getPropertyValue("top"));
+    }
+
+    handleMouseMove = (evt: React.MouseEvent) => {
+        let {
+            image: { current: img },
+            mouseDowned,
+            rotateAngle,
+            startX,
+            startY,
+            startLeft,
+            startTop
+        } = this;
+        if (!mouseDowned) return;
         let x = evt.clientX;
         let y = evt.clientY;
-        let rect = img.getBoundingClientRect();
-        let angle = this.rotateAngle;
-        switch (angle) {
+        let disX: number;
+        let disY: number;
+        switch (rotateAngle) {
             case 90:
-                x = y - rect.top;
-                y = rect.right - x;
+                disX = y - startY;
+                disY = startX - x;
                 break;
             case 180:
-                x = rect.right - x;
-                y = rect.bottom - y;
+                disX = startX - x;
+                disY = startY - y;
                 break;
             case 270:
-                y = x - rect.left;
-                x = rect.bottom - y;
+                disX = startY - y;
+                disY = x - startX;
                 break;
             default:
-                x = x - rect.left;
-                y = y - rect.top;
-        };
-        if (dir < 0) {
-            this.zoomIn(x, y, 1);
-        } else {
-            this.zoomOut(x, y, 1);
+                disX = x - startX;
+                disY = y - startY;
         }
+        img.style.left = `${startLeft + disX}px`;
+        img.style.top = `${startTop + disY}px`;
+    }
+
+    handleMouseUp = () => {
+        this.mouseDowned = false;
     }
 
     download = () => {
@@ -225,10 +256,6 @@ export default class ImageViewer extends React.Component<Props> {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-    }
-
-    handleDragStart = (evt: React.DragEvent) => {
-        evt.preventDefault();
     }
 
     render() {
@@ -257,33 +284,46 @@ export default class ImageViewer extends React.Component<Props> {
             title: "右旋转90度",
             handler: this.rotateRight
         }, {
-            icon: NavigateBefore,
-            title: "上一张",
-            handler: () => 0
-        }, {
-            icon: NavigateNext,
-            title: "下一张",
-            handler: () => 0
-        }, {
             icon: SaveAlt,
             title: "下载",
             handler: this.download
         }];
 
         return (
-            <div className="image-viewer-wrapper">
+            <div
+                onMouseLeave={this.handleMouseUp}
+                onMouseMove={this.handleMouseMove}
+                onMouseUp={this.handleMouseUp}
+                className="image-viewer-wrapper">
                 <IconButton className="close-btn" color="inherit">
                     <Close fontSize="large" />
                 </IconButton>
+                <IconButton
+                    className="nav-btn nav-prev"
+                    title="上一张">
+                    <NavigateBefore fontSize="large" />
+                </IconButton>
+                <IconButton
+                    className="nav-btn nav-next"
+                    title="下一张">
+                    <NavigateNext fontSize="large" />
+                </IconButton>
                 <div ref={this.imgWrapper} className="img-wrapper">
-                    <img onWheel={this.handleMouseWheel} ref={this.image} />
+                    <img
+                        draggable={false}
+                        onWheel={this.handleMouseWheel}
+                        onMouseDown={this.handleMouseDown}
+                        ref={this.image} />
                 </div>
                 <Toolbar className="tool-bar">
                     {
                         btns.map(
                             btn => (
-                                <IconButton onClick={btn.handler} key={btn.title}>
-                                    {React.createElement(btn.icon, { fontSize: "large" })}
+                                <IconButton
+                                    onClick={btn.handler}
+                                    title={btn.title}
+                                    key={btn.title}>
+                                    {React.createElement(btn.icon)}
                                 </IconButton>
                             )
                         )
