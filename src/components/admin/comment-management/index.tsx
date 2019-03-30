@@ -47,6 +47,7 @@ export default class CommentManagement extends React.Component<RouteComponentPro
             page
         });
         this.fetchComments(page);
+        document.title = "评论管理";
     }
 
     async fetchComments(page) {

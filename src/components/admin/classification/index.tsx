@@ -5,6 +5,10 @@ import "./index.scss";
 
 export default class Classification extends React.Component {
 
+    componentDidMount() {
+        document.title = "分类管理";
+    }
+
     render() {
         return (
             <section>

@@ -39,6 +39,7 @@ class ViewArticle extends React.Component<Props> {
         if (updateViewedTime) {
             this.updateTimes();
         }
+        document.title = "";
     }
 
     updateTimes() {
@@ -104,9 +105,11 @@ class ViewArticle extends React.Component<Props> {
     render() {
         let {
             article,
-            started,
-            comments
+            started
         } = this.props;
+        if (article && document.title !== article.title) {
+            document.title = article.title;
+        }
         return (
             <section className="view-article-container">
                 {

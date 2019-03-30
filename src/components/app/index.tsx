@@ -1,10 +1,14 @@
 import * as React from "react";
 import { hot } from "react-hot-loader/root";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+    Route,
+    Switch
+} from "react-router-dom";
 import Loadable from "react-loadable";
 import Loading from "@common/loading";
 import E404 from "@common/404";
 import { Publish } from "@material-ui/icons";
+import Tooltip from "@material-ui/core/Tooltip";
 import {
     IconButton,
     Zoom
@@ -94,9 +98,13 @@ class App extends React.Component {
                     <Route path="/" component={UserHome} />
                 </Switch>
                 <Zoom in={this.state.backTopVisible}>
-                    <IconButton onClick={this.backToTop} className="back-to-top">
-                        <Publish fontSize="large" />
-                    </IconButton>
+                    <Tooltip title="回到顶部">
+                        <IconButton
+                            onClick={this.backToTop}
+                            className="back-to-top">
+                            <Publish fontSize="large" />
+                        </IconButton>
+                    </Tooltip>
                 </Zoom>
             </>
         );

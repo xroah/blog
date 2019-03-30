@@ -24,6 +24,10 @@ export default class Articles extends React.Component<Props> {
         fetched: false
     };
 
+    componentDidMount() {
+        document.title = "文章管理";
+    }
+
     static getDerivedStateFromProps(props: Props, state) {
         let {
             match: { params },

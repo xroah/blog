@@ -47,6 +47,7 @@ export default class ArticleEdit extends React.Component<Props> {
                 error: true,
                 message: "文章不存在"
             });
+            document.title = "编辑-文章不存在"
             return;
         }
         this.setState({
@@ -56,6 +57,7 @@ export default class ArticleEdit extends React.Component<Props> {
             tags: ret.tags.join(";")
         });
         this.editorRef.current.editor.root.innerHTML = ret.content;
+        document.title = `编辑-${ret.title}`;
     }
 
     fetchError = () => {
@@ -80,6 +82,7 @@ export default class ArticleEdit extends React.Component<Props> {
             );
         }
         window.onbeforeunload = () => "文章未保存,确定要离开吗?";
+        document.title = "文章编辑";
     }
 
     componentWillUnmount() {
