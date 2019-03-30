@@ -8,6 +8,7 @@ import NotExists from "../no-article";
 import CommentItem from "../comment-item";
 import CommentEditor from "@containers/common/comment-editor";
 import { UPDATE_VIEWED_TIME } from "@common/api";
+import ImageViewer from "../image-viewer";
 import _fetch from "@common/fetch";
 import "./index.scss";
 
@@ -142,6 +143,7 @@ class ViewArticle extends React.Component<Props> {
                         )
                         : <NotExists message="文章不存在或被博主删除" />
                 }
+                <ImageViewer autoBind={true}/>
             </section>
         );
     }

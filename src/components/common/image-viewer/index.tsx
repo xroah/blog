@@ -13,13 +13,27 @@ import {
 } from "@material-ui/icons";
 import {
     IconButton,
-    Toolbar
+    Toolbar,
+    Zoom
 } from "@material-ui/core";
+import {
+    zoom,
+    zoomIn,
+    zoomOut,
+    calcScale,
+    center
+} from "./zoom";
+import Loading from "@common/loading";
+import message from "@common/message";
 import "./index.scss";
 
 interface Props {
-    image?: string | HTMLImageElement | null;
-    imageName?: string;
+    image?: string | HTMLImageElement;
+    images?: string[];
+    visible?: boolean;
+    //bind click event to the img, click img will show the image viewer
+    //if true, image and image will be ignored
+    autoBind?: boolean;
 }
 
 export default class ImageViewer extends React.Component<Props> {
@@ -27,7 +41,7 @@ export default class ImageViewer extends React.Component<Props> {
     timer: NodeJS.Timeout;
     image: React.RefObject<HTMLImageElement> = React.createRef();
     imgWrapper: React.RefObject<HTMLDivElement> = React.createRef();
-    imageLoaded: boolean = false;
+    root: React.RefObject<HTMLDivElement> = React.createRef();
     rotateAngle: number = 0;
     mouseDowned: boolean = false;
     startX: number = 0;
@@ -35,13 +49,114 @@ export default class ImageViewer extends React.Component<Props> {
     startLeft: number = 0;
     startTop: number = 0;
 
+    state = {
+        visible: false,
+        current: "",
+        images: [],
+        index: 0,
+        from: "",
+        autoBind: this.props.autoBind,
+        loaded: false
+    };
+
     componentDidMount() {
+        let {
+            props: { autoBind },
+            root: { current: root }
+        } = this;
         window.addEventListener("resize", this.handleResize);
-        this.loadImag();
+        /**
+         * React event binding:
+         * [Intervention] Unable to preventDefault inside passive event listener due to target being treated as passive. 
+         */
+        root.addEventListener("touchstart", this.preventScale, { passive: true });
+        if (autoBind) {
+            window.addEventListener("click", this.handleClickImage);
+        }
     }
 
-    componentWillMount() {
+    componentWillUnmount() {
+        let {
+            root: { current: root }
+        } = this;
         window.removeEventListener("resize", this.handleResize);
+        window.removeEventListener("click", this.handleClickImage);
+        root && root.removeEventListener("touchstart", this.preventScale);
+    }
+
+    handleImageLoad = () => {
+        this.setState({
+            loaded: true
+        }, () => {
+            this.rotate(0);
+        });
+    }
+
+    handleImageError = () => {
+        if (this.state.current) {
+            message.error("图片加载出错");
+        }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        let _state = {
+            ...state
+        };
+        if (_state.from) {
+            _state.from === "";
+        } else {
+            if (_state.autoBind) return _state;
+            if (_state.visible !== props.visible) {
+                _state.visible = props.visible;
+            }
+            if (
+                _state.current !== props.image ||
+                _state.images.length !== props.images.length
+            ) {
+                _state.current = props.image;
+                let index = -1;
+                let images = props.images || [];
+                _state.images = props.images;
+                for (let i = 0, l = images.length; i < l; i++) {
+                    if (images[i] === _state.current) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index === -1) {
+                    index = 0;
+                    _state.current = _state.images[0];
+                }
+                _state.index = index;
+            }
+            _state.loaded = _state.current === props.image;
+        }
+        return _state;
+    }
+
+    preventScale = (evt: TouchEvent) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+    }
+
+    handleClose = () => {
+        this.setState({
+            visible: false,
+            from: "state"
+        });
+    }
+
+    handleClickImage = (evt: MouseEvent) => {
+        let tgt = evt.target as HTMLImageElement;
+        let nodeName = tgt.nodeName.toLowerCase();
+        if (nodeName === "img" && tgt !== this.image.current) {
+            this.setState({
+                visible: true,
+                from: "state",
+                current: tgt.src,
+                loaded: this.state.current === tgt.src
+            });
+        }
     }
 
     handleResize = () => {
@@ -54,12 +169,12 @@ export default class ImageViewer extends React.Component<Props> {
     //fit screen or real size
     resize = (fit: boolean = true) => {
         let {
-            imageLoaded,
+            state: { loaded },
             image: { current: img },
             imgWrapper: { current: wrapper },
             rotateAngle
         } = this;
-        if (imageLoaded) {
+        if (loaded) {
             let width;
             let height;
             if (rotateAngle / 90 % 2 === 0) {
@@ -71,85 +186,17 @@ export default class ImageViewer extends React.Component<Props> {
             }
             wrapper.style.width = `${width}px`;
             wrapper.style.height = `${height}px`;
-            this.calcScale(fit);
-            let left = (wrapper.offsetWidth - img.width) / 2;
-            let top = (wrapper.offsetHeight - img.height) / 2;
-            img.style.left = `${left}px`;
-            img.style.top = `${top}px`;
+            calcScale(img, wrapper, fit);
+            center(wrapper, img);
         }
-    }
-
-    calcScale = (fit: boolean = true) => {
-        let {
-            image: { current: img },
-            imgWrapper: { current: wrapper }
-        } = this;
-        let imgWidth = img.naturalWidth;
-        let imgHeight = img.naturalHeight;
-        let wScale = imgWidth / wrapper.offsetWidth;
-        let hScale = imgHeight / wrapper.offsetHeight;
-        let imgScale = 1;
-        if (fit) {
-            if (wScale > 1 && hScale > 1) {
-                if (wScale > hScale) {
-                    imgScale = wScale;
-                } else {
-                    imgScale = hScale;
-                }
-            } else {
-                imgScale = wScale > 1 ? wScale : hScale > 1 ? hScale : 1;
-            }
-        }
-        img.width = imgWidth / imgScale;
-        img.height = imgHeight / imgScale;
-    }
-
-    loadImag() {
-        let { image: { current: img } } = this;
-        this.imageLoaded = false;
-        img.onload = () => {
-            img.onload = null;
-            this.imageLoaded = true;
-            this.rotate(0);
-        };
-        img.src = "/uploads/2019/3/th.jpg";
-    }
-
-    zoom = (ratio: number, baseX?: number, baseY?: number) => {
-        let {
-            image: { current: img }
-        } = this;
-        let style = getComputedStyle(img);
-        let origW = img.width;
-        let origH = img.height;
-        baseX = baseX || origW / 2;
-        baseY = baseY || origH / 2;
-        let l = parseFloat(style.getPropertyValue("left")) + baseX - baseX * ratio;
-        let t = parseFloat(style.getPropertyValue("top")) + baseY - baseY * ratio;
-        img.width *= ratio;
-        img.height *= ratio;
-        img.style.left = `${l}px`;
-        img.style.top = `${t}px`;
-    }
-
-    zoomIn = (baseX?: number, baseY?: number) => {
-        let img = this.image.current;
-        if (img.width / img.naturalWidth > 20) return;
-        this.zoom(1.1, baseX, baseY);
-    }
-
-    zoomOut = (baseX?: number, baseY?: number) => {
-        let img = this.image.current;
-        if (img.naturalWidth / img.width > 20) return;
-        this.zoom(.91, baseX, baseY);
     }
 
     handleZoomIn = () => {
-        this.zoomIn();
+        zoomIn(this.image.current);
     }
 
     handleZoomOut = () => {
-        this.zoomOut();
+        zoomOut(this.image.current);
     }
 
     //reset to real size
@@ -159,10 +206,10 @@ export default class ImageViewer extends React.Component<Props> {
 
     rotate = (angle: number) => {
         let {
-            imageLoaded,
-            imgWrapper: { current: wrapper }
+            imgWrapper: { current: wrapper },
+            state: { loaded }
         } = this;
-        if (!imageLoaded) return;
+        if (!loaded) return;
         this.rotateAngle = angle;
         wrapper.style.transform = `rotate(${angle}deg)`;
         this.resize();
@@ -192,11 +239,15 @@ export default class ImageViewer extends React.Component<Props> {
         let dir = evt.deltaY;
         let x = evt.nativeEvent.offsetX;
         let y = evt.nativeEvent.offsetY;
+        let {
+            image: { current: img }
+        } = this;
         if (dir < 0) {
-            this.zoomIn(x, y);
+            zoomIn(img, x, y);
         } else {
-            this.zoomOut(x, y);
+            zoomOut(img, x, y);
         }
+        evt.preventDefault();
     }
 
     handleMouseDown = (evt: React.MouseEvent) => {
@@ -250,9 +301,8 @@ export default class ImageViewer extends React.Component<Props> {
 
     download = () => {
         let a = document.createElement("a");
-        let { imageName = Date.now() } = this.props;
         a.href = this.image.current.src;
-        a.download = String(imageName);
+        a.download = "";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -289,47 +339,70 @@ export default class ImageViewer extends React.Component<Props> {
             handler: this.download
         }];
 
+        let {
+            state: {
+                visible,
+                loaded,
+                current
+            },
+            props: { autoBind }
+        } = this;
         return (
-            <div
-                onMouseLeave={this.handleMouseUp}
-                onMouseMove={this.handleMouseMove}
-                onMouseUp={this.handleMouseUp}
-                className="image-viewer-wrapper">
-                <IconButton className="close-btn" color="inherit">
-                    <Close fontSize="large" />
-                </IconButton>
-                <IconButton
-                    className="nav-btn nav-prev"
-                    title="上一张">
-                    <NavigateBefore fontSize="large" />
-                </IconButton>
-                <IconButton
-                    className="nav-btn nav-next"
-                    title="下一张">
-                    <NavigateNext fontSize="large" />
-                </IconButton>
-                <div ref={this.imgWrapper} className="img-wrapper">
-                    <img
-                        draggable={false}
-                        onWheel={this.handleMouseWheel}
-                        onMouseDown={this.handleMouseDown}
-                        ref={this.image} />
-                </div>
-                <Toolbar className="tool-bar">
+            <Zoom in={visible}>
+                <div
+                    ref={this.root}
+                    onMouseLeave={this.handleMouseUp}
+                    onMouseMove={this.handleMouseMove}
+                    onMouseUp={this.handleMouseUp}
+                    className="image-viewer-wrapper">
+                    <IconButton
+                        onClick={this.handleClose}
+                        className="close-btn">
+                        <Close fontSize="large" />
+                    </IconButton>
                     {
-                        btns.map(
-                            btn => (
+                        !autoBind && (
+                            <>
                                 <IconButton
-                                    onClick={btn.handler}
-                                    title={btn.title}
-                                    key={btn.title}>
-                                    {React.createElement(btn.icon)}
+                                    className="nav-btn nav-prev"
+                                    title="上一张">
+                                    <NavigateBefore fontSize="large" />
                                 </IconButton>
-                            )
+                                <IconButton
+                                    className="nav-btn nav-next"
+                                    title="下一张">
+                                    <NavigateNext fontSize="large" />
+                                </IconButton>
+                            </>
                         )
                     }
-                </Toolbar>
-            </div>
+                    {!loaded && <Loading />}
+                    <div ref={this.imgWrapper} className="img-wrapper">
+                        <img
+                            draggable={false}
+                            src={current}
+                            onLoad={this.handleImageLoad}
+                            onError={this.handleImageError}
+                            onWheel={this.handleMouseWheel}
+                            onMouseDown={this.handleMouseDown}
+                            ref={this.image} />
+                    </div>
+                    <Toolbar className="tool-bar">
+                        {
+                            btns.map(
+                                btn => (
+                                    <IconButton
+                                        onClick={btn.handler}
+                                        title={btn.title}
+                                        key={btn.title}>
+                                        {React.createElement(btn.icon)}
+                                    </IconButton>
+                                )
+                            )
+                        }
+                    </Toolbar>
+                </div>
+            </Zoom>
         );
     }
 
