@@ -8,7 +8,6 @@ import Loadable from "react-loadable";
 import Loading from "@common/loading";
 import E404 from "@common/404";
 import { Publish } from "@material-ui/icons";
-import Tooltip from "@material-ui/core/Tooltip";
 import {
     IconButton,
     Zoom
@@ -98,13 +97,12 @@ class App extends React.Component {
                     <Route path="/" component={UserHome} />
                 </Switch>
                 <Zoom in={this.state.backTopVisible}>
-                    <Tooltip title="回到顶部">
-                        <IconButton
-                            onClick={this.backToTop}
-                            className="back-to-top">
-                            <Publish fontSize="large" />
-                        </IconButton>
-                    </Tooltip>
+                    <IconButton
+                        title="回到顶部"
+                        onClick={this.backToTop}
+                        className="back-to-top">
+                        <Publish fontSize="large" />
+                    </IconButton>
                 </Zoom>
             </>
         );

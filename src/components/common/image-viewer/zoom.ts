@@ -23,12 +23,14 @@ function calcScale(img: HTMLImageElement, wrapper: HTMLElement, fit: boolean = t
 
 function zoom(img: HTMLImageElement, ratio: number, baseX?: number, baseY?: number) {
     let style = getComputedStyle(img);
-    let l = parseFloat(style.getPropertyValue("left")) + baseX - baseX * ratio;
-    let t = parseFloat(style.getPropertyValue("top")) + baseY - baseY * ratio;
     let origW = parseFloat(style.getPropertyValue("width"));
     let origH = parseFloat(style.getPropertyValue("height"));
+    let l = parseFloat(style.getPropertyValue("left"));
+    let t = parseFloat(style.getPropertyValue("top"))
     baseX = baseX || origW / 2;
     baseY = baseY || origH / 2;
+    l += baseX - baseX * ratio;
+    t += baseY - baseY * ratio;
     origW *= ratio;
     origH *= ratio;
     img.style.cssText = `
@@ -61,10 +63,15 @@ function center(wrapper: HTMLElement, img: HTMLImageElement) {
     img.style.top = `${top}px`;
 }
 
+function calcDistance(x1: number, y1: number, x2: number, y2: number) {
+    return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+}
+
 export {
     zoom,
     zoomIn,
     zoomOut,
     calcScale,
-    center
+    center,
+    calcDistance
 }

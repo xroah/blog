@@ -21,7 +21,8 @@ import {
     zoomIn,
     zoomOut,
     calcScale,
-    center
+    center,
+    calcDistance
 } from "./zoom";
 import Loading from "@common/loading";
 import message from "@common/message";
@@ -40,11 +41,12 @@ export default class ImageViewer extends React.Component<Props> {
     root: React.RefObject<HTMLDivElement> = React.createRef();
     rotateAngle: number = 0;
     mouseDowned: boolean = false;
-    startX: number = 0;
-    startY: number = 0;
+    startX: number | number[] = 0;
+    startY: number | number[] = 0;
     startLeft: number = 0;
     startTop: number = 0;
     imgCls = `img-${Date.now()}`;
+    resized = false;
 
     static defaultProps = {
         findFrom: document.body
@@ -60,26 +62,13 @@ export default class ImageViewer extends React.Component<Props> {
     };
 
     componentDidMount() {
-        let {
-            root: { current: root },
-            props: { findFrom }
-        } = this;
         window.addEventListener("resize", this.handleResize);
-        /**
-         * React event binding:
-         * [Intervention] Unable to preventDefault inside passive event listener due to target being treated as passive. 
-         */
-        root.addEventListener("touchstart", this.preventDefault, { passive: false });
         window.addEventListener("click", this.handleClickImage);
     }
 
     componentWillUnmount() {
-        let {
-            root: { current: root }
-        } = this;
         window.removeEventListener("resize", this.handleResize);
         window.removeEventListener("click", this.handleClickImage);
-        root && root.removeEventListener("touchstart", this.preventDefault);
     }
 
     handleImageLoad = () => {
@@ -109,13 +98,13 @@ export default class ImageViewer extends React.Component<Props> {
 
     preventDefault = (evt: TouchEvent | React.MouseEvent) => {
         evt.preventDefault();
-        evt.stopPropagation();
     }
 
-    handleClose = () => {
+    handleClose = (evt: React.MouseEvent) => {
         this.setState({
             visible: false
         });
+        document.body.removeEventListener("touchmove", this.preventDefault);
     }
 
     handleClickImage = (evt: MouseEvent) => {
@@ -149,17 +138,18 @@ export default class ImageViewer extends React.Component<Props> {
                 }
             }
             state.index = index;
+            document.body.addEventListener("touchmove", this.preventDefault, { passive: false });
             this.setState(state);
         }
     }
 
     to = (index) => {
         let {
-            state: {images},
-            image: {current: image}
-         } = this;
-         image.style.width = "0px";
-         image.style.height = "0px";
+            state: { images },
+            image: { current: image }
+        } = this;
+        image.style.width = "0px";
+        image.style.height = "0px";
         this.setState({
             index,
             current: images[index],
@@ -204,6 +194,7 @@ export default class ImageViewer extends React.Component<Props> {
             wrapper.style.height = `${height}px`;
             calcScale(img, wrapper, fit);
             center(wrapper, img);
+            this.resized = true;
         }
     }
 
@@ -280,32 +271,32 @@ export default class ImageViewer extends React.Component<Props> {
             image: { current: img },
             mouseDowned,
             rotateAngle,
-            startX,
-            startY,
             startLeft,
             startTop
         } = this;
         if (!mouseDowned) return;
         let x = evt.clientX;
         let y = evt.clientY;
-        let disX: number;
+        let sx: any = this.startX;
+        let sy: any = this.startY;
+        let disX: any;
         let disY: number;
         switch (rotateAngle) {
             case 90:
-                disX = y - startY;
-                disY = startX - x;
+                disX = y - sy;
+                disY = sx - x;
                 break;
             case 180:
-                disX = startX - x;
-                disY = startY - y;
+                disX = sx - x;
+                disY = sy - y;
                 break;
             case 270:
-                disX = startY - y;
-                disY = x - startX;
+                disX = sy - y;
+                disY = x - sx;
                 break;
             default:
-                disX = x - startX;
-                disY = y - startY;
+                disX = x - sx;
+                disY = y - sy;
         }
         img.style.left = `${startLeft + disX}px`;
         img.style.top = `${startTop + disY}px`;
@@ -322,6 +313,71 @@ export default class ImageViewer extends React.Component<Props> {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+    }
+
+    handleTouchStart = (evt: React.TouchEvent) => {
+        let touches = evt.touches;
+        if (touches.length === 1) {
+            this.startX = touches[0].clientX;
+            this.startY = touches[1].clientY;
+        } else {
+            this.startX = [touches[0].clientX, touches[1].clientX];
+            this.startY = [touches[0].clientY, touches[1].clientY];
+        }
+    }
+
+    getImageSize = () => {
+        let {
+            image: { current: img }
+        } = this;
+        let style = getComputedStyle(img);
+        let width = parseFloat(style.getPropertyValue("width"));
+        let height = parseFloat(style.getPropertyValue("height"));
+        return {
+            width,
+            height
+        }
+    }
+
+    handleTouchMove = (evt: React.TouchEvent) => {
+        let {
+            startX,
+            startY,
+            image: { current: img }
+        } = this
+        let touches = evt.touches;
+        if (Array.isArray(startX)) {
+            let startDis = calcDistance(startX[0], startY[0], startX[1], startY[1]);
+            let { width } = this.getImageSize();
+            if (touches.length > 1) {
+                let endDis = calcDistance(
+                    touches[0].clientX,
+                    touches[0].clientY,
+                    touches[1].clientX,
+                    touches[1].clientY
+                );
+                let ratio = endDis / startDis;
+                if (ratio < 1) {
+                    if (img.naturalWidth / width > 20) return;
+                    zoom(img, 0.95);
+                } else {
+                    if (width < img.naturalWidth) {
+                        zoom(img, 1.05);
+                    }
+                }
+                this.resized = false;
+            }
+        }
+    }
+
+    handleTouchEnd = (evt: React.TouchEvent) => {
+        let {
+            image: {current: img}
+        } = this;
+        let { width } = this.getImageSize();
+        if (width < window.innerWidth) {
+            this.resize();
+        }
     }
 
     render() {
@@ -413,6 +469,9 @@ export default class ImageViewer extends React.Component<Props> {
                             onError={this.handleImageError}
                             onWheel={this.handleMouseWheel}
                             onMouseDown={this.handleMouseDown}
+                            onTouchStart={this.handleTouchStart}
+                            onTouchMove={this.handleTouchMove}
+                            onTouchEnd={this.handleTouchEnd}
                             ref={this.image} />
                     </div>
                     <Toolbar className="tool-bar">
