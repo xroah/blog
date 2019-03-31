@@ -12,11 +12,15 @@
     background-color: rgba(0, 0, 0, .3);
     z-index: 999999;
 
+    .loading-wrapper {
+        background-color: transparent;
+    }
+
     .close-btn {
         position: absolute;
         right: 0;
         top: 0;
-        z-index: 1;
+        z-index: 999999;
     }
 
     .img-wrapper {

@@ -28,12 +28,8 @@ import message from "@common/message";
 import "./index.scss";
 
 interface Props {
-    image?: string | HTMLImageElement;
-    images?: string[];
-    visible?: boolean;
-    //bind click event to the img, click img will show the image viewer
-    //if true, image and image will be ignored
-    autoBind?: boolean;
+    //find images element from, default body
+    findFrom?: HTMLElement;
 }
 
 export default class ImageViewer extends React.Component<Props> {
@@ -48,31 +44,33 @@ export default class ImageViewer extends React.Component<Props> {
     startY: number = 0;
     startLeft: number = 0;
     startTop: number = 0;
+    imgCls = `img-${Date.now()}`;
+
+    static defaultProps = {
+        findFrom: document.body
+    };
 
     state = {
         visible: false,
         current: "",
         images: [],
         index: 0,
-        from: "",
-        autoBind: this.props.autoBind,
-        loaded: false
+        loaded: false,
+        error: false
     };
 
     componentDidMount() {
         let {
-            props: { autoBind },
-            root: { current: root }
+            root: { current: root },
+            props: { findFrom }
         } = this;
         window.addEventListener("resize", this.handleResize);
         /**
          * React event binding:
          * [Intervention] Unable to preventDefault inside passive event listener due to target being treated as passive. 
          */
-        root.addEventListener("touchstart", this.preventScale, { passive: true });
-        if (autoBind) {
-            window.addEventListener("click", this.handleClickImage);
-        }
+        root.addEventListener("touchstart", this.preventDefault, { passive: false });
+        window.addEventListener("click", this.handleClickImage);
     }
 
     componentWillUnmount() {
@@ -81,82 +79,100 @@ export default class ImageViewer extends React.Component<Props> {
         } = this;
         window.removeEventListener("resize", this.handleResize);
         window.removeEventListener("click", this.handleClickImage);
-        root && root.removeEventListener("touchstart", this.preventScale);
+        root && root.removeEventListener("touchstart", this.preventDefault);
     }
 
     handleImageLoad = () => {
         this.setState({
-            loaded: true
+            loaded: true,
+            error: false
         }, () => {
             this.rotate(0);
         });
     }
 
     handleImageError = () => {
-        if (this.state.current) {
+        let {
+            state: {
+                current,
+                visible
+            }
+        } = this;
+        if (visible && current) {
             message.error("图片加载出错");
         }
+        this.setState({
+            error: true,
+            loaded: false
+        });
     }
 
-    static getDerivedStateFromProps(props, state) {
-        let _state = {
-            ...state
-        };
-        if (_state.from) {
-            _state.from === "";
-        } else {
-            if (_state.autoBind) return _state;
-            if (_state.visible !== props.visible) {
-                _state.visible = props.visible;
-            }
-            if (
-                _state.current !== props.image ||
-                _state.images.length !== props.images.length
-            ) {
-                _state.current = props.image;
-                let index = -1;
-                let images = props.images || [];
-                _state.images = props.images;
-                for (let i = 0, l = images.length; i < l; i++) {
-                    if (images[i] === _state.current) {
-                        index = i;
-                        break;
-                    }
-                }
-                if (index === -1) {
-                    index = 0;
-                    _state.current = _state.images[0];
-                }
-                _state.index = index;
-            }
-            _state.loaded = _state.current === props.image;
-        }
-        return _state;
-    }
-
-    preventScale = (evt: TouchEvent) => {
+    preventDefault = (evt: TouchEvent | React.MouseEvent) => {
         evt.preventDefault();
         evt.stopPropagation();
     }
 
     handleClose = () => {
         this.setState({
-            visible: false,
-            from: "state"
+            visible: false
         });
     }
 
     handleClickImage = (evt: MouseEvent) => {
         let tgt = evt.target as HTMLImageElement;
         let nodeName = tgt.nodeName.toLowerCase();
-        if (nodeName === "img" && tgt !== this.image.current) {
-            this.setState({
+        let {
+            image: { current: img },
+            props: { findFrom },
+            state: {
+                current,
+                index
+            },
+            imgCls
+        } = this;
+        if (nodeName === "img" && tgt !== img && findFrom.contains(tgt)) {
+            let imgs = Array.from(
+                findFrom.querySelectorAll(`img:not(.${imgCls})`)
+            ).map((i: HTMLImageElement) => i.src);
+            let state: any = {
                 visible: true,
-                from: "state",
-                current: tgt.src,
-                loaded: this.state.current === tgt.src
-            });
+                images: imgs
+            };
+            if (current !== tgt.src) {
+                state.current = tgt.src;
+                state.loaded = false;
+                for (let i = 0, l = imgs.length; i < l; i++) {
+                    if (tgt.src === imgs[i]) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+            state.index = index;
+            this.setState(state);
         }
+    }
+
+    to = (index) => {
+        let {
+            state: {images},
+            image: {current: image}
+         } = this;
+         image.style.width = "0px";
+         image.style.height = "0px";
+        this.setState({
+            index,
+            current: images[index],
+            loaded: false
+        });
+    }
+
+    next = () => {
+        this.to(this.state.index + 1);
+    }
+
+    prev = () => {
+        this.to(this.state.index - 1);
     }
 
     handleResize = () => {
@@ -169,12 +185,12 @@ export default class ImageViewer extends React.Component<Props> {
     //fit screen or real size
     resize = (fit: boolean = true) => {
         let {
-            state: { loaded },
+            state: { loaded, error },
             image: { current: img },
             imgWrapper: { current: wrapper },
             rotateAngle
         } = this;
-        if (loaded) {
+        if (loaded && !error) {
             let width;
             let height;
             if (rotateAngle / 90 % 2 === 0) {
@@ -207,9 +223,9 @@ export default class ImageViewer extends React.Component<Props> {
     rotate = (angle: number) => {
         let {
             imgWrapper: { current: wrapper },
-            state: { loaded }
+            state: { loaded, error }
         } = this;
-        if (!loaded) return;
+        if (!loaded || error) return;
         this.rotateAngle = angle;
         wrapper.style.transform = `rotate(${angle}deg)`;
         this.resize();
@@ -340,17 +356,18 @@ export default class ImageViewer extends React.Component<Props> {
         }];
 
         let {
-            state: {
-                visible,
-                loaded,
-                current
-            },
-            props: { autoBind }
-        } = this;
+            visible,
+            loaded,
+            current,
+            images,
+            index,
+            error
+        } = this.state;
         return (
             <Zoom in={visible}>
                 <div
                     ref={this.root}
+                    onWheel={this.preventDefault}
                     onMouseLeave={this.handleMouseUp}
                     onMouseMove={this.handleMouseMove}
                     onMouseUp={this.handleMouseUp}
@@ -361,26 +378,37 @@ export default class ImageViewer extends React.Component<Props> {
                         <Close fontSize="large" />
                     </IconButton>
                     {
-                        !autoBind && (
+                        images.length > 1 && (
                             <>
-                                <IconButton
-                                    className="nav-btn nav-prev"
-                                    title="上一张">
-                                    <NavigateBefore fontSize="large" />
-                                </IconButton>
-                                <IconButton
-                                    className="nav-btn nav-next"
-                                    title="下一张">
-                                    <NavigateNext fontSize="large" />
-                                </IconButton>
+                                {
+                                    index > 0 && (
+                                        <IconButton
+                                            onClick={this.prev}
+                                            className="nav-btn nav-prev"
+                                            title="上一张">
+                                            <NavigateBefore fontSize="large" />
+                                        </IconButton>
+                                    )
+                                }
+                                {
+                                    index < images.length - 1 && (
+                                        <IconButton
+                                            onClick={this.next}
+                                            className="nav-btn nav-next"
+                                            title="下一张">
+                                            <NavigateNext fontSize="large" />
+                                        </IconButton>
+                                    )
+                                }
                             </>
                         )
                     }
-                    {!loaded && <Loading />}
+                    {!loaded && !error && <Loading />}
                     <div ref={this.imgWrapper} className="img-wrapper">
                         <img
                             draggable={false}
                             src={current}
+                            className={this.imgCls}
                             onLoad={this.handleImageLoad}
                             onError={this.handleImageError}
                             onWheel={this.handleMouseWheel}

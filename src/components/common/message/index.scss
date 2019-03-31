@@ -1,12 +1,17 @@
 @import "../styles/variables";
 
 .message-wrapper {
+    position: relative;
+    z-index: 9999999999;
+
     .message-success {
         background-color: $successColor;
     }
+
     .message-error {
         background-color: $errorColor;
     }
+
     .message-info {
         background-color: $infoColor;
     }

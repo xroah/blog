@@ -143,7 +143,7 @@ class ViewArticle extends React.Component<Props> {
                         )
                         : <NotExists message="文章不存在或被博主删除" />
                 }
-                <ImageViewer autoBind={true}/>
+                <ImageViewer />
             </section>
         );
     }
