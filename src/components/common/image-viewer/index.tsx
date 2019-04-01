@@ -22,7 +22,8 @@ import {
     zoomOut,
     calcScale,
     center,
-    calcDistance
+    calcDistance,
+    getMiddlePos
 } from "./zoom";
 import Loading from "@common/loading";
 import message from "@common/message";
@@ -96,7 +97,7 @@ export default class ImageViewer extends React.Component<Props> {
         });
     }
 
-    preventDefault = (evt: TouchEvent | React.MouseEvent) => {
+    preventDefault = (evt: TouchEvent | WheelEvent) => {
         evt.preventDefault();
     }
 
@@ -105,6 +106,7 @@ export default class ImageViewer extends React.Component<Props> {
             visible: false
         });
         document.body.removeEventListener("touchmove", this.preventDefault);
+        document.body.removeEventListener("wheel", this.preventDefault);
     }
 
     handleClickImage = (evt: MouseEvent) => {
@@ -139,15 +141,17 @@ export default class ImageViewer extends React.Component<Props> {
             }
             state.index = index;
             document.body.addEventListener("touchmove", this.preventDefault, { passive: false });
+            document.body.addEventListener("wheel", this.preventDefault, { passive: false });
             this.setState(state);
         }
     }
 
-    to = (index) => {
+    to = (index: number) => {
         let {
             state: { images },
             image: { current: image }
         } = this;
+        if (index < 0 || index >= images.length) return;
         image.style.width = "0px";
         image.style.height = "0px";
         this.setState({
@@ -254,7 +258,7 @@ export default class ImageViewer extends React.Component<Props> {
         } else {
             zoomOut(img, x, y);
         }
-        evt.preventDefault();
+        this.resized = false;
     }
 
     handleMouseDown = (evt: React.MouseEvent) => {
@@ -318,8 +322,11 @@ export default class ImageViewer extends React.Component<Props> {
     handleTouchStart = (evt: React.TouchEvent) => {
         let touches = evt.touches;
         if (touches.length === 1) {
+            let { left, top } = this.getImageSize();
             this.startX = touches[0].clientX;
-            this.startY = touches[1].clientY;
+            this.startY = touches[0].clientY;
+            this.startLeft = left;
+            this.startTop = top;
         } else {
             this.startX = [touches[0].clientX, touches[1].clientX];
             this.startY = [touches[0].clientY, touches[1].clientY];
@@ -333,23 +340,45 @@ export default class ImageViewer extends React.Component<Props> {
         let style = getComputedStyle(img);
         let width = parseFloat(style.getPropertyValue("width"));
         let height = parseFloat(style.getPropertyValue("height"));
+        let left = parseFloat(style.getPropertyValue("left"));
+        let top = parseFloat(style.getPropertyValue("top"));
         return {
             width,
-            height
-        }
+            height,
+            left,
+            top
+        };
     }
 
     handleTouchMove = (evt: React.TouchEvent) => {
         let {
             startX,
             startY,
-            image: { current: img }
+            startLeft,
+            startTop,
+            image: { current: img },
+            resized
         } = this
         let touches = evt.touches;
+        let { 
+            width
+         } = this.getImageSize();
+        let rect = img.getBoundingClientRect();
+        let disX: number;
+        let disY: number;
         if (Array.isArray(startX)) {
             let startDis = calcDistance(startX[0], startY[0], startX[1], startY[1]);
-            let { width } = this.getImageSize();
             if (touches.length > 1) {
+                let {
+                    midX,
+                    midY
+                } = getMiddlePos(
+                    img,
+                    touches[0].clientX,
+                    touches[0].clientY,
+                    touches[1].clientX,
+                    touches[1].clientY
+                );
                 let endDis = calcDistance(
                     touches[0].clientX,
                     touches[0].clientY,
@@ -359,24 +388,42 @@ export default class ImageViewer extends React.Component<Props> {
                 let ratio = endDis / startDis;
                 if (ratio < 1) {
                     if (img.naturalWidth / width > 20) return;
-                    zoom(img, 0.95);
+                    zoom(img, 0.95, midX, midY);
                 } else {
                     if (width < img.naturalWidth) {
-                        zoom(img, 1.05);
+                        zoom(img, 1.05, midX, midY);
                     }
                 }
                 this.resized = false;
             }
+        } else {
+            disX = touches[0].clientX - startX;
+            disY = touches[0].clientY - (startY as any);
+            if (resized) {
+                if (disX <= -50) {
+                    this.next();
+                } else if (disX >= 50) {
+                    this.prev();
+                }
+                return;
+            }
+            img.style.left = `${startLeft + disX}px`;
+            img.style.top = `${startTop + disY}px`;
         }
     }
 
     handleTouchEnd = (evt: React.TouchEvent) => {
-        let {
-            image: {current: img}
-        } = this;
+        let touches = evt.touches;
         let { width } = this.getImageSize();
         if (width < window.innerWidth) {
             this.resize();
+        }
+        if (touches.length === 1) {
+            let { left, top } = this.getImageSize();
+            this.startLeft = left;
+            this.startTop = top;
+            this.startX = touches[0].clientX;
+            this.startY = touches[0].clientY;
         }
     }
 
@@ -423,11 +470,13 @@ export default class ImageViewer extends React.Component<Props> {
             <Zoom in={visible}>
                 <div
                     ref={this.root}
-                    onWheel={this.preventDefault}
                     onMouseLeave={this.handleMouseUp}
                     onMouseMove={this.handleMouseMove}
                     onMouseUp={this.handleMouseUp}
                     className="image-viewer-wrapper">
+                    <div
+                        style={{ position: "absolute", left: 0, top: 0 }}
+                        id="info"></div>
                     <IconButton
                         onClick={this.handleClose}
                         className="close-btn">

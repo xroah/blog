@@ -67,11 +67,32 @@ function calcDistance(x1: number, y1: number, x2: number, y2: number) {
     return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 }
 
+function getMiddlePos(img: HTMLImageElement, x1: number, y1: number, x2: number, y2: number) {
+    let rect = img.getBoundingClientRect();
+    let midX = Math.abs(x1 - x2) / 2;
+    let midY = Math.abs(y1 - y2) / 2;
+    if (x1 > x2) {
+        midX += x2;
+    } else {
+        midX += x1;
+    }
+    if (y1 > y2) {
+        midY += y2;
+    } else {
+        midY += y1;
+    }
+    return {
+        midX: midX - rect.left,
+        midY: midY - rect.top
+    };
+}
+
 export {
     zoom,
     zoomIn,
     zoomOut,
     calcScale,
     center,
-    calcDistance
+    calcDistance,
+    getMiddlePos
 }
