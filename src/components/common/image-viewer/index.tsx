@@ -70,6 +70,8 @@ export default class ImageViewer extends React.Component<Props> {
     componentWillUnmount() {
         window.removeEventListener("resize", this.handleResize);
         window.removeEventListener("click", this.handleClickImage);
+        document.body.removeEventListener("wheel", this.preventDefault);
+        document.body.removeEventListener("touchmove", this.preventDefault);
     }
 
     handleImageLoad = () => {
@@ -360,44 +362,43 @@ export default class ImageViewer extends React.Component<Props> {
             resized
         } = this
         let touches = evt.touches;
-        let { 
+        let {
             width
-         } = this.getImageSize();
-        let rect = img.getBoundingClientRect();
+        } = this.getImageSize();
         let disX: number;
         let disY: number;
-        if (Array.isArray(startX)) {
+        if (touches.length > 1) {
             let startDis = calcDistance(startX[0], startY[0], startX[1], startY[1]);
-            if (touches.length > 1) {
-                let {
-                    midX,
-                    midY
-                } = getMiddlePos(
-                    img,
-                    touches[0].clientX,
-                    touches[0].clientY,
-                    touches[1].clientX,
-                    touches[1].clientY
-                );
-                let endDis = calcDistance(
-                    touches[0].clientX,
-                    touches[0].clientY,
-                    touches[1].clientX,
-                    touches[1].clientY
-                );
-                let ratio = endDis / startDis;
-                if (ratio < 1) {
-                    if (img.naturalWidth / width > 20) return;
-                    zoom(img, 0.95, midX, midY);
-                } else {
-                    if (width < img.naturalWidth) {
-                        zoom(img, 1.05, midX, midY);
-                    }
+            let {
+                midX,
+                midY
+            } = getMiddlePos(
+                img,
+                touches[0].clientX,
+                touches[0].clientY,
+                touches[1].clientX,
+                touches[1].clientY
+            );
+            let endDis = calcDistance(
+                touches[0].clientX,
+                touches[0].clientY,
+                touches[1].clientX,
+                touches[1].clientY
+            );
+            let ratio = endDis / startDis;
+            if (ratio < 1) {
+                if (img.naturalWidth / width > 20) return;
+                zoom(img, 0.98, midX, midY);
+            } else {
+                if (width < img.naturalWidth) {
+                    zoom(img, 1.02, midX, midY);
                 }
-                this.resized = false;
             }
+            this.startX = [touches[0].clientX, touches[1].clientX];
+            this.startY = [touches[0].clientY, touches[1].clientY];
+            this.resized = false;
         } else {
-            disX = touches[0].clientX - startX;
+            disX = touches[0].clientX - (startX as any);
             disY = touches[0].clientY - (startY as any);
             if (resized) {
                 if (disX <= -50) {

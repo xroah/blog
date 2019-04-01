@@ -1,0 +1,41 @@
+.album-container {
+    display: flex;
+    flex-wrap: wrap;
+
+    .album-item {
+        width: 16.666666666%;
+        padding: 20px 10px;
+        text-align: center;
+        cursor: pointer;
+
+        dd {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        &:hover {
+            background-color: rgba(0, 0, 0, .1);
+        }
+    }
+
+    .folder-icon {
+        font-size: 66px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .album-container {
+        .album-item {
+            width: 25%;
+        }
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .album-container {
+        .album-item {
+            width: 33.333333%;
+        }
+    }
+}
