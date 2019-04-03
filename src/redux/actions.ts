@@ -154,3 +154,11 @@ export const EDIT_CLS_INFO = {
         value: ""
     }
 }
+
+export const SHOW_ALBUM_CONTEXT_MENU = {
+    type: "SHOW_ALBUM_CONTEXT_MENU"
+};
+
+export const HIDE_ALBUM_CONTEXT_MENU = {
+    type: "HIDE_ALBUM_CONTEXT_MENU"
+};

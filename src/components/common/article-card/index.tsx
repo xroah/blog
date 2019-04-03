@@ -134,7 +134,7 @@ class ArticleCard extends React.Component<Props> {
                                     <Visibility />{article.totalViewed}
                                 </span>
                                 <span className="action-item">
-                                    <Comment />{article.comments || 0}
+                                    <Comment />{article.comments ? article.comments.count : 0}
                                 </span>
                             </div>
                             {

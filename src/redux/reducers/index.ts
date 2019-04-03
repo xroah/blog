@@ -6,6 +6,7 @@ import modifyPwd from "./modify-pwd";
 import cls from "./classification";
 import comment from "./comment";
 import publicArticle from "./public-article";
+import photoAlbum from "./photo-album";
 
 export default history => combineReducers({
     router: connectRouter(history),
@@ -14,5 +15,6 @@ export default history => combineReducers({
     modifyPwd,
     cls,
     comment,
-    publicArticle
+    publicArticle,
+    photoAlbum
 });

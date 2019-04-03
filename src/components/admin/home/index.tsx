@@ -6,7 +6,7 @@ import Articles from "@containers/admin/admin-article";
 import PhotoAlbum from "@common/photo-album";
 import ModifyPwd from "@containers/admin/modify-pwd";
 import ArticleEdit from "@containers/admin/article-edit";
-import HomePage from "../home-page";
+import HomePage from "../homepage";
 import ViewArticle from "@containers/common/view-article";
 import CommentsManagement from "../comment-management";
 import { ADMIN_ARTICLE_URL } from "@common/api";
@@ -15,6 +15,10 @@ import "./index.scss";
 
 function _ViewArticle() {
     return <ViewArticle fetchUrl={ADMIN_ARTICLE_URL} />;
+}
+
+function _PhotoAlbum() {
+    return <PhotoAlbum isAdmin={true}/>;
 }
 
 export default class AdminHome extends React.Component {
@@ -27,8 +31,8 @@ export default class AdminHome extends React.Component {
                     <Switch>
                         <Route path="/xsys" exact component={HomePage} />
                         <Route path="/xsys/cls" exact component={Classification} />
-                        <Route path="/xsys/comments/:page?" component={CommentsManagement}/>
-                        <Route path="/xsys/photo-album" exact component={PhotoAlbum} />
+                        <Route path="/xsys/comments/:page?" component={CommentsManagement} />
+                        <Route path="/xsys/photo-album" exact component={_PhotoAlbum} />
                         <Route path="/xsys/article/edit" exact component={ArticleEdit} />
                         <Route path="/xsys/articles/:page?" exact component={Articles} />
                         <Route path="/xsys/article/:id" exact component={_ViewArticle} />
