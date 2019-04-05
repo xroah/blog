@@ -162,3 +162,39 @@ export const SHOW_ALBUM_CONTEXT_MENU = {
 export const HIDE_ALBUM_CONTEXT_MENU = {
     type: "HIDE_ALBUM_CONTEXT_MENU"
 };
+
+export const FETCH_ALBUMS = {
+    type: "FETCH_ADMIN_ALBUMS"
+};
+
+export const FETCH_ALBUMS_START = {
+    type: "FETCH_ALBUMS_START"
+};
+
+export const ADD_ALBUM_START = {
+    type: "ADD_ALBUM_START"
+};
+
+export const DELETE_ALBUM_START = {
+    type: "DEL_ALBUM_START"
+};
+
+export const SHOW_ALBUM_EDIT = {
+    type: "SHOW_ALBUM_EDIT"
+};
+
+export const HIDE_ALBUM_EDIT = {
+    type: "HIDE_ALBUM_EDIT"
+};
+
+export const SHOW_ALBUM_PROPERTY = {
+    type: "SHOW_ALBUM_PROPERTY"
+};
+
+export const HIDE_ALBUM_PROPERTY = {
+    type: "HIDE_ALBUM_PROPERTY"
+};
+
+export const SWITCH_ALBUM = {
+    type: "SWITCH_ALBUM"
+};

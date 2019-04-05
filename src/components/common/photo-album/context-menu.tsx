@@ -2,19 +2,26 @@ import * as React from "react";
 import {
     List,
     ListItem,
-    Zoom
+    Zoom,
+    Typography
 } from "@material-ui/core";
 import {
     Clear,
     CloudUpload,
-    Info
+    Info,
+    Edit
 } from "@material-ui/icons";
+import hint from "@common/hint-dialog";
 
 interface Props {
     visible?: boolean;
     x?: number;
     y?: number;
+    curAlbum?: any;
     hideContextMenu: () => any;
+    showEdit: () => any;
+    showProperty: () => any;
+    delAlbum?: (id: string) => any;
 }
 
 interface State {
@@ -23,7 +30,7 @@ interface State {
 }
 
 const WIDTH = 130;
-const HEIGHT = 150;
+const HEIGHT = 200;
 
 function calcPos(x: number, y: number) {
     let w = window.innerWidth;
@@ -70,6 +77,7 @@ export default class ContextMenu extends React.Component<Props, State> {
     }
 
     handleClickOutSide = (evt: MouseEvent) => {
+        if (!this.props.visible) return;
         let tgt = evt.target as HTMLElement;
         let root = this.menu.current;
         if (tgt !== root && !root.contains(tgt)) {
@@ -86,12 +94,34 @@ export default class ContextMenu extends React.Component<Props, State> {
         this.hide();
     }
 
-    handleDel = () => {
+    handleEdit = () => {
+        this.props.showEdit();
         this.hide();
+    }
+
+    handleDel = () => {
+        let {
+            delAlbum,
+            curAlbum
+        } = this.props;
+        this.hide();
+        hint.confirm(
+            <>
+                确定要删除
+                <Typography color="secondary" inline={true}>
+                {curAlbum.name}
+                </Typography>
+                吗?
+            </>,
+            () => {
+                delAlbum(curAlbum._id);
+            }
+        )
     }
 
     handleInfo = () => {
         this.hide();
+        this.props.showProperty();
     }
 
     render() {
@@ -117,6 +147,12 @@ export default class ContextMenu extends React.Component<Props, State> {
                             className="menu-item">
                             <CloudUpload />
                             <span>上传图片</span>
+                        </ListItem>
+                        <ListItem
+                            onClick={this.handleEdit}
+                            className="menu-item">
+                            <Edit />
+                            <span>编辑</span>
                         </ListItem>
                         <ListItem
                             onClick={this.handleDel}

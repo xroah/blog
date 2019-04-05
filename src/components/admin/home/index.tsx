@@ -3,13 +3,16 @@ import NavBar from "@components/admin/nav-bar";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Classification from "../classification";
 import Articles from "@containers/admin/admin-article";
-import PhotoAlbum from "@common/photo-album";
+import PhotoAlbum from "@containers/common/photo-album";
 import ModifyPwd from "@containers/admin/modify-pwd";
 import ArticleEdit from "@containers/admin/article-edit";
 import HomePage from "../homepage";
 import ViewArticle from "@containers/common/view-article";
 import CommentsManagement from "../comment-management";
-import { ADMIN_ARTICLE_URL } from "@common/api";
+import {
+    ADMIN_ARTICLE_URL,
+    ADMIN_ALBUM_URL
+} from "@common/api";
 import "./index.scss";
 
 
@@ -18,7 +21,9 @@ function _ViewArticle() {
 }
 
 function _PhotoAlbum() {
-    return <PhotoAlbum isAdmin={true}/>;
+    return <PhotoAlbum
+        url={ADMIN_ALBUM_URL}
+        isAdmin={true} />;
 }
 
 export default class AdminHome extends React.Component {

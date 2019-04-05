@@ -5,12 +5,13 @@ import {
     CardContent,
     CardHeader,
     IconButton,
-    Zoom
+    Zoom,
+    Typography
 } from "@material-ui/core";
 import {
     Edit,
     Delete,
-    MoreVert,
+    Info,
     Visibility,
     Comment
 } from "@material-ui/icons";
@@ -57,9 +58,16 @@ class ArticleCard extends React.Component<Props> {
     handleDel = () => {
         let {
             id,
-            delArticle
+            delArticle,
+            article
         } = this.props;
-        hint.confirm("确定要删除这篇文章吗?", () => {
+        hint.confirm(
+            <>
+                确定要删除
+                <Typography color="secondary" inline={true}>{article.title}</Typography>
+                吗?
+            </>,
+            () => {
             delArticle(id);
         });
     }
@@ -96,7 +104,7 @@ class ArticleCard extends React.Component<Props> {
                                 isAdmin ?
                                     (
                                         <IconButton onClick={showDetails}>
-                                            <MoreVert />
+                                            <Info />
                                         </IconButton>
                                     ) : null
                             } />

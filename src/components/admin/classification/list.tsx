@@ -5,7 +5,8 @@ import {
     CardContent,
     Button,
     IconButton,
-    Zoom
+    Zoom,
+    Typography
 } from "@material-ui/core";
 import {
     Add,
@@ -44,7 +45,11 @@ export default class extends React.Component<Props> {
 
     handelDel = (id: string, name: string) => () => {
         hint.confirm(
-            <>确定要删除<span style={{ color: "#f50057", fontWeight: "bold" }}> {name} </span>吗?</>,
+            <>
+                确定要删除
+                <Typography color="secondary" inline={true}>{name}</Typography>
+                吗?
+            </>,
             () => {
                 this.props.delCls(id);
             });

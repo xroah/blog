@@ -19,10 +19,6 @@ interface Props {
     visible?: boolean;
 }
 
-function Transition(props) {
-    return <Slide direction="down" {...props} />
-}
-
 export default class extends React.Component<Props> {
 
     render() {
@@ -36,8 +32,7 @@ export default class extends React.Component<Props> {
         return (
             <Dialog
                 open={visible}
-                onBackdropClick={hideDialog}
-                TransitionComponent={Transition}>
+                onBackdropClick={hideDialog}>
                 {
                     article &&
                     (

@@ -6,12 +6,19 @@ import {
 } from "react-router-dom";
 import NavBar from "../nav-bar";
 import Homepage from "../homepage";
-import PhotoAlbum from "@common/photo-album";
+import PhotoAlbum from "@containers/common/photo-album";
 import ViewArticle from "@containers/common/view-article";
-import { FETCH_PUBLIC_ARTICLE } from "@common/api";
+import { 
+    FETCH_PUBLIC_ARTICLE,
+    PUBLIC_ALBUM_URL
+} from "@common/api";
 
 function _ViewArticle() {
     return <ViewArticle fetchUrl={FETCH_PUBLIC_ARTICLE} updateViewedTime={true} />;
+}
+
+function _PhotoAlbum() {
+    return <PhotoAlbum url={PUBLIC_ALBUM_URL}/>;
 }
 
 export default class UserHome extends React.Component {
@@ -22,7 +29,7 @@ export default class UserHome extends React.Component {
                 <NavBar />
                 <Switch>
                     <Route exact path="/" component={Homepage} />
-                    <Route exact path="/photo-album" component={PhotoAlbum} />
+                    <Route exact path="/photo-album" component={_PhotoAlbum} />
                     <Route exact path="/article/:id" component={_ViewArticle}/>
                     <Redirect to="/404" />
                 </Switch>

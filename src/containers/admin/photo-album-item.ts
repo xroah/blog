@@ -1,7 +1,8 @@
 import PhotoAlbumItem from "@components/common/photo-album/item";
 import { connect } from "react-redux";
 import {
-    SHOW_ALBUM_CONTEXT_MENU
+    SHOW_ALBUM_CONTEXT_MENU,
+    SWITCH_ALBUM
 } from "@redux/actions";
 
 export default connect(
@@ -15,5 +16,11 @@ export default connect(
                 y
             });
         },
+        switchAlbum(album: any) {
+            dispatch({
+                ...SWITCH_ALBUM,
+                album
+            });
+        }
     })
 )(PhotoAlbumItem);

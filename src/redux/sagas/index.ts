@@ -3,6 +3,7 @@ import commonArticle from "./common-article";
 import clsSaga from "./classification";
 import comment from "./comment";
 import publicArticle from "./public-article";
+import album from "./album";
 import { all } from "redux-saga/effects";
 
 export default function* rootSaga() {
@@ -11,6 +12,7 @@ export default function* rootSaga() {
         ...commonArticle,
         ...clsSaga,
         ...comment,
-        ...publicArticle
+        ...publicArticle,
+        ...album
     ]);
 }

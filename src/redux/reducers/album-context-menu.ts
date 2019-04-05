@@ -1,13 +1,15 @@
 import {
     SHOW_ALBUM_CONTEXT_MENU,
-    HIDE_ALBUM_CONTEXT_MENU
+    HIDE_ALBUM_CONTEXT_MENU,
+    SWITCH_ALBUM
 } from "../actions";
 
 export default (
     state = {
         visible: false,
         x: 0,
-        y: 0
+        y: 0,
+        curAlbum: null
     },
     action: any
 ) => {
@@ -23,6 +25,11 @@ export default (
             return {
                 ...state,
                 visible: false
+            };
+        case SWITCH_ALBUM.type: 
+            return {
+                ...state,
+                curAlbum: action.album
             };
         default: 
             return state;

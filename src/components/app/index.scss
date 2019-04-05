@@ -29,9 +29,13 @@ p {
 }
 
 input,
-select {
-    background-color: #f1f1f1;
+select,
+textarea {
     outline: none;
+}
+
+textarea {
+    resize: none;
 }
 
 dl,
@@ -53,6 +57,10 @@ dd {
 
 .text-left {
     text-align: left;
+}
+
+.red-text {
+    color: #f00;
 }
 
 .ml-10 {

@@ -5,11 +5,9 @@ import {
 
 interface Props {
     isAdmin?: boolean;
-    name: string;
-    id: string | null;
-    showBtn?: boolean;
-    total: number;
+    album?: any;
     showContextMenu?: (x: number, y: number) => any;
+    switchAlbum: (album: any) => any;
 }
 
 export default class Item extends React.Component<Props> {
@@ -24,19 +22,18 @@ export default class Item extends React.Component<Props> {
         let y = evt.clientY;
         let {
             isAdmin,
-            showContextMenu
+            showContextMenu,
+            album,
+            switchAlbum
         } = this.props;
         if (!isAdmin) return;
         showContextMenu(x, y);
+        switchAlbum(album);
         evt.preventDefault();
     }
 
     render() {
-        let {
-            name,
-            total,
-            isAdmin
-        } = this.props;
+        let { album } = this.props;
 
         return (
             <>
@@ -50,11 +47,13 @@ export default class Item extends React.Component<Props> {
                                 color="primary"
                                 fontSize="large" />
                         </dt>
-                        <dd className="album-name">{name}</dd>
-                        <dd className="img-num">{total}张</dd>
+                        <dd className="album-name">{album.name}</dd>
+                        <dd className="img-num">
+                            {album.images ? album.images.count : 0}张
+                        </dd>
                     </dl>
                 </div>
-                
+
             </>
         );
     }
