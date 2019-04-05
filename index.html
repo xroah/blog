@@ -1,12 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no,initial-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no,initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>blog</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
 </head>
+
 <body>
-    <section id="app"></section>
+    <canvas id="canvas"></canvas>
+    <script>
+        !function () {
+            const Y_DIS = 20;
+            const X_DIS = 15;
+            const codeRain = {
+                yAxis: [],
+                times: 0,
+                timer: null,
+                xNum: 0,
+                yNum: 0,
+                _reset() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    this.xNum = Math.floor(canvas.width / X_DIS);
+                    this.yNum = Math.floor(canvas.height / Y_DIS);
+                    this.times = 0;
+                    this.yAxis.length = 0;
+                },
+                addEvent() {
+                    window.addEventListener("resize", this.reset);
+                },
+                removeEvent() {
+                    window.removeEventListener("resize", this.reset);
+                },
+                _drawText() {
+                    let canvas = document.getElementById("canvas");
+                    let ctx = canvas.getContext("2d");
+                    let {
+                        yAxis,
+                        times,
+                        xNum,
+                        yNum
+                    } = this;
+                    ctx.font = "16px Arial";
+                    ctx.fillStyle = "rgba(0, 0, 0, .05)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = "#0f0";
+                    for (let i = 0; i < xNum; i++) {
+                        let x = i * X_DIS;
+                        let text = Math.random() > .5 ? 0 : 1;
+                        let y = yAxis[i] || 0;
+                        if (times <= yNum) {
+                            y = yAxis[i] = y + Y_DIS;
+                        } else {
+                            if (y >= canvas.height) {
+                                y = yAxis[i] = 0;
+                            } else if (Math.random() > .5) {
+                                y = yAxis[i] = y + Y_DIS;
+                            } else {
+                                continue;
+                            }
+                        }
+                        ctx.fillText(text, x, y);
+                    }
+                    this.times++;
+                    this.timer = requestAnimationFrame(this.drawText);
+                },
+                start() {
+                    document.body.style.overflow = "hidden";
+                    this.reset = this._reset.bind(this);
+                    this.drawText = this._drawText.bind(this);
+                    this.reset();
+                    this.addEvent();
+                    this.drawText();
+                },
+                stop() {
+                    document.body.overflow = "auto";
+                    cancelAnimationFrame(this.timer);
+                    this.removeEvent();
+                }
+            };
+            window.codeRain = codeRain;
+            codeRain.start();
+        }();
+    </script>
 </body>
+
 </html>
