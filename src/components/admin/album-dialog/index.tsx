@@ -27,7 +27,7 @@ export default class AlbumDialog extends React.Component<Props> {
     state = {
         name: "",
         desc: "",
-        isPublic: true,
+        secret: true,
         disabled: false
     };
     
@@ -35,7 +35,7 @@ export default class AlbumDialog extends React.Component<Props> {
         let state = {
             name: "",
             desc: "",
-            isPublic: true,
+            secret: true,
             disabled: false
         };
         let {
@@ -44,8 +44,8 @@ export default class AlbumDialog extends React.Component<Props> {
         } = this.props;
         if (mode === "edit") {
             state.name = curAlbum.name;
-            state.isPublic = curAlbum.secret;
-            state.desc = curAlbum.desc;
+            state.secret = curAlbum.secret;
+            state.desc = curAlbum.desc || "";
         }
         this.input.current.focus();
         this.setState(state);
@@ -68,7 +68,7 @@ export default class AlbumDialog extends React.Component<Props> {
             state: {
                 name,
                 desc,
-                isPublic
+                secret
             },
             input: { current: input }
         } = this;
@@ -87,7 +87,7 @@ export default class AlbumDialog extends React.Component<Props> {
                 id,
                 name,
                 desc,
-                secret: isPublic
+                secret
             },
             () => {
                 this.enable();
@@ -115,7 +115,7 @@ export default class AlbumDialog extends React.Component<Props> {
                 });
             } else {
                 this.setState({
-                    isPublic: (tgt as HTMLInputElement).checked
+                    secret: (tgt as HTMLInputElement).checked
                 });
             }
         }
@@ -129,7 +129,7 @@ export default class AlbumDialog extends React.Component<Props> {
             state: {
                 name,
                 desc,
-                isPublic,
+                secret,
                 disabled
             }
         } = this;
@@ -168,9 +168,9 @@ export default class AlbumDialog extends React.Component<Props> {
                             className="form-control" />
                     </div>
                     <div className="form-row">
-                        <span className="label-text">是否公开</span>
+                        <span className="label-text">仅自己可见</span>
                         <Switch
-                            checked={isPublic}
+                            checked={secret}
                             onChange={this.handleChange}
                             color="primary" />
                     </div>

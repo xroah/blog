@@ -10,7 +10,6 @@ import {
     FETCH_ARTICLE_BY_ID_START,
     FETCH_ARTICLE_STARTED
 } from "@redux/actions";
-import { push } from "connected-react-router";
 import { loading } from "@common/loading";
 
 function* fetchArticleById(action) {

@@ -30,14 +30,15 @@ export default class Articles extends React.Component<Props> {
 
     static getDerivedStateFromProps(props: Props, state) {
         let {
-            match: { params },
+            location: {search},
             page,
             list,
             fetchArticle,
             updatePage,
             emptyArticle
         } = props;
-        let _page = Number((params as any).page) || 1;
+        search = search.substring(1);
+        let _page = parseInt(search.split("=")[1]) || 1;
         //empty the articles, and update the page
         //when getDerivedStateFromProps was called next time
         //the page will equal to _page and list is empty
@@ -58,7 +59,7 @@ export default class Articles extends React.Component<Props> {
     }
 
     handlePageChange = (page: number) => {
-        this.props.history.push(`/xsys/articles/${page}`);
+        this.props.history.push(`/xsys/articles?page=${page}`);
     }
 
     renderArticles() {
@@ -70,7 +71,7 @@ export default class Articles extends React.Component<Props> {
                 <ArticleCard
                     key={a._id}
                     id={a._id}
-                    viewPath="/xsys/article"
+                    viewPath="/xsys/articles"
                     article={a}
                     isAdmin={true}
                     timeout={50 + i * 50} />

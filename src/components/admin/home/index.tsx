@@ -9,6 +9,7 @@ import ArticleEdit from "@containers/admin/article-edit";
 import HomePage from "../homepage";
 import ViewArticle from "@containers/common/view-article";
 import CommentsManagement from "../comment-management";
+import AlbumImages from "@containers/common/album-images";
 import {
     ADMIN_ARTICLE_URL,
     ADMIN_ALBUM_URL
@@ -26,6 +27,10 @@ function _PhotoAlbum() {
         isAdmin={true} />;
 }
 
+function _AlbumImages() {
+    return <AlbumImages isAdmin={true}/>
+}
+
 export default class AdminHome extends React.Component {
 
     render() {
@@ -38,9 +43,10 @@ export default class AdminHome extends React.Component {
                         <Route path="/xsys/cls" exact component={Classification} />
                         <Route path="/xsys/comments/:page?" component={CommentsManagement} />
                         <Route path="/xsys/photo-album" exact component={_PhotoAlbum} />
+                        <Route path="/xsys/photo-album/:id" exact component={_AlbumImages} />
                         <Route path="/xsys/article/edit" exact component={ArticleEdit} />
-                        <Route path="/xsys/articles/:page?" exact component={Articles} />
-                        <Route path="/xsys/article/:id" exact component={_ViewArticle} />
+                        <Route path="/xsys/articles" exact component={Articles} />
+                        <Route path="/xsys/articles/:id" exact component={_ViewArticle} />
                         <Redirect to="/404" />
                     </Switch>
                     <ModifyPwd />

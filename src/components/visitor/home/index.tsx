@@ -30,7 +30,7 @@ export default class UserHome extends React.Component {
                 <Switch>
                     <Route exact path="/" component={Homepage} />
                     <Route exact path="/photo-album" component={_PhotoAlbum} />
-                    <Route exact path="/article/:id" component={_ViewArticle}/>
+                    <Route exact path="/articles/:id" component={_ViewArticle}/>
                     <Redirect to="/404" />
                 </Switch>
             </section>

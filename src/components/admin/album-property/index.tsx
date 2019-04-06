@@ -53,7 +53,7 @@ export default class AlbumProperty extends React.Component<Props> {
                         </span>
                     </div>
                     <div className="info-row">
-                        <span className="label-text">是否公开</span>
+                        <span className="label-text">仅自己可见</span>
                         <span className="details">
                             {curAlbum.secret ? "是" : "否"}
                         </span>

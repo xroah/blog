@@ -64,7 +64,7 @@ class Articles extends React.Component<Props> {
         return list.map(
             a => (
                 <ArticleCard
-                    viewPath="/article"
+                    viewPath="/articles"
                     key={a._id}
                     id={a._id}
                     article={a} />

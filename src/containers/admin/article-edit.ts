@@ -6,6 +6,7 @@ import {
     CHANGE_ARTICLE_SAVED,
     FETCH_ARTICLE_BY_ID_START
 } from "@redux/actions";
+import { ADMIN_ARTICLE_URL } from "@common/api";
 
 export default connect(
     (state: any) => ({
@@ -29,7 +30,8 @@ export default connect(
                 ...FETCH_ARTICLE_BY_ID_START,
                 id,
                 success,
-                error
+                error,
+                url: ADMIN_ARTICLE_URL
             });
         }
     })

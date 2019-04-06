@@ -29,8 +29,8 @@
                 _reset() {
                     canvas.width = window.innerWidth;
                     canvas.height = window.innerHeight;
-                    this.xNum = Math.floor(canvas.width / X_DIS);
-                    this.yNum = Math.floor(canvas.height / Y_DIS);
+                    this.xNum = Math.ceil(canvas.width / X_DIS);
+                    this.yNum = Math.ceil(canvas.height / Y_DIS);
                     this.times = 0;
                     this.yAxis.length = 0;
                 },
