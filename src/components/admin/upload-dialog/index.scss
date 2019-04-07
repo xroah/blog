@@ -1,0 +1,70 @@
+@import "../../common/styles/_variables";
+
+.upload-dialog {
+    .dialog-title {
+        padding: 5px 20px;
+
+        h6 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
+
+    .dialog-content {
+        display: flex;
+        flex-wrap: wrap;
+        height: 500px;
+        border: 1px dashed $defaultBorderColor;
+    }
+
+    .dialog-actions {
+        justify-content: flex-start;
+    }
+
+    .pick-file-input {
+        display: none;
+    }
+
+    .dialog-wrapper {
+        width: 960px;
+        min-width: 960px;
+    }
+
+    .upload-image-item {
+        position: relative;
+        text-align: center;
+        margin: 10px;
+
+        &:hover {
+            .del-image {
+                display: flex;
+            }
+        }
+
+        .img-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            width: 206px;
+            height: 206px;
+
+            img {
+                max-width: 100%;
+                max-height: 100%;
+            }
+        }
+
+        input {
+            height: 26px;
+        }
+
+        .del-image {
+            display: none;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    }
+}

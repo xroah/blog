@@ -5,8 +5,7 @@ import {
     DialogContent,
     DialogTitle,
     Switch,
-    Button,
-    Slide
+    Button
 } from "@material-ui/core";
 import Textarea from "react-textarea-autosize";
 import "./index.scss";

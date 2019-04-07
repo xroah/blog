@@ -10,6 +10,7 @@ import HomePage from "../homepage";
 import ViewArticle from "@containers/common/view-article";
 import CommentsManagement from "../comment-management";
 import AlbumImages from "@containers/common/album-image";
+import UploadImage from "@containers/admin/upload-dialog";
 import {
     ADMIN_ARTICLE_URL,
     ADMIN_ALBUM_URL,
@@ -29,7 +30,7 @@ function _PhotoAlbum() {
 }
 
 function _AlbumImages() {
-    return <AlbumImages isAdmin={true} url={ADMIN_IMAGE_URL}/>
+    return <AlbumImages isAdmin={true} url={ADMIN_IMAGE_URL} />
 }
 
 export default class AdminHome extends React.Component {
@@ -51,6 +52,7 @@ export default class AdminHome extends React.Component {
                         <Redirect to="/404" />
                     </Switch>
                     <ModifyPwd />
+                    <UploadImage />
                 </section>
             </>
         );
