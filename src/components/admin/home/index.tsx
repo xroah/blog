@@ -9,10 +9,11 @@ import ArticleEdit from "@containers/admin/article-edit";
 import HomePage from "../homepage";
 import ViewArticle from "@containers/common/view-article";
 import CommentsManagement from "../comment-management";
-import AlbumImages from "@containers/common/album-images";
+import AlbumImages from "@containers/common/album-image";
 import {
     ADMIN_ARTICLE_URL,
-    ADMIN_ALBUM_URL
+    ADMIN_ALBUM_URL,
+    ADMIN_IMAGE_URL
 } from "@common/api";
 import "./index.scss";
 
@@ -28,7 +29,7 @@ function _PhotoAlbum() {
 }
 
 function _AlbumImages() {
-    return <AlbumImages isAdmin={true}/>
+    return <AlbumImages isAdmin={true} url={ADMIN_IMAGE_URL}/>
 }
 
 export default class AdminHome extends React.Component {

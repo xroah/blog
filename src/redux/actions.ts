@@ -4,8 +4,7 @@ export const SHOW_ARTICLE_DETAILS = {
 };
 
 export const HIDE_ARTICLES_DETAILS = {
-    type: "HIDE_ARTICLES_DETAILS",
-    index: -1
+    type: "HIDE_ARTICLES_DETAILS"
 };
 
 export const FETCH_ARTICLES_START = {
@@ -28,8 +27,7 @@ export const FETCH_ARTICLE_BY_ID = {
 };
 
 export const FETCH_ARTICLE_BY_ID_START = {
-    type: "FETCH_ARTICLE_BY_ID_START",
-    id: ""
+    type: "FETCH_ARTICLE_BY_ID_START"
 };
 
 export const FETCH_ARTICLE_STARTED = {
@@ -149,8 +147,8 @@ export const HIDE_CLS_DIALOG = {
 export const EDIT_CLS_INFO = {
     type: "EDIT_CLS_INFO",
     info: {
-        id: "",
-        type: "",
+        id: "", //the classification id(when edit)
+        type: "", //add or edit
         value: ""
     }
 }
@@ -196,5 +194,32 @@ export const HIDE_ALBUM_PROPERTY = {
 };
 
 export const SWITCH_ALBUM = {
-    type: "SWITCH_ALBUM"
+    type: "SWITCH_ALBUM",
+    curAlbum: null
+};
+
+export const FETCH_IMAGES = {
+    type: "FETCH_IMAGES",
+    list: []
+};
+
+export const FETCH_IMAGES_START = {
+    type: "FETCH_IMAGES_START"
+};
+
+export const FETCH_IMAGES_STARTED = {
+    type: "FEtCH_IMAGES_STARTED",
+    started: false
+};
+
+export const UPLOAD_IMAGES_START = {
+    type: "UPLOAD_IMAGES_START"
+};
+
+export const DELETE_IMAGES_START = {
+    type: "DELETE_IMAGES_START"
+};
+
+export const EMPTY_IMAGES = {
+    type: "EMPTY_IMAGES"
 };

@@ -1,4 +1,5 @@
 @import "../common/styles/variables";
+
 *,
 *::before,
 *::after {
@@ -43,6 +44,12 @@ dd {
     margin: 0;
 }
 
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .hidden {
     display: none;
 }
@@ -73,6 +80,7 @@ dd {
     border-radius: 5px;
     border: 1px solid $defaultBorderColor;
     transition: all .3s;
+
     &:focus {
         border-color: $primaryColor;
         box-shadow: 0 0 8px 0 $primaryColor;
@@ -94,9 +102,11 @@ dd {
     border-radius: 10px;
     background-color: #999;
     transition: all .3s;
+
     &:hover {
         background-color: $primaryColor;
     }
+
     &:active {
         background-color: $infoColor;
     }
@@ -110,6 +120,7 @@ button.back-to-top {
 
 .nav-bar {
     $height: 50px;
+
     .toolbar {
         width: $maxPageWidth;
         height: $height;
@@ -120,6 +131,7 @@ button.back-to-top {
         padding: 0 15px;
         color: #fff;
     }
+
     .nav-link {
         display: inline-flex;
         height: $height;
@@ -128,6 +140,7 @@ button.back-to-top {
         color: #fff;
         transition: all .3s;
     }
+
     .nav-menu {
         display: flex;
         align-items: center;
@@ -143,6 +156,7 @@ button.back-to-top {
     width: $maxPageWidth;
     margin: 0 auto;
     padding: 60px 10px 10px;
+
     .add-right-bottom {
         position: fixed;
         right: 20px;

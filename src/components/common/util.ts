@@ -42,8 +42,26 @@ function isFunc(arg: any) {
     return typeof arg === "function";
 }
 
+function calcPos(x: number, y: number, width: number, height: number) {
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    let left = x;
+    let top = y;
+    if (w - x < width) {
+        left = x - width;
+    }
+    if (h - y < height) {
+        top = y - h;
+    }
+    return {
+        left,
+        top
+    };
+}
+
 export {
     encrypt,
     formatDate,
-    isFunc
+    isFunc,
+    calcPos
 };

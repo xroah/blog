@@ -8,6 +8,7 @@ import comment from "./comment";
 import publicArticle from "./public-article";
 import albumContextMenu from "./album-context-menu";
 import album from "./album";
+import albumImage from "./album-image";
 
 export default history => combineReducers({
     router: connectRouter(history),
@@ -18,5 +19,6 @@ export default history => combineReducers({
     comment,
     publicArticle,
     albumContextMenu,
-    album
+    album,
+    albumImage
 });

@@ -1,0 +1,64 @@
+.album-images-container {
+    .image-list {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .image-item {
+        display: flex;
+        justify-content: center;
+        margin: 15px 0;
+        width: 20%;
+        text-align: center;
+
+        dl {
+            width: 100%;
+        }
+    }
+
+    .image-wrapper {
+        display: flex;
+        align-items: center;
+        width: 150px;
+        height: 150px;
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            cursor: pointer;
+        }
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .responsive {
+        .album-images-container {
+            .image-item {
+                width: 30%;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .responsive {
+        .album-images-container {
+            .image-item {
+                width: 50%;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .responsive {
+        .album-images-container {
+            .image-item {
+                image-wrapper {
+                    width: 120px;
+                    height: 120px;
+                }
+            }
+        }
+    }
+}

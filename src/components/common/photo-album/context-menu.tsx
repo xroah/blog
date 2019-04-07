@@ -12,6 +12,7 @@ import {
     Edit
 } from "@material-ui/icons";
 import hint from "@common/hint-dialog";
+import { calcPos } from "@common/util";;
 
 interface Props {
     visible?: boolean;
@@ -31,23 +32,6 @@ interface State {
 
 const WIDTH = 130;
 const HEIGHT = 200;
-
-function calcPos(x: number, y: number) {
-    let w = window.innerWidth;
-    let h = window.innerHeight;
-    let left = x;
-    let top = y;
-    if (w - x < WIDTH) {
-        left = x - WIDTH;
-    }
-    if (h - y < HEIGHT) {
-        top = y - h;
-    }
-    return {
-        left,
-        top
-    };
-}
 
 export default class ContextMenu extends React.Component<Props, State> {
 
@@ -69,7 +53,7 @@ export default class ContextMenu extends React.Component<Props, State> {
     static getDerivedStateFromProps(props: Props, state: State) {
         let _state = { ...state };
         if (props.x !== state.left || props.y !== state.top) {
-            let { left, top } = calcPos(props.x, props.y);
+            let { left, top } = calcPos(props.x, props.y, WIDTH, HEIGHT);
             _state.left = left;
             _state.top = top;
         }

@@ -15,10 +15,8 @@
         transition: all .3s;
         cursor: pointer;
 
-        .album-name {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        dl {
+            width: 100%;
         }
 
         .img-num {

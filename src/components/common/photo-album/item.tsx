@@ -2,20 +2,37 @@ import * as React from "react";
 import {
     Folder
 } from "@material-ui/icons";
+import {
+    withRouter,
+    RouteComponentProps
+} from "react-router-dom";
 
-interface Props {
+interface Props extends RouteComponentProps {
     isAdmin?: boolean;
     album?: any;
     showContextMenu?: (x: number, y: number) => any;
     switchAlbum: (album: any) => any;
 }
 
-export default class Item extends React.Component<Props> {
+class Item extends React.Component<Props> {
 
     static defaultProps = {
         isAdmin: false,
         showBtn: true
     };
+
+    handleClick = () => {
+        let {
+            history,
+            isAdmin,
+            album
+        } = this.props;
+        let url = "/photo-album";
+        if (isAdmin) {
+            url = "/xsys/photo-album";
+        }
+        history.push(`${url}/${album._id}`);
+    }
 
     handleContextmenu = (evt: React.MouseEvent) => {
         let x = evt.clientX;
@@ -38,6 +55,7 @@ export default class Item extends React.Component<Props> {
         return (
             <>
                 <div
+                    onClick={this.handleClick}
                     onContextMenu={this.handleContextmenu}
                     className="album-item">
                     <dl>
@@ -47,7 +65,7 @@ export default class Item extends React.Component<Props> {
                                 color="primary"
                                 fontSize="large" />
                         </dt>
-                        <dd className="album-name">{album.name}</dd>
+                        <dd className="album-name ellipsis">{album.name}</dd>
                         <dd className="img-num">
                             {album.images ? album.images.count : 0}张
                         </dd>
@@ -58,3 +76,5 @@ export default class Item extends React.Component<Props> {
         );
     }
 }
+
+export default withRouter(Item);
