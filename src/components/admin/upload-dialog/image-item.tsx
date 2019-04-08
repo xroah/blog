@@ -1,55 +1,76 @@
 import * as React from "react";
-import {IconButton} from "@material-ui/core";
-import {Clear} from "@material-ui/icons";
+import {
+    IconButton,
+    LinearProgress
+} from "@material-ui/core";
+import { Clear } from "@material-ui/icons";
+import { UploadItem } from "./index";
 
 interface Props {
-    image: File;
+    image: UploadItem;
+    name: string;
+    onNameChange?: (name: string, id: number) => any;
+    onDelete?: (id: number) => any;
 }
 
 export default class ImageItem extends React.Component<Props> {
 
     imgEl: React.RefObject<HTMLImageElement> = React.createRef();
 
-    state = {
-        name: "",
-        from: ""
-    };
-
-    static getDerivedStateFromProps(props, state) {
-        if (state.from === "state") {
-            state.from = "";
-            return state;
+    handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        let { onNameChange, image } = this.props;
+        if (typeof onNameChange === "function") {
+            onNameChange(evt.target.value, image.id);
         }
-        state.name = props.image.name;
-        return state;
+    }
+
+    handleDelete = () => {
+        let { onDelete, image } = this.props;
+        if (typeof onDelete === "function") {
+            onDelete(image.id);
+        }
     }
 
     render() {
-        let src;
+        let src: string;
         let {
-            props: {image},
-            state: {name}
+            props: { image, name },
+            handleChange,
+            handleDelete
         } = this;
         if (image) {
-            src = URL.createObjectURL(image);
+            src = URL.createObjectURL(image.file);
         }
         return (
-            <div className="upload-image-item">
+            <div className="upload-image-item uploading">
                 <dl>
                     <dt className="img-wrapper">
-                        <img ref={this.imgEl} src={src}/>
+                        <img ref={this.imgEl} src={src} />
                     </dt>
                     <dd>
                         <input
                             type="text"
                             value={name}
-                            className="form-control"/>
+                            onChange={handleChange}
+                            className="form-control" />
                     </dd>
                 </dl>
+                {
+                    image.started ? (
+                        <div className="progress-wrapper">
+                            <span>{image.progress}%</span>
+                            <LinearProgress
+                                value={image.progress}
+                                variant="determinate"
+                                color="primary" />
+                        </div>
+                    ) : null
+                }
                 <IconButton
                     color="secondary"
-                    className="del-image">
-                    <Clear/>
+                    className="del-image"
+                    onClick={handleDelete}>
+                    <Clear />
                 </IconButton>
             </div>
         );
