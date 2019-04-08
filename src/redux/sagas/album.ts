@@ -15,7 +15,7 @@ import { ADMIN_ALBUM_URL } from "@common/api";
 import message from "@common/message";
 
 function* fetchAlbum(action: any) {
-    let { url } = action
+    let { url = ADMIN_ALBUM_URL } = action
     loading.show();
     try {
         let list = yield call(_fetch, url);

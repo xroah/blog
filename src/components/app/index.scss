@@ -152,6 +152,37 @@ button.back-to-top {
     padding-right: 0;
 }
 
+.context-menu {
+    position: fixed;
+    width: 130px;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, .3);
+    background-color: #fff;
+    color: #666;
+    user-select: none;
+    transform-origin: left top;
+
+    ul {
+        padding: 0;
+    }
+
+    .menu-item {
+        display: flex;
+        padding: 0 15px;
+        height: 50px;
+        line-height: 50px;
+        transition: all .3s;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, .1);
+        }
+
+        span {
+            margin-left: 10px;
+        }
+    }
+}
+
 .main-container {
     width: $maxPageWidth;
     margin: 0 auto;

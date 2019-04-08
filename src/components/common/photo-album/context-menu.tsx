@@ -23,6 +23,7 @@ interface Props {
     showEdit: () => any;
     showProperty: () => any;
     delAlbum?: (id: string) => any;
+    upload?: (album: any) => any;
 }
 
 interface State {
@@ -75,6 +76,11 @@ export default class ContextMenu extends React.Component<Props, State> {
     }
 
     handleUpload = () => {
+        let {
+            upload,
+            curAlbum
+        } = this.props;
+        upload(curAlbum);
         this.hide();
     }
 

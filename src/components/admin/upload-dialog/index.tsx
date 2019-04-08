@@ -5,7 +5,8 @@ import {
     DialogContent,
     DialogActions,
     Button,
-    IconButton
+    IconButton,
+    Typography
 } from "@material-ui/core";
 import {
     Add,
@@ -25,7 +26,14 @@ export interface UploadItem {
     name: string;
 }
 
-export default class UploadDialog extends React.Component {
+interface Props {
+    visible?: boolean;
+    album?: any;
+    hideDialog?: () => any;
+    updateAlbums?: () => any;
+}
+
+export default class UploadDialog extends React.Component<Props> {
 
     fileInput: React.RefObject<HTMLInputElement> = React.createRef();
 
@@ -98,10 +106,15 @@ export default class UploadDialog extends React.Component {
     upload = () => {
         const fd = new FormData();
         let { images } = this.state;
+        let { 
+            album,
+            updateAlbums
+        } = this.props;
         let current: UploadItem = images[0];
         current.started = true;
         fd.append("attachment", current.file);
         fd.append("name", current.name);
+        fd.append("albumId", album._id);
         const xhr = new XMLHttpRequest();
         this.setState({
             disabled: true
@@ -118,12 +131,15 @@ export default class UploadDialog extends React.Component {
                     this.setState({
                         disabled: false
                     });
+                    this.handleHide();
+                    updateAlbums();
                 }
             }
         };
         xhr.upload.onprogress = (evt: ProgressEvent) => {
-            current.progress = Math.floor(evt.loaded / evt.total);
+            current.progress = Math.floor(evt.loaded / evt.total * 100);
             images[0] = current;
+            console.log(evt)
             this.setState({
                 images
             });
@@ -135,6 +151,13 @@ export default class UploadDialog extends React.Component {
         }
         xhr.open("POST", UPLOAD_FILE, true);
         xhr.send(fd);
+    }
+
+    handleHide = () => {
+        this.props.hideDialog();
+        this.setState({
+            images: []
+        });
     }
 
     renderImage() {
@@ -150,22 +173,39 @@ export default class UploadDialog extends React.Component {
     }
 
     render() {
-        let { disabled } = this.state;
+        let {
+            state: {
+                disabled
+            },
+            props: {
+                visible,
+                album
+            },
+            handleHide
+        } = this;
         return (
             <Dialog
-                open={false}
+                open={visible}
                 fullWidth={true}
                 maxWidth="md"
                 className="upload-dialog"
                 PaperProps={{ className: "dialog-wrapper" }}>
                 <DialogTitle className="dialog-title">
                     <span>上传图片</span>
-                    <IconButton>
+                    <IconButton onClick={handleHide}>
                         <Clear fontSize="large" />
                     </IconButton>
                 </DialogTitle>
                 <DialogContent className="dialog-content">
-                    {this.renderImage()}
+                    <div className="album-name">
+                        <span>上传到</span>
+                        <Typography inline color="primary">
+                            {album ? album.name : null}
+                        </Typography>
+                    </div>
+                    <div className="image-list">
+                        {this.renderImage()}
+                    </div>
                 </DialogContent>
                 <DialogActions className="dialog-actions">
                     <Button

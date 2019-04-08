@@ -4,6 +4,7 @@ import {
     LinearProgress
 } from "@material-ui/core";
 import { Clear } from "@material-ui/icons";
+import classnames from "classnames";
 import { UploadItem } from "./index";
 
 interface Props {
@@ -36,13 +37,17 @@ export default class ImageItem extends React.Component<Props> {
         let {
             props: { image, name },
             handleChange,
-            handleDelete
+            handleDelete,
+            imgEl: {current: img}
         } = this;
-        if (image) {
+        if (img && img.src) {
+            src = img.src;
+        } else if (image) {
             src = URL.createObjectURL(image.file);
         }
+        let cls = classnames("upload-image-item",  {uploading: image.started});
         return (
-            <div className="upload-image-item uploading">
+            <div className={cls}>
                 <dl>
                     <dt className="img-wrapper">
                         <img ref={this.imgEl} src={src} />

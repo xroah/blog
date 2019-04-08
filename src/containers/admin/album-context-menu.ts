@@ -4,7 +4,8 @@ import {
     HIDE_ALBUM_CONTEXT_MENU, 
     SHOW_ALBUM_EDIT,
     SHOW_ALBUM_PROPERTY,
-    DELETE_ALBUM_START
+    DELETE_ALBUM_START,
+    SHOW_UPLOAD_DIALOG
 } from "@redux/actions";
 
 export default connect(
@@ -35,6 +36,11 @@ export default connect(
             dispatch({
                 ...DELETE_ALBUM_START,
                 id
+            });
+        },
+        upload() {
+            dispatch({
+                ...SHOW_UPLOAD_DIALOG
             });
         }
     })

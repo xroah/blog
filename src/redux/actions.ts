@@ -223,3 +223,11 @@ export const DELETE_IMAGES_START = {
 export const EMPTY_IMAGES = {
     type: "EMPTY_IMAGES"
 };
+
+export const SHOW_UPLOAD_DIALOG = {
+    type: "SHOW_UPLOAD_DIALOG"
+};
+
+export const HIDE_UPLOAD_DIALOG = {
+    type: "HIDE_UPLOAD_DIALOG"
+};

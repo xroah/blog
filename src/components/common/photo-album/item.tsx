@@ -25,11 +25,13 @@ class Item extends React.Component<Props> {
         let {
             history,
             isAdmin,
-            album
+            album,
+            switchAlbum
         } = this.props;
         let url = "/photo-album";
         if (isAdmin) {
             url = "/xsys/photo-album";
+            switchAlbum(album);
         }
         history.push(`${url}/${album._id}`);
     }

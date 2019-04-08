@@ -22,7 +22,7 @@ export default (
                 ...state,
                 list: []
             };
-        case FETCH_IMAGES_STARTED: 
+        case FETCH_IMAGES_STARTED.type: 
             return {
                 ...state,
                 started: action.started
