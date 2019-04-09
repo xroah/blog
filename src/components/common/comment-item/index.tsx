@@ -4,16 +4,16 @@ import {
     Collapse
 } from "@material-ui/core";
 import { Reply } from "@material-ui/icons";
-import { formatDate } from "@common/util";
+import { 
+    formatDate,
+    eventBus
+ } from "@common/util";
 import CommentEditor from "@containers/common/comment-editor";
-import EventEmitter from "@common/event-emitter";
 import "./index.scss";
-
-const em = new EventEmitter();
 
 let ins: CommentItem;
 
-em.on("editor.visible.change", (current: CommentItem, visible: boolean) => {
+eventBus.on("editor.visible.change", (current: CommentItem, visible: boolean) => {
     if (ins !== current) {
         if (ins && ins.state.editorVisible) {
             ins.setState({
@@ -52,7 +52,7 @@ export default class CommentItem extends React.Component<Props> {
             editorVisible: !editorVisible
         });
 
-        em.emit("editor.visible.change", this, !editorVisible);
+        eventBus.emit("editor.visible.change", this, !editorVisible);
     }
 
     handleUrl(url: string) {

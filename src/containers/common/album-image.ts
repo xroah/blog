@@ -2,14 +2,15 @@ import AlbumImages from "@common/album-image";
 import { connect } from "react-redux";
 import {
      FETCH_IMAGES_START,
-     EMPTY_IMAGES
+     EMPTY_IMAGES,
+     SHOW_UPLOAD_DIALOG,
+     DELETE_IMAGE_BY_ID
  } from "@redux/actions";
 
 export default connect(
     (state: any) => ({
         list: state.albumImage.list,
-        started: state.albumImage.started,
-        curAlbum: state.albumContextMenu.curAlbum
+        started: state.albumImage.started
     }),
     (dispatch, ownProps: any)=> ({
         fetchImages(id: string) {
@@ -22,6 +23,18 @@ export default connect(
         emptyImages() {
             dispatch({
                 ...EMPTY_IMAGES
+            });
+        },
+        showUpload(album: any) {
+            dispatch({
+                ...SHOW_UPLOAD_DIALOG,
+                album
+            });
+        },
+        deleteImageById(id: string) {
+            dispatch({
+                ...DELETE_IMAGE_BY_ID,
+                id
             });
         }
     })

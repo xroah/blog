@@ -14,6 +14,7 @@ import {
 } from "@material-ui/icons";
 import { UPLOAD_FILE } from "@common/api";
 import Item from "./image-item";
+import { eventBus } from "@common/util";
 import "./index.scss";
 
 let uuid = 0;
@@ -106,6 +107,7 @@ export default class UploadDialog extends React.Component<Props> {
     upload = () => {
         const fd = new FormData();
         let { images } = this.state;
+        if (!images.length) return;
         let { 
             curAlbum,
             updateAlbums
@@ -133,6 +135,7 @@ export default class UploadDialog extends React.Component<Props> {
                     });
                     this.handleHide();
                     updateAlbums();
+                    eventBus.emit("upload.done");
                 }
             }
         };

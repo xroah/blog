@@ -231,3 +231,7 @@ export const SHOW_UPLOAD_DIALOG = {
 export const HIDE_UPLOAD_DIALOG = {
     type: "HIDE_UPLOAD_DIALOG"
 };
+
+export const DELETE_IMAGE_BY_ID = {
+    type: "DELETE_IMAGE_BY_ID"
+};

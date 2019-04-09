@@ -1,3 +1,5 @@
+import EventEmitter from "./event-emitter";
+
 function stringToNumberArray(str: string) {
     return str.split("").map(k => k.charCodeAt(0));
 }
@@ -59,9 +61,12 @@ function calcPos(x: number, y: number, width: number, height: number) {
     };
 }
 
+const eventBus = new EventEmitter();
+
 export {
     encrypt,
     formatDate,
     isFunc,
-    calcPos
+    calcPos,
+    eventBus
 };
