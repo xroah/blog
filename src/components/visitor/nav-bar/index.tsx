@@ -69,7 +69,7 @@ export default class NavBar extends React.Component {
                         </IconButton>
                         <div className="nav-menu">
                             <NavLink to="/" exact className="nav-link">首页</NavLink>
-                            <NavLink to="/photo-album" exact className="nav-link">相册</NavLink>
+                            <NavLink to="/photo-album" className="nav-link">相册</NavLink>
                         </div>
                     </Toolbar>
                     <Drawer className="drawer-nav" open={visible}>

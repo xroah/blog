@@ -2,6 +2,8 @@ import * as React from "react";
 
 interface Props {
     image?: any;
+    isAdmin?: boolean;
+    onContextMenu?: (x: number, y: number, cur: any) => any;
 }
 
 export default class Item extends React.Component<Props> {
@@ -11,6 +13,21 @@ export default class Item extends React.Component<Props> {
         name: ""
     };
 
+    handleContextMenu = (evt: React.MouseEvent) => {
+        let {
+            isAdmin,
+            onContextMenu,
+            image
+        } = this.props;
+        if (!isAdmin) return;
+        let x = evt.clientX;
+        let y = evt.clientY;
+        if (typeof onContextMenu === "function") {
+            onContextMenu(x, y, image);
+        }
+        evt.preventDefault();
+    }
+
     render() {
 
         let {
@@ -19,7 +36,9 @@ export default class Item extends React.Component<Props> {
         } = this;
         let name = image.name || image.filename;
         return (
-            <div className="image-item">
+            <div
+                className="image-item"
+                onContextMenu={this.handleContextMenu}>
                 <dl>
                     <dt className="image-wrapper">
                         <img src={image.relPath} />

@@ -38,9 +38,10 @@ export default connect(
                 id
             });
         },
-        upload() {
+        upload(album: any) {
             dispatch({
-                ...SHOW_UPLOAD_DIALOG
+                ...SHOW_UPLOAD_DIALOG,
+                album
             });
         }
     })

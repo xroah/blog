@@ -8,7 +8,7 @@ import {
 export default connect(
     (state: any) => ({
         visible: state.uploadDialog.visible,
-        album: state.albumContextMenu.curAlbum
+        curAlbum: state.uploadDialog.curAlbum
     }),
     dispatch => ({
         hideDialog() {

@@ -28,7 +28,7 @@ export interface UploadItem {
 
 interface Props {
     visible?: boolean;
-    album?: any;
+    curAlbum?: any;
     hideDialog?: () => any;
     updateAlbums?: () => any;
 }
@@ -107,14 +107,14 @@ export default class UploadDialog extends React.Component<Props> {
         const fd = new FormData();
         let { images } = this.state;
         let { 
-            album,
+            curAlbum,
             updateAlbums
         } = this.props;
         let current: UploadItem = images[0];
         current.started = true;
         fd.append("attachment", current.file);
         fd.append("name", current.name);
-        fd.append("albumId", album._id);
+        fd.append("albumId", curAlbum._id);
         const xhr = new XMLHttpRequest();
         this.setState({
             disabled: true
@@ -179,7 +179,7 @@ export default class UploadDialog extends React.Component<Props> {
             },
             props: {
                 visible,
-                album
+                curAlbum
             },
             handleHide
         } = this;
@@ -200,7 +200,7 @@ export default class UploadDialog extends React.Component<Props> {
                     <div className="album-name">
                         <span>上传到</span>
                         <Typography inline color="primary">
-                            {album ? album.name : null}
+                            {curAlbum ? curAlbum.name : null}
                         </Typography>
                     </div>
                     <div className="image-list">

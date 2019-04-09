@@ -99,7 +99,7 @@ export default class ContextMenu extends React.Component<Props, State> {
             <>
                 确定要删除
                 <Typography color="secondary" inline={true}>
-                {curAlbum.name}
+                    {curAlbum.name}
                 </Typography>
                 吗?
             </>,
@@ -124,13 +124,14 @@ export default class ContextMenu extends React.Component<Props, State> {
         } = this;
 
         return (
-            <Zoom
-                style={{
-                    left,
-                    top
-                }}
-                in={visible}>
-                <div ref={this.menu} className="context-menu">
+            <Zoom in={visible}>
+                <div
+                    style={{
+                        left,
+                        top
+                    }}
+                    ref={this.menu}
+                    className="context-menu">
                     <List>
                         <ListItem
                             onClick={this.handleUpload}

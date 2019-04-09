@@ -8,10 +8,11 @@ import NavBar from "../nav-bar";
 import Homepage from "../homepage";
 import PhotoAlbum from "@containers/common/photo-album";
 import ViewArticle from "@containers/common/view-article";
-import AlbumImages from "@common/album-image";
-import { 
+import AlbumImages from "@containers/common/album-image";
+import {
     FETCH_PUBLIC_ARTICLE,
-    PUBLIC_ALBUM_URL
+    PUBLIC_ALBUM_URL,
+    PUBLIC_IMAGE_URL
 } from "@common/api";
 
 function _ViewArticle() {
@@ -19,7 +20,11 @@ function _ViewArticle() {
 }
 
 function _PhotoAlbum() {
-    return <PhotoAlbum url={PUBLIC_ALBUM_URL}/>;
+    return <PhotoAlbum url={PUBLIC_ALBUM_URL} />;
+}
+
+function _AlbumImages() {
+    return <AlbumImages url={PUBLIC_IMAGE_URL} />
 }
 
 export default class UserHome extends React.Component {
@@ -31,8 +36,8 @@ export default class UserHome extends React.Component {
                 <Switch>
                     <Route exact path="/" component={Homepage} />
                     <Route exact path="/photo-album" component={_PhotoAlbum} />
-                    <Route exact path="/photo-album/:id" component={AlbumImages}/>
-                    <Route exact path="/articles/:id" component={_ViewArticle}/>
+                    <Route exact path="/photo-album/:id" component={_AlbumImages} />
+                    <Route exact path="/articles/:id" component={_ViewArticle} />
                     <Redirect to="/404" />
                 </Switch>
             </section>

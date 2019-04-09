@@ -5,7 +5,8 @@ import {
 
 export default (
     state = {
-        visible: false
+        visible: false,
+        curAlbum: null
     },
     action: any
 ) => {
@@ -13,12 +14,14 @@ export default (
         case SHOW_UPLOAD_DIALOG.type:
             return {
                 ...state,
-                visible: true
+                visible: true,
+                curAlbum: action.album
             };
         case HIDE_UPLOAD_DIALOG.type:
             return {
                 ...state,
-                visible: false
+                visible: false,
+                curAlbum: null
             };
         default:
             return state;

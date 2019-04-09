@@ -85,7 +85,7 @@ if (env === "development") {
         open: true,
         inline: true,
         contentBase: "dist",
-        host: "192.168.0.104",
+        // host: "192.168.0.104",
         proxy: {
             "/api": "http://localhost:8000",
             "/uploads": "http://localhost:8000"

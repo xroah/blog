@@ -8,7 +8,8 @@ import {
 export default connect(
     (state: any) => ({
         list: state.albumImage.list,
-        started: state.albumImage.started
+        started: state.albumImage.started,
+        curAlbum: state.albumContextMenu.curAlbum
     }),
     (dispatch, ownProps: any)=> ({
         fetchImages(id: string) {
