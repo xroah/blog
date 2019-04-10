@@ -61,6 +61,7 @@ export default class PhotoAlbum extends React.Component<Props> {
                     isAdmin && (
                         <>
                             <div
+                                title="新增相册"
                                 onClick={handleClick}
                                 className="album-item add-album">
                                 <Add className="folder-icon" />

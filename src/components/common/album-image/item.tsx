@@ -1,5 +1,8 @@
 import * as React from "react";
 import { Typography } from "@material-ui/core";
+import { ADMIN_IMAGE_URL } from "@common/api";
+import _fetch from "@common/fetch";
+import message from "@common/message";
 
 interface Props {
     image?: any;
@@ -14,6 +17,8 @@ export default class Item extends React.Component<Props> {
         isEdit: false,
         name: ""
     };
+
+    inputEl: React.RefObject<HTMLInputElement> = React.createRef();
 
     handleContextMenu = (evt: React.MouseEvent) => {
         let {
@@ -30,17 +35,95 @@ export default class Item extends React.Component<Props> {
         evt.preventDefault();
     }
 
+    handleEdit = () => {
+        let {
+            image,
+            isAdmin
+        } = this.props;
+        if (!isAdmin) return;
+        this.setState({
+            name: image.name || image.filename,
+            isEdit: true
+        });
+        setTimeout(() => {
+            let input = this.inputEl.current;
+            input && input.focus();
+        });
+    }
+
+    handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            name: evt.target.value
+        });
+    }
+
+    handleKeyDown = (evt: React.KeyboardEvent<HTMLInputElement>) => {
+        let key = evt.key.toLowerCase();
+        let { name } = this.state;
+        if (key === "enter") {
+            if (!name.trim()) return;
+            this.saveName();
+        } else if (key === "esc" || key === "escape") {
+            this.setState({
+                isEdit: false,
+                name: ""
+            });
+        }
+    }
+
+    handleBlur = () => {
+        let { name } = this.state;
+        this.setState({
+            isEdit: false
+        });
+        if (name) {
+            this.saveName();
+        }
+        console.log("===blur===")
+    }
+
+    saveName = async () => {
+        let {
+            props: { image },
+            state: { name }
+        } = this;
+        if (name === image.name) {
+            return this.setState({
+                isEdit: false,
+                name: ""
+            });
+        }
+        try {
+            await _fetch(ADMIN_IMAGE_URL, {
+                method: "put",
+                body: {
+                    id: image._id,
+                    name
+                }
+            });
+            message.success("保存成功!");
+            this.setState({
+                isEdit: false
+            });
+        } catch (error) {
+
+        }
+    }
+
     render() {
 
         let {
-            state: { isEdit },
+            state: {
+                isEdit,
+                name
+            },
             props: {
                 image,
                 isCover,
                 isAdmin
             }
         } = this;
-        let name = image.name || image.filename;
+        let imageName = image.name || image.filename;
         return (
             <div
                 className="image-item"
@@ -59,8 +142,16 @@ export default class Item extends React.Component<Props> {
                     <dd className="ellipsis">
                         {
                             isEdit ?
-                                <input type="text" className="form-control" /> :
-                                <span title={name}>{name}</span>
+                                <input type="text"
+                                    ref={this.inputEl}
+                                    value={name}
+                                    onKeyDown={this.handleKeyDown}
+                                    onChange={this.handleChange}
+                                    onBlur={this.handleBlur}
+                                    className="form-control" /> :
+                                <span
+                                    onClick={this.handleEdit}
+                                    title={imageName}>{imageName}</span>
                         }
                     </dd>
                 </dl>

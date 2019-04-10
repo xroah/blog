@@ -14,14 +14,18 @@
         width: 20%;
         text-align: center;
 
-        dl {
-            width: 100%;
-        }
         dt {
             margin: 0 auto;
         }
+
         dd {
             padding: 0 5px;
+            overflow: visible;
+        }
+
+        .ellipsis {
+            margin-top: 10px;
+            height: 32px;
         }
     }
 
@@ -35,6 +39,7 @@
     .image-wrapper {
         display: flex;
         align-items: center;
+        justify-content: center;
         width: 150px;
         height: 150px;
 
@@ -68,23 +73,22 @@
 }
 
 @media screen and (max-width: 900px) {
-    @include width(30%);
+    @include width(33.33333333%);
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 550px) {
     @include width(50%);
 }
+
 @media screen and (max-width: 360px) {
     @include width(100%);
-}
 
-@media screen and (max-width: 320px) {
     .responsive {
         .album-images-container {
             .image-item {
-                image-wrapper {
-                    width: 120px;
-                    height: 120px;
+                .image-wrapper {
+                    width: 200px;
+                    height: 200px;
                 }
             }
         }
