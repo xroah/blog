@@ -1,3 +1,5 @@
+@import "../styles/variables";
+
 .album-images-container {
     .image-list {
         display: flex;
@@ -7,6 +9,7 @@
     .image-item {
         display: flex;
         justify-content: center;
+        position: relative;
         margin: 15px 0;
         width: 20%;
         text-align: center;
@@ -20,6 +23,13 @@
         dd {
             padding: 0 5px;
         }
+    }
+
+    .cover-text {
+        position: absolute;
+        left: 0;
+        top: 5px;
+        transform: rotate(-45deg)
     }
 
     .image-wrapper {
@@ -36,24 +46,36 @@
     }
 }
 
-@media screen and (max-width: 900px) {
+.image-property-dialog {
+    .dialog-title h6 {
+        @include ellipsis();
+    }
+
+    .image-name {
+        display: block;
+        @include ellipsis();
+    }
+}
+
+@mixin width($w) {
     .responsive {
         .album-images-container {
             .image-item {
-                width: 30%;
+                width: $w;
             }
         }
     }
 }
 
+@media screen and (max-width: 900px) {
+    @include width(30%);
+}
+
 @media screen and (max-width: 600px) {
-    .responsive {
-        .album-images-container {
-            .image-item {
-                width: 50%;
-            }
-        }
-    }
+    @include width(50%);
+}
+@media screen and (max-width: 360px) {
+    @include width(100%);
 }
 
 @media screen and (max-width: 320px) {

@@ -8,3 +8,10 @@ $successColor: #43a047;
 
 $maxResolution: 640px;
 $maxPageWidth: 1000px;
+
+
+@mixin ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

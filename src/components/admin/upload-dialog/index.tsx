@@ -15,6 +15,7 @@ import {
 import { UPLOAD_FILE } from "@common/api";
 import Item from "./image-item";
 import { eventBus } from "@common/util";
+import hint from "@common/hint-dialog";
 import "./index.scss";
 
 let uuid = 0;
@@ -108,7 +109,7 @@ export default class UploadDialog extends React.Component<Props> {
         const fd = new FormData();
         let { images } = this.state;
         if (!images.length) return;
-        let { 
+        let {
             curAlbum,
             updateAlbums
         } = this.props;
@@ -123,26 +124,27 @@ export default class UploadDialog extends React.Component<Props> {
         });
         xhr.onreadystatechange = () => {
             if (xhr.status === 200 && xhr.readyState === 4) {
-                images.shift();
-                if (images.length) {
-                    this.setState({
-                        images
-                    });
-                    this.upload();
-                } else {
-                    this.setState({
-                        disabled: false
-                    });
-                    this.handleHide();
-                    updateAlbums();
-                    eventBus.emit("upload.done");
-                }
+                setTimeout(() => {
+                    images.shift();
+                    if (images.length) {
+                        this.setState({
+                            images
+                        });
+                        this.upload();
+                    } else {
+                        this.setState({
+                            disabled: false
+                        });
+                        this.hide();
+                        updateAlbums();
+                        eventBus.emit("upload.done");
+                    }
+                });
             }
         };
         xhr.upload.onprogress = (evt: ProgressEvent) => {
             current.progress = Math.floor(evt.loaded / evt.total * 100);
             images[0] = current;
-            console.log(evt)
             this.setState({
                 images
             });
@@ -156,11 +158,19 @@ export default class UploadDialog extends React.Component<Props> {
         xhr.send(fd);
     }
 
-    handleHide = () => {
+    hide = () => {
         this.props.hideDialog();
         this.setState({
             images: []
         });
+    }
+
+    handleHide = () => {
+        if (this.state.images.length) {
+            hint.confirm("图片为上传，确定要关闭吗？", this.hide);
+        } else {
+            this.hide();
+        }
     }
 
     renderImage() {
@@ -195,7 +205,9 @@ export default class UploadDialog extends React.Component<Props> {
                 PaperProps={{ className: "dialog-wrapper" }}>
                 <DialogTitle className="dialog-title">
                     <span>上传图片</span>
-                    <IconButton onClick={handleHide}>
+                    <IconButton
+                        disabled={disabled}
+                        onClick={handleHide}>
                         <Clear fontSize="large" />
                     </IconButton>
                 </DialogTitle>

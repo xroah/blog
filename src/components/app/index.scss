@@ -45,9 +45,7 @@ dd {
 }
 
 .ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    @include ellipsis();
 }
 
 .hidden {
@@ -180,6 +178,19 @@ button.back-to-top {
         span {
             margin-left: 10px;
         }
+    }
+}
+
+.info-row {
+    display: flex;
+    width: 300px;
+    margin-bottom: 15px;
+    color: #999;
+
+    .label-text {
+        flex-shrink: 0;
+        width: 25%;
+        color: #666;
     }
 }
 

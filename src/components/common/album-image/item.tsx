@@ -1,8 +1,10 @@
 import * as React from "react";
+import { Typography } from "@material-ui/core";
 
 interface Props {
     image?: any;
     isAdmin?: boolean;
+    isCover?: boolean;
     onContextMenu?: (x: number, y: number, cur: any) => any;
 }
 
@@ -32,13 +34,24 @@ export default class Item extends React.Component<Props> {
 
         let {
             state: { isEdit },
-            props: { image }
+            props: {
+                image,
+                isCover,
+                isAdmin
+            }
         } = this;
         let name = image.name || image.filename;
         return (
             <div
                 className="image-item"
                 onContextMenu={this.handleContextMenu}>
+                {
+                    isCover && isAdmin && (
+                        <Typography
+                            color="secondary"
+                            className="cover-text">封面</Typography>
+                    )
+                }
                 <dl>
                     <dt className="image-wrapper">
                         <img src={image.relPath} />

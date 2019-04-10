@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import ContextMenu from "./context-menu";
 import ImageViewer from "@common/image-viewer";
+import Property from "./property";
 import {
     calcPos,
     eventBus
@@ -20,9 +21,11 @@ import message from "@common/message";
 import hint from "@common/hint-dialog";
 import {
     ADMIN_IMAGE_URL,
-    ADMIN_ALBUM_URL
+    ADMIN_ALBUM_URL,
+    SET_ALBUM_COVER
 } from "@common/api";
 import "./index.scss";
+import { async } from "q";
 
 const WIDTH = 130;
 const HEIGHT = 150;
@@ -36,6 +39,7 @@ interface Props extends RouteComponentProps {
     emptyImages?: () => any;
     showUpload?: (album: any) => any;
     deleteImageById?: (id: string) => any;
+    updateAlbums: () => any; 
 }
 
 class AlbumImages extends React.Component<Props> {
@@ -44,27 +48,39 @@ class AlbumImages extends React.Component<Props> {
         isAdmin: false
     };
 
-    curAlbum: any;
-
     state = {
         current: null,
         contextMenuPos: {
             left: 0,
             top: 0
         },
-        contextMenuVisible: false
+        curAlbum: {},
+        contextMenuVisible: false,
+        propertyVisible: false
     }
 
     componentDidMount() {
         let id = this.getId();
-        this.props.fetchImages(id);
-        this.fetchAlbum(id);
-        eventBus.on("upload.done", this.handleUploadDone);
+        let {
+            fetchImages,
+            isAdmin
+        } = this.props;
+        fetchImages(id);
+        if (isAdmin) {
+            this.fetchAlbum(id);
+            eventBus.on("upload.done", this.handleUploadDone);
+        }
     }
 
     componentWillUnmount() {
-        this.props.emptyImages();
-        eventBus.off("upload.done", this.handleUploadDone);
+        let {
+            emptyImages,
+            isAdmin
+        } = this.props;
+        emptyImages();
+        if (isAdmin) {
+            eventBus.off("upload.done", this.handleUploadDone);
+        }
     }
 
     getId = () => {
@@ -78,8 +94,10 @@ class AlbumImages extends React.Component<Props> {
     fetchAlbum = async (id: string) => {
         try {
             let ret: any = await _fetch(`${ADMIN_ALBUM_URL}?id=${id}`);
-            this.curAlbum = ret;
             document.title = `相册-${ret.name}`;
+            this.setState({
+                curAlbum: ret
+            });
         } catch (err) {
 
         }
@@ -101,11 +119,28 @@ class AlbumImages extends React.Component<Props> {
         console.log(image);
     }
 
-    handleCover = () => {
+    handleCover = async () => {
+        let {
+            current,
+            curAlbum
+        } = this.state;
+        if (!curAlbum) return message.info("请稍候,正在获取相册信息...");
+        try {
+            await _fetch(SET_ALBUM_COVER, {
+                method: "post",
+                body: {
+                    albumId: (curAlbum as any)._id,
+                    imageId: current._id
+                }
+            });
+            message.success("设置成功!");
+            let id = this.getId();
+            this.fetchAlbum(id);
+            this.props.updateAlbums();
+        } catch (err) {
 
+        }
     }
-
-
 
     handleDelete = () => {
         let { current } = this.state;
@@ -133,7 +168,15 @@ class AlbumImages extends React.Component<Props> {
     }
 
     handleInfo = () => {
+        this.setState({
+            propertyVisible: true
+        });
+    }
 
+    closeInfo = () => {
+        this.setState({
+            propertyVisible: false
+        });
     }
 
     hideContextMenu = () => {
@@ -143,10 +186,11 @@ class AlbumImages extends React.Component<Props> {
     }
 
     handleUpload = () => {
-        if (!this.curAlbum) {
-            return message.info("请稍后...");
+        let { curAlbum } = this.state
+        if (!curAlbum) {
+            return message.info("请稍候,正在获取相册信息...");
         }
-        this.props.showUpload(this.curAlbum);
+        this.props.showUpload(curAlbum);
     }
 
     handleUploadDone = () => {
@@ -161,15 +205,20 @@ class AlbumImages extends React.Component<Props> {
 
     renderImage() {
         let {
-            started,
-            list,
-            isAdmin
-        } = this.props;
+            props: {
+                started,
+                list,
+                isAdmin
+            },
+            state: { curAlbum }
+        } = this;
+        let coverInfo = (curAlbum as any).coverInfo || {};
         if (list.length) {
             return list.map(
                 image => <Item
                     onContextMenu={this.handleContextMenu}
                     isAdmin={isAdmin}
+                    isCover={coverInfo._id === image._id}
                     key={image._id}
                     image={image} />
             );
@@ -185,7 +234,9 @@ class AlbumImages extends React.Component<Props> {
                     left,
                     top
                 },
-                contextMenuVisible
+                contextMenuVisible,
+                current,
+                propertyVisible
             },
             props: { isAdmin }
         } = this;
@@ -216,6 +267,10 @@ class AlbumImages extends React.Component<Props> {
                         </Button>
                     )
                 }
+                <Property
+                    visible={propertyVisible}
+                    onClose={this.closeInfo}
+                    image={current} />
             </section >
         );
     }

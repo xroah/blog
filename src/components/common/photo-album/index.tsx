@@ -52,6 +52,7 @@ export default class PhotoAlbum extends React.Component<Props> {
                             <Item
                                 key={album._id}
                                 album={album}
+                                cover={album.coverInfo}
                                 isAdmin={isAdmin} />
                         )
                     )

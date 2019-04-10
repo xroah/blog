@@ -1,15 +1,15 @@
 import * as React from "react";
 import {
-    Folder
-} from "@material-ui/icons";
-import {
     withRouter,
     RouteComponentProps
 } from "react-router-dom";
 
+const defaultCover = require("@images/default_cover.png");
+
 interface Props extends RouteComponentProps {
     isAdmin?: boolean;
     album?: any;
+    cover?: any;
     showContextMenu?: (x: number, y: number) => any;
     switchAlbum: (album: any) => any;
 }
@@ -52,8 +52,14 @@ class Item extends React.Component<Props> {
     }
 
     render() {
-        let { album } = this.props;
-
+        let {
+            album,
+            cover
+        } = this.props;
+        let src = defaultCover;
+        if (cover) {
+            src = cover.relPath;
+        }
         return (
             <>
                 <div
@@ -61,11 +67,8 @@ class Item extends React.Component<Props> {
                     onContextMenu={this.handleContextmenu}
                     className="album-item">
                     <dl>
-                        <dt>
-                            <Folder
-                                className="folder-icon"
-                                color="primary"
-                                fontSize="large" />
+                        <dt className="img-wrapper">
+                            <img src={src} />
                         </dt>
                         <dd className="album-name ellipsis">{album.name}</dd>
                         <dd className="img-num">

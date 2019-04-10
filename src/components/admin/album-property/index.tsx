@@ -7,7 +7,6 @@ import {
     Button
 } from "@material-ui/core";
 import { formatDate } from "@common/util";
-import "./index.scss";
 
 interface Props {
     visible?: boolean;

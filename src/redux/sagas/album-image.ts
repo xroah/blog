@@ -4,7 +4,6 @@ import {
     takeLatest
 } from "redux-saga/effects";
 import _fetch from "@common/fetch";
-import { ADMIN_IMAGE_URL } from "@common/api";
 import {
     FETCH_IMAGES,
     FETCH_IMAGES_START,
