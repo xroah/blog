@@ -5,7 +5,8 @@ import {
      EMPTY_IMAGES,
      SHOW_UPLOAD_DIALOG,
      DELETE_IMAGE_BY_ID,
-     FETCH_ALBUMS_START
+     FETCH_ALBUMS_START,
+     UPDATE_IMAGE_NAME_BY_ID
  } from "@redux/actions";
 
 export default connect(
@@ -41,6 +42,13 @@ export default connect(
         updateAlbums() {
             dispatch({
                 ...FETCH_ALBUMS_START
+            });
+        },
+        updateImageName(id: string, name: string) {
+            dispatch({
+                ...UPDATE_IMAGE_NAME_BY_ID,
+                id,
+                name
             });
         }
     })

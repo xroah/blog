@@ -7,7 +7,8 @@ import {
 import {
     Clear,
     Info,
-    Image
+    Image,
+    SaveAlt
 } from "@material-ui/icons";
 
 interface Props {
@@ -17,6 +18,7 @@ interface Props {
     onDelete?: () => any;
     onInfo?: () => any;
     onCover?: () => any;
+    onDownload?: () => any;
     onHide: () => any;
 }
 
@@ -35,9 +37,9 @@ export default class ContextMenu extends React.Component<Props> {
     handleClickOutSide = (evt: MouseEvent) => {
         let {
             menu: { current: menu },
-            props: {visible}
+            props: { visible }
         } = this;
-        if (!visible) return; 
+        if (!visible) return;
         let tgt = evt.target as HTMLElement;
         if (tgt !== menu || !menu.contains(tgt)) {
             this.props.onHide();
@@ -57,6 +59,11 @@ export default class ContextMenu extends React.Component<Props> {
     handleDelete = () => {
         this.props.onHide();
         this.props.onDelete();
+    }
+
+    handleDownload = () => {
+        this.props.onHide();
+        this.props.onDownload();
     }
 
     render() {
@@ -88,6 +95,12 @@ export default class ContextMenu extends React.Component<Props> {
                             className="menu-item">
                             <Clear />
                             <span>删除</span>
+                        </ListItem>
+                        <ListItem
+                            onClick={this.handleDownload}
+                            className="menu-item">
+                            <SaveAlt />
+                            <span>下载</span>
                         </ListItem>
                         <ListItem
                             onClick={this.handleInfo}

@@ -27,6 +27,7 @@ import {
 } from "./zoom";
 import Loading from "@common/loading";
 import message from "@common/message";
+import { download } from "@common/util";
 import "./index.scss";
 
 interface Props {
@@ -313,12 +314,7 @@ export default class ImageViewer extends React.Component<Props> {
     }
 
     download = () => {
-        let a = document.createElement("a");
-        a.href = this.image.current.src;
-        a.download = "";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        download(this.image.current.src);
     }
 
     handleTouchStart = (evt: React.TouchEvent) => {

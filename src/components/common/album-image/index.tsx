@@ -14,7 +14,8 @@ import ImageViewer from "@common/image-viewer";
 import Property from "./property";
 import {
     calcPos,
-    eventBus
+    eventBus,
+    download
 } from "@common/util";
 import _fetch from "@common/fetch";
 import message from "@common/message";
@@ -25,7 +26,6 @@ import {
     SET_ALBUM_COVER
 } from "@common/api";
 import "./index.scss";
-import { async } from "q";
 
 const WIDTH = 130;
 const HEIGHT = 150;
@@ -39,7 +39,8 @@ interface Props extends RouteComponentProps {
     emptyImages?: () => any;
     showUpload?: (album: any) => any;
     deleteImageById?: (id: string) => any;
-    updateAlbums: () => any; 
+    updateAlbums?: () => any;
+    updateImageName?: (id: string, name: string) => any;
 }
 
 class AlbumImages extends React.Component<Props> {
@@ -119,6 +120,12 @@ class AlbumImages extends React.Component<Props> {
         console.log(image);
     }
 
+    hideContextMenu = () => {
+        this.setState({
+            contextMenuVisible: false
+        });
+    }
+
     handleCover = async () => {
         let {
             current,
@@ -167,6 +174,11 @@ class AlbumImages extends React.Component<Props> {
         )
     }
 
+    handleDownload = () => {
+        let { current } = this.state;
+        download(current.relPath);
+    }
+
     handleInfo = () => {
         this.setState({
             propertyVisible: true
@@ -176,12 +188,6 @@ class AlbumImages extends React.Component<Props> {
     closeInfo = () => {
         this.setState({
             propertyVisible: false
-        });
-    }
-
-    hideContextMenu = () => {
-        this.setState({
-            contextMenuVisible: false
         });
     }
 
@@ -208,7 +214,8 @@ class AlbumImages extends React.Component<Props> {
             props: {
                 started,
                 list,
-                isAdmin
+                isAdmin,
+                updateImageName
             },
             state: { curAlbum }
         } = this;
@@ -217,6 +224,7 @@ class AlbumImages extends React.Component<Props> {
             return list.map(
                 image => <Item
                     onContextMenu={this.handleContextMenu}
+                    onNameChange={updateImageName}
                     isAdmin={isAdmin}
                     isCover={coverInfo._id === image._id}
                     key={image._id}
@@ -252,6 +260,7 @@ class AlbumImages extends React.Component<Props> {
                     onCover={this.handleCover}
                     onInfo={this.handleInfo}
                     onDelete={this.handleDelete}
+                    onDownload={this.handleDownload}
                     left={left}
                     top={top}
                     visible={contextMenuVisible} />

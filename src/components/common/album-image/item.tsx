@@ -9,6 +9,7 @@ interface Props {
     isAdmin?: boolean;
     isCover?: boolean;
     onContextMenu?: (x: number, y: number, cur: any) => any;
+    onNameChange?: (id: string, name: string) => any;
 }
 
 export default class Item extends React.Component<Props> {
@@ -79,12 +80,14 @@ export default class Item extends React.Component<Props> {
         if (name) {
             this.saveName();
         }
-        console.log("===blur===")
     }
 
     saveName = async () => {
         let {
-            props: { image },
+            props: {
+                image,
+                onNameChange
+            },
             state: { name }
         } = this;
         if (name === image.name) {
@@ -101,12 +104,16 @@ export default class Item extends React.Component<Props> {
                     name
                 }
             });
-            message.success("保存成功!");
-            this.setState({
-                isEdit: false
-            });
-        } catch (error) {
+        } catch (err) {
+            return err;
+        }
 
+        message.success("保存成功!");
+        this.setState({
+            isEdit: false
+        });
+        if (typeof onNameChange === "function") {
+            onNameChange(image._id, name);
         }
     }
 
@@ -139,20 +146,25 @@ export default class Item extends React.Component<Props> {
                     <dt className="image-wrapper">
                         <img src={image.relPath} />
                     </dt>
-                    <dd className="ellipsis">
-                        {
-                            isEdit ?
-                                <input type="text"
-                                    ref={this.inputEl}
-                                    value={name}
-                                    onKeyDown={this.handleKeyDown}
-                                    onChange={this.handleChange}
-                                    onBlur={this.handleBlur}
-                                    className="form-control" /> :
-                                <span
-                                    onClick={this.handleEdit}
-                                    title={imageName}>{imageName}</span>
-                        }
+                    <dd>
+                        <div
+                            className="ellipsis"
+                            style={{ overflow: isEdit ? "visible" : "hidden" }}>
+                            {
+                                isEdit ?
+                                    <input
+                                        type="text"
+                                        ref={this.inputEl}
+                                        value={name}
+                                        onKeyDown={this.handleKeyDown}
+                                        onChange={this.handleChange}
+                                        onBlur={this.handleBlur}
+                                        className="form-control" /> :
+                                    <span
+                                        onClick={this.handleEdit}
+                                        title={imageName}>{imageName}</span>
+                            }
+                        </div>
                     </dd>
                 </dl>
             </div>

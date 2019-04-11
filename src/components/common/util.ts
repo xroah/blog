@@ -61,6 +61,15 @@ function calcPos(x: number, y: number, width: number, height: number) {
     };
 }
 
+function download(src: string) {
+    let a = document.createElement("a");
+    a.href = src;
+    a.download = "";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
 const eventBus = new EventEmitter();
 
 export {
@@ -68,5 +77,6 @@ export {
     formatDate,
     isFunc,
     calcPos,
-    eventBus
+    eventBus,
+    download
 };

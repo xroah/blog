@@ -33,6 +33,12 @@
         position: absolute;
         left: 0;
         top: 5px;
+        height: 36px;
+        width: 36px;
+        line-height: 36px;
+        border-radius: 50%;
+        border: 1xp solid #a00;
+        text-align: center;
         transform: rotate(-45deg)
     }
 
