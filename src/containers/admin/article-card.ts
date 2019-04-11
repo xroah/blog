@@ -11,7 +11,7 @@ export default connect(
         showDetails() {
             dispatch({
                 type: SHOW_ARTICLE_DETAILS.type,
-                index: ownProps.index || 0
+                article: ownProps.article
             });
         },
         delArticle(id) {

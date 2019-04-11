@@ -169,6 +169,14 @@ export const FETCH_ALBUMS_START = {
     type: "FETCH_ALBUMS_START"
 };
 
+export const FETCH_ALBUM_BY_ID = {
+    type: "FETCH_ALBUM_BY_ID"
+};
+
+export const FETCH_ALBUM_BY_ID_START = {
+    type: "FETCH_ALBUM_BY_ID_START"
+};
+
 export const ADD_ALBUM_START = {
     type: "ADD_ALBUM_START"
 };
@@ -238,4 +246,40 @@ export const DELETE_IMAGE_BY_ID = {
 
 export const UPDATE_IMAGE_NAME_BY_ID = {
     type: "UPDATE_IMAGE_NAME_BY_ID"
+};
+
+export const SHOW_IMAGE_CONTEXT_MENU = {
+    type: "SHOW_IMAGE_CONTEXT_MENU"
+};
+
+export const HIDE_IMAGE_CONTEXT_MENU = {
+    type: "HIDE_IMAGE_CONTEXT_MENU"
+};
+
+export const DELETE_IMAGE_START = {
+    type: "DELETE_IMAGE_START"
+};
+
+export const UPDATE_IMAGE_NAME_START = {
+    type: "UPDATE_IMAGE_NAME_START"
+};
+
+export const SHOW_IMAGE_PROPERTY = {
+    type: "SHOW_IMAGE_INFO"
+};
+
+export const HIDE_IMAGE_PROPERTY = {
+    type: "HIDE_IMAGE_INFO"
+};
+
+export const SET_COVER_START = {
+    type: "SET_COVER_START"
+};
+
+export const UPDATE_CUR_ALBUM_COVER = {
+    type: "UPDATE_CUR_ALBUM_COVER"
+};
+
+export const SWITCH_IMAGE = {
+    type: "SWITCH_IMAGE"
 };

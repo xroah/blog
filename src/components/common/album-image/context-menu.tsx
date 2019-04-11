@@ -2,7 +2,8 @@ import * as React from "react";
 import {
     Zoom,
     List,
-    ListItem
+    ListItem,
+    Typography
 } from "@material-ui/core";
 import {
     Clear,
@@ -10,21 +11,41 @@ import {
     Image,
     SaveAlt
 } from "@material-ui/icons";
+import {
+    calcPos,
+    download
+} from "@common/util";
+import message from "@common/message";
+import hint from "@common/hint-dialog";
 
 interface Props {
-    visible: boolean;
-    left?: number;
-    top?: number;
-    onDelete?: () => any;
-    onInfo?: () => any;
-    onCover?: () => any;
-    onDownload?: () => any;
-    onHide: () => any;
+    visible?: boolean;
+    x?: number;
+    y?: number;
+    curImage?: any;
+    curAlbum?: any;
+    hideContextMenu?: () => any;
+    setCover?: (body: any) => any;
+    deleteImage?: (id: string) => any;
+    showProperty?: () => any;
 }
 
-export default class ContextMenu extends React.Component<Props> {
+interface State {
+    left: number;
+    top: number;
+}
+
+const WIDTH = 130;
+const HEIGHT = 150;
+
+export default class ContextMenu extends React.Component<Props, State> {
 
     menu: React.RefObject<HTMLDivElement> = React.createRef();
+
+    state = {
+        left: 0,
+        top: 0
+    };
 
     componentDidMount() {
         document.addEventListener("click", this.handleClickOutSide);
@@ -32,6 +53,15 @@ export default class ContextMenu extends React.Component<Props> {
 
     componentWillUnmount() {
         document.removeEventListener("click", this.handleClickOutSide);
+    }
+
+    static getDerivedStateFromProps(props: Props, state: State) {
+        if (props.x !== state.left || props.y !== state.top) {
+            let { left, top } = calcPos(props.x, props.y, WIDTH, HEIGHT);
+            state.left = left;
+            state.top = top;
+        }
+        return state;
     }
 
     handleClickOutSide = (evt: MouseEvent) => {
@@ -42,45 +72,69 @@ export default class ContextMenu extends React.Component<Props> {
         if (!visible) return;
         let tgt = evt.target as HTMLElement;
         if (tgt !== menu || !menu.contains(tgt)) {
-            this.props.onHide();
+            this.props.hideContextMenu();
         }
     }
 
-    handleCover = () => {
-        this.props.onHide();
-        this.props.onCover();
+    hide = () => {
+        this.props.hideContextMenu();
     }
 
-    handleInfo = () => {
-        this.props.onInfo();
-        this.props.onHide();
+    handleCover = () => {
+        let {
+            curAlbum,
+            curImage,
+            setCover
+        } = this.props;
+        if (!curAlbum) return message.info("请稍候,正在获取相册信息...");
+        setCover({
+            albumId: curAlbum._id,
+            imageId: curImage._id
+        });
+        this.hide();
     }
 
     handleDelete = () => {
-        this.props.onHide();
-        this.props.onDelete();
+        let {
+            deleteImage,
+            curImage
+        } = this.props;
+        hint.confirm(
+            <>
+                确定要删除
+                <Typography color="secondary" inline={true}>{curImage.name}</Typography>
+                吗?
+            </>,
+            () => deleteImage(curImage._id)
+        );
+        this.hide();
     }
 
     handleDownload = () => {
-        this.props.onHide();
-        this.props.onDownload();
+        download(this.props.curImage.relPath);
+        this.hide();
     }
 
     render() {
         let {
-            visible,
-            left,
-            top
-        } = this.props;
+            props: {
+                visible,
+                showProperty
+            },
+            state: {
+                left,
+                top
+            }
+        } = this;
 
         return (
             <Zoom
-                style={{
-                    left,
-                    top
-                }}
                 in={visible}>
                 <div
+                    style={{
+                        left,
+                        top
+                    }}
                     ref={this.menu}
                     className="context-menu">
                     <List>
@@ -103,7 +157,7 @@ export default class ContextMenu extends React.Component<Props> {
                             <span>下载</span>
                         </ListItem>
                         <ListItem
-                            onClick={this.handleInfo}
+                            onClick={showProperty}
                             className="menu-item">
                             <Info />
                             <span>属性</span>

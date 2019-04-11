@@ -9,18 +9,12 @@ import {
 import { formatDate } from "@common/util";
 
 interface Props {
-    visible: boolean;
-    image: any;
-    onClose?: () => any;
+    visible?: boolean;
+    image?: any;
+    hideProperty?: () => any;
 }
 
 export default class Property extends React.Component<Props> {
-
-
-    handleClose = () => {
-        let { onClose } = this.props;
-        if (typeof onClose === "function") onClose();
-    }
 
     convertSize = (size?: number | null) => {
         if (size == null) {
@@ -38,7 +32,8 @@ export default class Property extends React.Component<Props> {
     render() {
         let {
             visible,
-            image
+            image,
+            hideProperty
         } = this.props;
         if (!image) return null;
         return (
@@ -62,7 +57,7 @@ export default class Property extends React.Component<Props> {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.handleClose}>关闭</Button>
+                    <Button onClick={hideProperty}>关闭</Button>
                 </DialogActions>
             </Dialog>
         );

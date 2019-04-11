@@ -6,19 +6,27 @@ import {
      SHOW_UPLOAD_DIALOG,
      DELETE_IMAGE_BY_ID,
      FETCH_ALBUMS_START,
-     UPDATE_IMAGE_NAME_BY_ID
+     UPDATE_IMAGE_NAME_BY_ID,
+     FETCH_ALBUM_BY_ID_START
  } from "@redux/actions";
 
 export default connect(
     (state: any) => ({
         list: state.albumImage.list,
-        started: state.albumImage.started
+        started: state.albumImage.started,
+        curAlbum: state.albumImage.curAlbum,
     }),
     (dispatch, ownProps: any)=> ({
         fetchImages(id: string) {
             dispatch({
                 ...FETCH_IMAGES_START,
                 url: ownProps.url,
+                id
+            });
+        },
+        fetchAlbum(id: string) {
+            dispatch({
+                ...FETCH_ALBUM_BY_ID_START,
                 id
             });
         },
@@ -31,24 +39,6 @@ export default connect(
             dispatch({
                 ...SHOW_UPLOAD_DIALOG,
                 album
-            });
-        },
-        deleteImageById(id: string) {
-            dispatch({
-                ...DELETE_IMAGE_BY_ID,
-                id
-            });
-        },
-        updateAlbums() {
-            dispatch({
-                ...FETCH_ALBUMS_START
-            });
-        },
-        updateImageName(id: string, name: string) {
-            dispatch({
-                ...UPDATE_IMAGE_NAME_BY_ID,
-                id,
-                name
             });
         }
     })

@@ -10,6 +10,7 @@ import albumContextMenu from "./album-context-menu";
 import album from "./album";
 import albumImage from "./album-image";
 import uploadDialog from "./upload-dialog";
+import imageContextMenu from "./image-context-menu";
 
 export default history => combineReducers({
     router: connectRouter(history),
@@ -22,5 +23,6 @@ export default history => combineReducers({
     albumContextMenu,
     album,
     albumImage,
-    uploadDialog
+    uploadDialog,
+    imageContextMenu
 });

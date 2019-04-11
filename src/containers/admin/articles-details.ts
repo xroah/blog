@@ -4,7 +4,7 @@ import ArticleDetails from "@components/admin/article-details";
 
 export default connect(
     (state: any) => ({
-        index: state.adminArticle.index,
+        article: state.adminArticle.article,
         visible: state.adminArticle.visible,
         list: state.adminArticle.list
     }),

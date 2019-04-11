@@ -53,6 +53,7 @@ export default class Login extends React.Component<RouteComponentProps> {
         } catch (error) {
             console.log(error);
         }
+        document.title = "blog-管理员登录";
     }
 
     handleFocus = (evt: React.FocusEvent) => {

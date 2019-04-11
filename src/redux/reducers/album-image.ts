@@ -3,19 +3,25 @@ import {
     EMPTY_IMAGES,
     FETCH_IMAGES_STARTED,
     DELETE_IMAGE_BY_ID,
-    UPDATE_IMAGE_NAME_BY_ID
+    UPDATE_IMAGE_NAME_BY_ID,
+    SHOW_IMAGE_PROPERTY,
+    HIDE_IMAGE_PROPERTY,
+    FETCH_ALBUM_BY_ID,
+    UPDATE_CUR_ALBUM_COVER
 } from "../actions";
 
 export default (
     state = {
         list: [],
-        started: false
+        started: false,
+        propertyVisible: false,
+        curAlbum: null
     },
     action: any
 ) => {
     let list: any[];
-    switch(action.type) {
-        case FETCH_IMAGES.type: 
+    switch (action.type) {
+        case FETCH_IMAGES.type:
             return {
                 ...state,
                 list: state.list.concat(action.images)
@@ -25,12 +31,38 @@ export default (
                 ...state,
                 list: []
             };
-        case FETCH_IMAGES_STARTED.type: 
+        case SHOW_IMAGE_PROPERTY.type:
+            return {
+                ...state,
+                propertyVisible: true
+            };
+        case HIDE_IMAGE_PROPERTY.type:
+            return {
+                ...state,
+                propertyVisible: false
+            };
+        case FETCH_IMAGES_STARTED.type:
             return {
                 ...state,
                 started: action.started
             };
-        case DELETE_IMAGE_BY_ID.type: 
+        case FETCH_ALBUM_BY_ID.type:
+            return {
+                ...state,
+                curAlbum: action.album
+            };
+        case UPDATE_CUR_ALBUM_COVER.type:
+            let curAlbum = {...state.curAlbum};
+            if (curAlbum.coverInfo) {
+                curAlbum.coverInfo._id = action.id;
+            } else {
+                curAlbum.coverInfo = { _id: action.id };
+            }
+            return {
+                ...state,
+                curAlbum
+            };
+        case DELETE_IMAGE_BY_ID.type:
             list = state.list.slice();
             for (let i = 0, l = list.length; i < l; i++) {
                 if (list[i]._id === action.id) {

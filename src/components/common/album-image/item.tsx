@@ -1,15 +1,14 @@
 import * as React from "react";
 import { Typography } from "@material-ui/core";
-import { ADMIN_IMAGE_URL } from "@common/api";
 import _fetch from "@common/fetch";
-import message from "@common/message";
 
 interface Props {
     image?: any;
     isAdmin?: boolean;
     isCover?: boolean;
-    onContextMenu?: (x: number, y: number, cur: any) => any;
-    onNameChange?: (id: string, name: string) => any;
+    showContextMenu?: (x: number, y: number) => any;
+    switchImage?: (image: any) => any;
+    updateName?: (id: string, name: string, callback: Function) => any;
 }
 
 export default class Item extends React.Component<Props> {
@@ -24,15 +23,13 @@ export default class Item extends React.Component<Props> {
     handleContextMenu = (evt: React.MouseEvent) => {
         let {
             isAdmin,
-            onContextMenu,
-            image
+            switchImage,
+            image,
+            showContextMenu
         } = this.props;
         if (!isAdmin) return;
-        let x = evt.clientX;
-        let y = evt.clientY;
-        if (typeof onContextMenu === "function") {
-            onContextMenu(x, y, image);
-        }
+        switchImage(image);
+        showContextMenu(evt.clientX, evt.clientY);
         evt.preventDefault();
     }
 
@@ -86,7 +83,7 @@ export default class Item extends React.Component<Props> {
         let {
             props: {
                 image,
-                onNameChange
+                updateName
             },
             state: { name }
         } = this;
@@ -96,25 +93,14 @@ export default class Item extends React.Component<Props> {
                 name: ""
             });
         }
-        try {
-            await _fetch(ADMIN_IMAGE_URL, {
-                method: "put",
-                body: {
-                    id: image._id,
-                    name
-                }
+        updateName(
+            image._id,
+            name,
+            () => {
+                this.setState({
+                    isEdit: false
+                });
             });
-        } catch (err) {
-            return err;
-        }
-
-        message.success("保存成功!");
-        this.setState({
-            isEdit: false
-        });
-        if (typeof onNameChange === "function") {
-            onNameChange(image._id, name);
-        }
     }
 
     render() {
@@ -146,25 +132,22 @@ export default class Item extends React.Component<Props> {
                     <dt className="image-wrapper">
                         <img src={image.relPath} />
                     </dt>
-                    <dd>
-                        <div
-                            className="ellipsis"
-                            style={{ overflow: isEdit ? "visible" : "hidden" }}>
-                            {
-                                isEdit ?
-                                    <input
-                                        type="text"
-                                        ref={this.inputEl}
-                                        value={name}
-                                        onKeyDown={this.handleKeyDown}
-                                        onChange={this.handleChange}
-                                        onBlur={this.handleBlur}
-                                        className="form-control" /> :
-                                    <span
-                                        onClick={this.handleEdit}
-                                        title={imageName}>{imageName}</span>
-                            }
-                        </div>
+                    <dd className="ellipsis"
+                        style={{ overflow: isEdit ? "visible" : "hidden" }}>
+                        {
+                            isEdit ?
+                                <input
+                                    type="text"
+                                    ref={this.inputEl}
+                                    value={name}
+                                    onKeyDown={this.handleKeyDown}
+                                    onChange={this.handleChange}
+                                    onBlur={this.handleBlur}
+                                    className="form-control" /> :
+                                <span
+                                    onClick={this.handleEdit}
+                                    title={imageName}>{imageName}</span>
+                        }
                     </dd>
                 </dl>
             </div>

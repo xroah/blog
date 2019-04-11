@@ -12,8 +12,8 @@ export default function (
     state = {
         list: [],
         total: 0,
-        //get article from list by index
-        index: -1,
+        //for showing details
+        curArticle: null,
         //whether detail dialog is visible
         visible: false,
         //edit component, if not saved will show prompt before route change
@@ -42,13 +42,13 @@ export default function (
         case HIDE_ARTICLES_DETAILS.type:
             return {
                 ...state,
-                // index: -1,
-                visible: false
+                visible: false,
+                article: null
             };
         case SHOW_ARTICLE_DETAILS.type:
             return {
                 ...state,
-                index: action.index,
+                article: action.article,
                 visible: true
             };
         case CHANGE_ARTICLE_SAVED.type:

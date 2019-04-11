@@ -13,8 +13,7 @@ import { formatDate } from "@common/util";
 import "./index.scss";
 
 interface Props {
-    index?: number;
-    list?: Array<any>,
+    article?: any;
     hideDialog: () => any;
     visible?: boolean;
 }
@@ -23,12 +22,10 @@ export default class extends React.Component<Props> {
 
     render() {
         let {
-            index,
-            list,
+            article,
             hideDialog,
             visible
         } = this.props;
-        let article = list[index];
         return (
             <Dialog
                 open={visible}
