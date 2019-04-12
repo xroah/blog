@@ -35,6 +35,10 @@ let cfg = {
     externals: [{
         moment: "moment" //dependency of chart.js
     }],
+    watch: true,
+    watchOptions: {
+        poll: true //ubuntu 18.10, otherwise watch won't work
+    },
     module: {
         rules: [{
                 test: /\.(j|t)sx?$/,
