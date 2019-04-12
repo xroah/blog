@@ -43,8 +43,8 @@ class AlbumImages extends React.Component<Props> {
             fetchAlbum
         } = this.props;
         fetchImages(id);
-        fetchAlbum(id);
         if (isAdmin) {
+            fetchAlbum(id);
             eventBus.on("upload.done", this.handleUploadDone);
         }
     }

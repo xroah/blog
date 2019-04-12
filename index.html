@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" style="background-color: black;"></canvas>
     <script>
         !function () {
             const Y_DIS = 20;
@@ -43,27 +43,21 @@
                 _drawText() {
                     let canvas = document.getElementById("canvas");
                     let ctx = canvas.getContext("2d");
-                    let {
-                        yAxis,
-                        times,
-                        xNum,
-                        yNum
-                    } = this;
                     ctx.font = "16px Arial";
                     ctx.fillStyle = "rgba(0, 0, 0, .05)";
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     ctx.fillStyle = "#0f0";
-                    for (let i = 0; i < xNum; i++) {
+                    for (let i = 0; i < this.xNum; i++) {
                         let x = i * X_DIS;
                         let text = Math.random() > .5 ? 0 : 1;
-                        let y = yAxis[i] || 0;
-                        if (times <= yNum) {
-                            y = yAxis[i] = y + Y_DIS;
+                        let y = this.yAxis[i] || 0;
+                        if (this.times <= this.yNum) {
+                            y = this.yAxis[i] = y + Y_DIS;
                         } else {
                             if (y >= canvas.height) {
-                                y = yAxis[i] = 0;
+                                y = this.yAxis[i] = 0;
                             } else if (Math.random() > .5) {
-                                y = yAxis[i] = y + Y_DIS;
+                                y = this.yAxis[i] = y + Y_DIS;
                             } else {
                                 continue;
                             }

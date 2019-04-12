@@ -3,6 +3,7 @@ const CleanPlugin = require("clean-webpack-plugin");
 const ExtractCssPlugin = require("mini-css-extract-plugin");
 const HTMLPlugin = require("html-webpack-plugin");
 const OptimizeCssPlugin = require("optimize-css-assets-webpack-plugin");
+const WebpackAnalyzer = require("webpack-bundle-analyzer");
 const path = require("path");
 
 let env = process.env.NODE_ENV;
@@ -31,6 +32,9 @@ let cfg = {
             "@redux": path.resolve(__dirname, "./src/redux")
         }
     },
+    externals: [{
+        moment: "moment" //dependency of chart.js
+    }],
     module: {
         rules: [{
                 test: /\.(j|t)sx?$/,
@@ -66,13 +70,14 @@ let cfg = {
             template: "index.html",
             filename: "index.html",
             hash: true,
-            favicon: "./assets/images/favicon.png"/* ,
-            chunksSortMode(chunk1, chunk2) {
-                if (chunk1.names[0].includes("polyfill") || chunk2.names.includes("polyfill")) {
-                    return -1;
-                }
-                return 0;
-            } */
+            favicon: "./assets/images/favicon.png"
+            /* ,
+                        chunksSortMode(chunk1, chunk2) {
+                            if (chunk1.names[0].includes("polyfill") || chunk2.names.includes("polyfill")) {
+                                return -1;
+                            }
+                            return 0;
+                        } */
         })
     ]
 };
@@ -85,7 +90,6 @@ if (env === "development") {
         open: true,
         inline: true,
         contentBase: "dist",
-        // host: "192.168.0.104",
         proxy: {
             "/api": "http://localhost:8000",
             "/uploads": "http://localhost:8000"
@@ -98,7 +102,8 @@ if (env === "development") {
         }),
         new ExtractCssPlugin({
             filename: "css/style.css"
-        })
+        }),
+        new WebpackAnalyzer.BundleAnalyzerPlugin()
     );
     cfg.optimization = {
         minimizer: [
@@ -109,7 +114,7 @@ if (env === "development") {
             new OptimizeCssPlugin()
         ],
         splitChunks: {
-            chunks: "all",
+            chunks: "initial",
             minChunks: 1,
             maxSize: 500 * 1024,
             minSize: 300 * 1024,
@@ -117,8 +122,9 @@ if (env === "development") {
                 vendors: {
                     test(module) {
                         return module.type === "javascript/auto" &&
-                            module.context.includes("node_modules") /* &&
-                            !/@babel[\/\\]polyfill/.test(module.context);//polyfill should load first */
+                            module.context.includes("node_modules")
+                        /* &&
+                                                   !/@babel[\/\\]polyfill/.test(module.context);//polyfill should load first */
                     },
                     name: "vendors"
                 }
