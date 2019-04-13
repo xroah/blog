@@ -49,6 +49,7 @@ class Item extends React.Component<Props> {
         showContextMenu(x, y);
         switchAlbum(album);
         evt.preventDefault();
+        evt.stopPropagation();
     }
 
     render() {

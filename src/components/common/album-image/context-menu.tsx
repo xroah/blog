@@ -48,11 +48,11 @@ export default class ContextMenu extends React.Component<Props, State> {
     };
 
     componentDidMount() {
-        document.addEventListener("click", this.handleClickOutSide);
+        document.addEventListener("mousedown", this.handleClickOutSide);
     }
 
     componentWillUnmount() {
-        document.removeEventListener("click", this.handleClickOutSide);
+        document.removeEventListener("mousedown", this.handleClickOutSide);
     }
 
     static getDerivedStateFromProps(props: Props, state: State) {

@@ -44,11 +44,11 @@ export default class ContextMenu extends React.Component<Props, State> {
     menu: React.RefObject<HTMLDivElement> = React.createRef();
 
     componentDidMount() {
-        document.addEventListener("click", this.handleClickOutSide);
+        document.addEventListener("mousedown", this.handleClickOutSide);
     }
 
     componentWillUnmount() {
-        document.removeEventListener("click", this.handleClickOutSide);
+        document.removeEventListener("mousedown", this.handleClickOutSide);
     }
 
     static getDerivedStateFromProps(props: Props, state: State) {

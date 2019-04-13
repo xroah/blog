@@ -31,6 +31,7 @@ export default class Item extends React.Component<Props> {
         switchImage(image);
         showContextMenu(evt.clientX, evt.clientY);
         evt.preventDefault();
+        evt.stopPropagation();
     }
 
     handleEdit = () => {
