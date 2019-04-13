@@ -21,6 +21,8 @@ function calcScale(img: HTMLImageElement, wrapper: HTMLElement, fit: boolean = t
     img.style.height = `${imgHeight}px`;
 }
 
+//baseX, baseY is relative to the image top left
+//zoom in/out based on the image center then move the point back to original position
 function zoom(img: HTMLImageElement, ratio: number, baseX?: number, baseY?: number) {
     let style = getComputedStyle(img);
     let origW = parseFloat(style.getPropertyValue("width"));
@@ -53,6 +55,7 @@ function zoomOut(img: HTMLImageElement, baseX?: number, baseY?: number) {
     zoom(img, .91, baseX, baseY);
 }
 
+//zoom in out based on center
 function center(wrapper: HTMLElement, img: HTMLImageElement) {
     let style = getComputedStyle(img);
     let w = parseFloat(style.getPropertyValue("width"));
@@ -67,6 +70,7 @@ function calcDistance(x1: number, y1: number, x2: number, y2: number) {
     return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 }
 
+//pinch to zoom in/out, get the middle coordinate between the tow points
 function getMiddlePos(img: HTMLImageElement, x1: number, y1: number, x2: number, y2: number) {
     let rect = img.getBoundingClientRect();
     let midX = Math.abs(x1 - x2) / 2;

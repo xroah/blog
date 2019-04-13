@@ -45,6 +45,7 @@ export default class ImageViewer extends React.Component<Props> {
     mouseDowned: boolean = false;
     startX: number | number[] = 0;
     startY: number | number[] = 0;
+    endX: number = 0;
     startLeft: number = 0;
     startTop: number = 0;
     imgCls = `img-${Date.now()}`;
@@ -143,7 +144,9 @@ export default class ImageViewer extends React.Component<Props> {
                 }
             }
             state.index = index;
+            //prevent from scaling the page
             document.body.addEventListener("touchmove", this.preventDefault, { passive: false });
+            //prevent from scrolling the page
             document.body.addEventListener("wheel", this.preventDefault, { passive: false });
             this.setState(state);
         }
@@ -190,10 +193,12 @@ export default class ImageViewer extends React.Component<Props> {
         if (loaded && !error) {
             let width;
             let height;
+            //rotate 0 deg or 180deg;
             if (rotateAngle / 90 % 2 === 0) {
                 width = window.innerWidth;
                 height = window.innerHeight;
             } else {
+                //90deg or 270deg;
                 width = window.innerHeight;
                 height = window.innerWidth;
             }
@@ -359,7 +364,10 @@ export default class ImageViewer extends React.Component<Props> {
         } = this
         let touches = evt.touches;
         let {
-            width
+            width,
+            height,
+            left,
+            top
         } = this.getImageSize();
         let disX: number;
         let disY: number;
@@ -394,18 +402,32 @@ export default class ImageViewer extends React.Component<Props> {
             this.startY = [touches[0].clientY, touches[1].clientY];
             this.resized = false;
         } else {
+            this.endX = touches[0].clientX;
+            const rect = img.getBoundingClientRect();
+            if (
+                resized
+            ) return;
             disX = touches[0].clientX - (startX as any);
             disY = touches[0].clientY - (startY as any);
-            if (resized) {
-                if (disX <= -50) {
-                    this.next();
-                } else if (disX >= 50) {
-                    this.prev();
-                }
-                return;
+            let _left = startLeft + disX;
+            let _top = startTop + disY;
+            console.log(rect)
+            if (rect.bottom < window.innerHeight && rect.top > 0) {
+                _top = startTop;
+            } else if (disY > 0 && rect.top >= 0) {
+                _top = 0;
+            } else if (disY < 0 && rect.bottom <= window.innerHeight) {
+                _top = window.innerHeight - height;
             }
-            img.style.left = `${startLeft + disX}px`;
-            img.style.top = `${startTop + disY}px`;
+            if (rect.left > 0 && rect.right < window.innerWidth) {
+                _left = startLeft;
+            } else if (disX > 0 && rect.left >= 0) {
+                _left = 0;
+            } else if (disX < 0 && rect.right <= window.innerWidth) {
+                _left = window.innerWidth - width;
+            }
+            img.style.left = `${_left}px`;
+            img.style.top = `${_top}px`;
         }
     }
 
@@ -415,12 +437,25 @@ export default class ImageViewer extends React.Component<Props> {
         if (width < window.innerWidth) {
             this.resize();
         }
-        if (touches.length === 1) {
+        const len = touches.length;
+        if (len === 1) {
             let { left, top } = this.getImageSize();
+            //only one finger,reset start positions
+            //when moving finger, move the image
             this.startLeft = left;
             this.startTop = top;
             this.startX = touches[0].clientX;
             this.startY = touches[0].clientY;
+        } else if (!len) {
+            let disX = this.endX - (this.startX as number);
+            if (this.resized) {
+                if (disX <= -50) {
+                    this.next();
+                } else if (disX >= 50) {
+                    this.prev();
+                }
+                return;
+            }
         }
     }
 
