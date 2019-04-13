@@ -35,38 +35,34 @@ let cfg = {
     externals: [{
         moment: "moment" //dependency of chart.js
     }],
-    watch: true,
-    watchOptions: {
-        poll: true //ubuntu 18.10, otherwise watch won't work
-    },
     module: {
         rules: [{
-                test: /\.(j|t)sx?$/,
-                use: [
-                    "babel-loader",
-                    "react-hot-loader/webpack"
-                ]
+            test: /\.(j|t)sx?$/,
+            use: [
+                "babel-loader",
+                "react-hot-loader/webpack"
+            ]
+        },
+        {
+            test: /\.s?css$/,
+            use: [
+                styleLoader,
+                "css-loader",
+                "sass-loader"
+            ]
+        },
+        {
+            test: /\.png$|\.jpe?g$|\.gif$|\.svg$/,
+            use: {
+                loader: "url-loader",
+                options: {
+                    limit: 8192,
+                    outputPath: "images",
+                    name: "[name].[ext]"
+                }
             },
-            {
-                test: /\.s?css$/,
-                use: [
-                    styleLoader,
-                    "css-loader",
-                    "sass-loader"
-                ]
-            },
-            {
-                test: /\.png$|\.jpe?g$|\.gif$|\.svg$/,
-                use: {
-                    loader: "url-loader",
-                    options: {
-                        limit: 8192,
-                        outputPath: "images",
-                        name: "[name].[ext]"
-                    }
-                },
 
-            }
+        }
         ]
     },
     plugins: [
@@ -87,6 +83,10 @@ let cfg = {
 };
 
 if (env === "development") {
+    cfg.watch = true;
+    cfg.watchOptions = {
+        poll: true //ubuntu 18.10, otherwise watch won't work
+    };
     cfg.devServer = {
         hot: true,
         historyApiFallback: true,
