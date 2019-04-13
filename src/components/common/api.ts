@@ -10,6 +10,7 @@ export const ADMIN_COMMENTS = "/api/xsys/comment";
 export const ADMIN_ALBUM_URL = "/api/xsys/album";
 export const ADMIN_IMAGE_URL = "/api/xsys/image";
 export const SET_ALBUM_COVER = "/api/xsys/setAlbumCover"
+export const STATISTICS = "/api/xsys/count";
 
 export const FETCH_COMMENT = "/api/comment";
 export const FETCH_PUBLIC_ARTICLE = "/api/articles/list";
