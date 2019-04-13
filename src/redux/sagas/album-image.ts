@@ -66,7 +66,7 @@ function* fetchAlbum(action: any) {
 function* deleteImage(action) {
     let { id } = action;
     try {
-        yield call(_fetch, ADMIN_ALBUM_URL, {
+        yield call(_fetch, ADMIN_IMAGE_URL, {
             method: "delete",
             body: {
                 id

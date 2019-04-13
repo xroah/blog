@@ -32,12 +32,12 @@
     .cover-text {
         position: absolute;
         left: 0;
-        top: 5px;
+        top: 0;
         height: 36px;
         width: 36px;
         line-height: 36px;
         border-radius: 50%;
-        border: 1xp solid #a00;
+        border: 1px solid $errorColor;
         text-align: center;
         transform: rotate(-45deg)
     }

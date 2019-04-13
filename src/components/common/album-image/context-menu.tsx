@@ -95,7 +95,6 @@ export default class ContextMenu extends React.Component<Props, State> {
     }
 
     handleDelete = () => {
-        debugger;
         let {
             deleteImage,
             curImage
