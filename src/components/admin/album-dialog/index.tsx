@@ -26,7 +26,7 @@ export default class AlbumDialog extends React.Component<Props> {
     state = {
         name: "",
         desc: "",
-        secret: true,
+        secret: false,
         disabled: false
     };
     
@@ -34,7 +34,7 @@ export default class AlbumDialog extends React.Component<Props> {
         let state = {
             name: "",
             desc: "",
-            secret: true,
+            secret: false,
             disabled: false
         };
         let {

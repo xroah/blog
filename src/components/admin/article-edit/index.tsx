@@ -123,7 +123,9 @@ export default class ArticleEdit extends React.Component<Props> {
         if (!title.trim()) {
             return this.titleEl.current.focus();
         } else if (!cls) {
-            return document.getElementById("clsSelect").focus();
+            let select = document.getElementById("clsSelect");
+            if (!select) return message.error("没有分类，请先添加分类!");
+            return select.focus();
         } else if (!text) {
             return message.error("请输入文章内容!");
         }
