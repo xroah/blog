@@ -159,6 +159,7 @@ button.back-to-top {
     color: #666;
     user-select: none;
     transform-origin: left top;
+    z-index: 99999;
 
     ul {
         padding: 0;

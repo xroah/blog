@@ -53,7 +53,7 @@ function calcPos(x: number, y: number, width: number, height: number) {
         left = x - width;
     }
     if (h - y < height) {
-        top = y - h;
+        top = y - height;
     }
     return {
         left,

@@ -36,7 +36,7 @@ interface State {
 }
 
 const WIDTH = 130;
-const HEIGHT = 150;
+const HEIGHT = 200;
 
 export default class ContextMenu extends React.Component<Props, State> {
 
@@ -71,7 +71,7 @@ export default class ContextMenu extends React.Component<Props, State> {
         } = this;
         if (!visible) return;
         let tgt = evt.target as HTMLElement;
-        if (tgt !== menu || !menu.contains(tgt)) {
+        if (tgt !== menu && !menu.contains(tgt)) {
             this.props.hideContextMenu();
         }
     }
@@ -95,6 +95,7 @@ export default class ContextMenu extends React.Component<Props, State> {
     }
 
     handleDelete = () => {
+        debugger;
         let {
             deleteImage,
             curImage
@@ -115,11 +116,15 @@ export default class ContextMenu extends React.Component<Props, State> {
         this.hide();
     }
 
+    handleProperty = () => {
+        this.props.showProperty();
+        this.hide();
+    }
+
     render() {
         let {
             props: {
-                visible,
-                showProperty
+                visible
             },
             state: {
                 left,
@@ -157,7 +162,7 @@ export default class ContextMenu extends React.Component<Props, State> {
                             <span>下载</span>
                         </ListItem>
                         <ListItem
-                            onClick={showProperty}
+                            onClick={this.handleProperty}
                             className="menu-item">
                             <Info />
                             <span>属性</span>

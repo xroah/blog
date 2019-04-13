@@ -68,7 +68,6 @@ export default class ContextMenu extends React.Component<Props, State> {
         if (tgt !== root && !root.contains(tgt)) {
             this.hide();
         }
-        evt.stopPropagation();
     }
 
     hide = () => {

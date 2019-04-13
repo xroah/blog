@@ -114,6 +114,7 @@ export default class ImageViewer extends React.Component<Props> {
     }
 
     handleClickImage = (evt: MouseEvent) => {
+        if (evt.button !== 0) return;//right click also fire click event in firefox
         let tgt = evt.target as HTMLImageElement;
         let nodeName = tgt.nodeName.toLowerCase();
         let {

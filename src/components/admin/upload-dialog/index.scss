@@ -21,10 +21,7 @@
     }
 
     .image-list {
-        /* display: flex;
-        flex-wrap: wrap; */
-        height: 480px;
-        border: 1px dashed $defaultBorderColor;
+        min-height: 500px;
     }
 
     .dialog-actions {
@@ -42,9 +39,13 @@
     }
 
     .upload-image-item {
-        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         float: left;
-        margin: 10px;
+        position: relative;
+        width: 25%;
+        margin: 10px 0;
         text-align: center;
 
         &:not(.uploading):hover {
@@ -57,9 +58,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 10px;
-            width: 206px;
-            height: 206px;
+            margin: 0 auto;
+            width: 200px;
+            height: 200px;
 
             img {
                 max-width: 100%;
@@ -69,7 +70,7 @@
 
         input {
             height: 26px;
-            margin-bottom: 10px;
+            margin: 10px 0;
         }
 
         .del-image {
@@ -77,6 +78,7 @@
             position: absolute;
             top: 0;
             right: 0;
+            transform: translate(50%, -50%);
         }
 
         .progress-wrapper {
