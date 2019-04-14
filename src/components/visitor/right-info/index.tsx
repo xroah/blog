@@ -1,6 +1,7 @@
 import * as React from "react";
 import { FETCH_DAILY_SENTENCE } from "@common/api";
 import _fetch from "@common/fetch";
+import Calendar from "@common/calendar";
 import "./index.scss";
 
 const github = require("@images/github.png");
@@ -44,6 +45,7 @@ export default class RightInfo extends React.Component {
                         </a>
                     </div>
                 </div>
+                <Calendar/>
             </div>
         );
     }

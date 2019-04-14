@@ -1,0 +1,54 @@
+@import "../styles/variables";
+
+.calendar-wrapper {
+    padding: 10px;
+    background-color: #fff;
+
+    .calendar-action {
+        display: flex;
+        justify-content: space-between;
+
+        button {
+            margin: 0;
+            padding: 0;
+        }
+    }
+
+    .week-list {
+        color: #666;
+    }
+
+    .other-mon {
+        color: #999;
+    }
+
+    .today {
+        color: #fff;
+        background-color: $primaryColor;
+    }
+
+    .current-info {
+        cursor: pointer;
+    }
+
+    .festival {
+        display: inline-block;
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .item-list {
+        display: flex;
+        padding: 5px 0;
+
+        .week-item {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 0;
+            flex-shrink: 0;
+            width: 14.2857%;
+            height: 36px;
+            padding: 0;
+        }
+    }
+}

@@ -72,7 +72,7 @@ export default class NavBar extends React.Component {
                             <NavLink to="/photo-album" className="nav-link">相册</NavLink>
                         </div>
                     </Toolbar>
-                    <Drawer className="drawer-nav" open={visible}>
+                    <Drawer className="drawer-nav" open={visible} onClose={this.closeMenu}>
                         <IconButton className="hide-menu-btn" onClick={this.closeMenu}>
                             <Clear fontSize="large" />
                         </IconButton>
