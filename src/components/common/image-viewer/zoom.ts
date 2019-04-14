@@ -21,26 +21,90 @@ function calcScale(img: HTMLImageElement, wrapper: HTMLElement, fit: boolean = t
     img.style.height = `${imgHeight}px`;
 }
 
+function getImageSize(img: HTMLImageElement) {
+    let style = getComputedStyle(img);
+    let width = parseFloat(style.getPropertyValue("width"));
+    let height = parseFloat(style.getPropertyValue("height"));
+    let left = parseFloat(style.getPropertyValue("left"));
+    let top = parseFloat(style.getPropertyValue("top"));
+    return {
+        width,
+        height,
+        left,
+        top
+    };
+}
+
 //baseX, baseY is relative to the image top left
 //zoom in/out based on the image center then move the point back to original position
-function zoom(img: HTMLImageElement, ratio: number, baseX?: number, baseY?: number) {
-    let style = getComputedStyle(img);
-    let origW = parseFloat(style.getPropertyValue("width"));
-    let origH = parseFloat(style.getPropertyValue("height"));
-    let l = parseFloat(style.getPropertyValue("left"));
-    let t = parseFloat(style.getPropertyValue("top"))
-    baseX = baseX || origW / 2;
-    baseY = baseY || origH / 2;
-    l += baseX - baseX * ratio;
-    t += baseY - baseY * ratio;
-    origW *= ratio;
-    origH *= ratio;
+function zoom(img: HTMLImageElement, ratio: number, baseX?: number | null, baseY?: number | null) {
+    let {
+        left,
+        width,
+        top,
+        height
+    } = getImageSize(img);
+    baseX = baseX == null ? width / 2 : baseX;
+    baseY = baseY == null ? height / 2 : baseY;
+    left += baseX - baseX * ratio;
+    top += baseY - baseY * ratio;
+    width *= ratio;
+    height *= ratio;
     img.style.cssText = `
-        width: ${origW}px;
-        height: ${origH}px;
-        left: ${l}px;
-        top: ${t}px;
+        width: ${width}px;
+        height: ${height}px;
+        left: ${left}px;
+        top: ${top}px;
     `;
+}
+
+function handleTouchZoomOut(img: HTMLImageElement, ratio: number, baseX?: number | null, baseY?: number | null) {
+    zoom(img, ratio, baseX, baseY);
+    let {
+        left,
+        top
+    } = getImageSize(img);
+    const rect = img.getBoundingClientRect();
+    if (top >= 0 && rect.bottom <= window.innerHeight) {
+        top = (window.innerHeight - rect.height) / 2;
+    } else if (top > 0 && rect.height > window.innerHeight) {
+        top = 0;
+    } else if (top < 0 && rect.height - Math.abs(top) < window.innerHeight) {
+        top = window.innerHeight - rect.height;
+    }
+
+    if (left >= 0 && rect.right <= window.innerWidth) {
+        left = (window.innerWidth - rect.width) / 2;
+    } else if (top > 0 && rect.width > window.innerWidth) {
+        left = 0;
+    } else if (top < 0 && rect.width - Math.abs(left) < window.innerWidth) {
+        left = window.innerWidth - rect.width;
+    }
+
+    img.style.left = `${left}px`;
+    img.style.top = `${top}px`;
+}
+
+function handleEdge(img: HTMLImageElement, left: number, top: number, disX: number, disY: number) {
+    const rect = img.getBoundingClientRect();
+    let _left = left + disX;
+    let _top = top + disY;
+    if ( rect.top > 0 && rect.bottom < window.innerHeight) {
+        _top = top;
+    } else if (disY > 0 && _top >= 0) {
+        _top = 0;
+    } else if (disY < 0 && rect.height - Math.abs(_top) <= window.innerHeight) {
+        _top = window.innerHeight - rect.height;
+    }
+    if (rect.left > 0 && rect.right < window.innerWidth) {
+        _left = left;
+    } else if (disX > 0 && _left >= 0) {
+        _left = 0;
+    } else if (disX < 0 && rect.width - Math.abs(_left) <= window.innerWidth) {
+        _left = window.innerWidth - rect.width;
+    }
+    img.style.left = `${_left}px`;
+    img.style.top = `${_top}px`;
 }
 
 function zoomIn(img: HTMLImageElement, baseX?: number, baseY?: number) {
@@ -55,7 +119,7 @@ function zoomOut(img: HTMLImageElement, baseX?: number, baseY?: number) {
     zoom(img, .91, baseX, baseY);
 }
 
-//zoom in out based on center
+//center image
 function center(wrapper: HTMLElement, img: HTMLImageElement) {
     let style = getComputedStyle(img);
     let w = parseFloat(style.getPropertyValue("width"));
@@ -98,5 +162,8 @@ export {
     calcScale,
     center,
     calcDistance,
-    getMiddlePos
+    getMiddlePos,
+    getImageSize,
+    handleEdge,
+    handleTouchZoomOut
 }

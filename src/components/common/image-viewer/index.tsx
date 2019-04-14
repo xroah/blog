@@ -23,7 +23,10 @@ import {
     calcScale,
     center,
     calcDistance,
-    getMiddlePos
+    getMiddlePos,
+    getImageSize,
+    handleEdge,
+    handleTouchZoomOut
 } from "./zoom";
 import Loading from "@common/loading";
 import message from "@common/message";
@@ -326,7 +329,7 @@ export default class ImageViewer extends React.Component<Props> {
     handleTouchStart = (evt: React.TouchEvent) => {
         let touches = evt.touches;
         if (touches.length === 1) {
-            let { left, top } = this.getImageSize();
+            let { left, top } = getImageSize(this.image.current);
             this.startX = touches[0].clientX;
             this.startY = touches[0].clientY;
             this.startLeft = left;
@@ -335,23 +338,6 @@ export default class ImageViewer extends React.Component<Props> {
             this.startX = [touches[0].clientX, touches[1].clientX];
             this.startY = [touches[0].clientY, touches[1].clientY];
         }
-    }
-
-    getImageSize = () => {
-        let {
-            image: { current: img }
-        } = this;
-        let style = getComputedStyle(img);
-        let width = parseFloat(style.getPropertyValue("width"));
-        let height = parseFloat(style.getPropertyValue("height"));
-        let left = parseFloat(style.getPropertyValue("left"));
-        let top = parseFloat(style.getPropertyValue("top"));
-        return {
-            width,
-            height,
-            left,
-            top
-        };
     }
 
     handleTouchMove = (evt: React.TouchEvent) => {
@@ -365,11 +351,8 @@ export default class ImageViewer extends React.Component<Props> {
         } = this
         let touches = evt.touches;
         let {
-            width,
-            height,
-            left,
-            top
-        } = this.getImageSize();
+            width
+        } = getImageSize(img);
         let disX: number;
         let disY: number;
         if (touches.length > 1) {
@@ -393,10 +376,10 @@ export default class ImageViewer extends React.Component<Props> {
             let ratio = endDis / startDis;
             if (ratio < 1) {
                 if (img.naturalWidth / width > 20) return;
-                zoom(img, 0.98, midX, midY);
+                handleTouchZoomOut(img, 0.97, midX, midY);
             } else {
                 if (width < img.naturalWidth) {
-                    zoom(img, 1.02, midX, midY);
+                    zoom(img, 1.03, midX, midY);
                 }
             }
             this.startX = [touches[0].clientX, touches[1].clientX];
@@ -404,43 +387,33 @@ export default class ImageViewer extends React.Component<Props> {
             this.resized = false;
         } else {
             this.endX = touches[0].clientX;
-            const rect = img.getBoundingClientRect();
-            if (
-                resized
-            ) return;
+            if (resized) return;
             disX = touches[0].clientX - (startX as any);
             disY = touches[0].clientY - (startY as any);
-            let _left = startLeft + disX;
-            let _top = startTop + disY;
-            console.log(rect)
-            if (rect.bottom < window.innerHeight && rect.top > 0) {
-                _top = startTop;
-            } else if (disY > 0 && rect.top >= 0) {
-                _top = 0;
-            } else if (disY < 0 && rect.bottom <= window.innerHeight) {
-                _top = window.innerHeight - height;
-            }
-            if (rect.left > 0 && rect.right < window.innerWidth) {
-                _left = startLeft;
-            } else if (disX > 0 && rect.left >= 0) {
-                _left = 0;
-            } else if (disX < 0 && rect.right <= window.innerWidth) {
-                _left = window.innerWidth - width;
-            }
-            img.style.left = `${_left}px`;
-            img.style.top = `${_top}px`;
+            handleEdge(img, startLeft, startTop, disX, disY);
+        }
+    }
+
+    touchSwitch = (disX: number) => {
+        if (disX <= -100) {
+            this.next();
+        } else if (disX >= 100) {
+            this.prev();
         }
     }
 
     handleTouchEnd = (evt: React.TouchEvent) => {
         let touches = evt.touches;
-        let { width } = this.getImageSize();
+        let {
+            width,
+            left,
+            top
+        } = getImageSize(this.image.current);
         if (width < window.innerWidth) {
             this.resize();
         }
         const len = touches.length;
         if (len === 1) {
-            let { left, top } = this.getImageSize();
             //only one finger,reset start positions
             //when moving finger, move the image
             this.startLeft = left;
@@ -450,12 +423,9 @@ export default class ImageViewer extends React.Component<Props> {
         } else if (!len) {
             let disX = this.endX - (this.startX as number);
             if (this.resized) {
-                if (disX <= -50) {
-                    this.next();
-                } else if (disX >= 50) {
-                    this.prev();
-                }
-                return;
+                this.touchSwitch(disX);
+            } else if (left >= 0 || width - Math.abs(left) <= window.innerWidth) {
+                this.touchSwitch(disX);
             }
         }
     }
