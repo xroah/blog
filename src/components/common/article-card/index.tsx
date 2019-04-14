@@ -48,10 +48,12 @@ class ArticleCard extends React.Component<Props> {
     handleEdit = () => {
         let {
             id,
-            history
+            history,
+            location: { search }
         } = this.props;
         history.push("/xsys/article/edit", {
-            id
+            id,
+            search
         });
     }
 
@@ -68,8 +70,8 @@ class ArticleCard extends React.Component<Props> {
                 吗?
             </>,
             () => {
-            delArticle(id);
-        });
+                delArticle(id);
+            });
     }
 
     viewArticle = () => {
@@ -109,7 +111,8 @@ class ArticleCard extends React.Component<Props> {
                                     ) : null
                             } />
                         <CardContent className="card-content">
-                            <div onClick={this.viewArticle} className="article-summary">                {article.summary}
+                            <div onClick={this.viewArticle} className="article-summary">
+                                {article.summary}...
                             </div>
                             <div className="tag-list">
                                 {

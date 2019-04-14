@@ -55,7 +55,13 @@ export default class Articles extends React.Component<Props> {
     }
 
     toAdd = () => {
-        this.props.history.push("/xsys/article/edit");
+        const {
+            location: { search },
+            history
+        } = this.props;
+        history.push("/xsys/article/edit", {
+            search
+        });
     }
 
     handlePageChange = (page: number) => {

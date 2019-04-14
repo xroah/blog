@@ -14,7 +14,7 @@ import _fetch from "@common/fetch";
 import message from "@common/message";
 import ClsList from "@containers/admin/article-edit-cls-list";
 import NoArticle from "@common/no-article";
-import { UPLOAD_FILE} from "@common/api";
+import { UPLOAD_FILE } from "@common/api";
 import "./index.scss";
 import Quill from "quill";
 
@@ -33,7 +33,8 @@ export default class ArticleEdit extends React.Component<Props> {
         tags: "",
         secret: false,
         error: false,
-        message: ""
+        message: "",
+        search: ""
     };
 
     fileEl: React.RefObject<HTMLInputElement> = React.createRef();
@@ -74,12 +75,17 @@ export default class ArticleEdit extends React.Component<Props> {
             history: { location: { state } }
         } = this.props;
         changeSaved(false);
-        if (state && state.id) {
-            fetchArticleById(
-                this.id = state.id,
-                this.fetchSuccess,
-                this.fetchError
-            );
+        if (state) {
+            if (state.id) {
+                fetchArticleById(
+                    this.id = state.id,
+                    this.fetchSuccess,
+                    this.fetchError
+                );
+            }
+            this.setState({
+                search: state.search
+            });
         }
         window.onbeforeunload = () => "文章未保存,确定要离开吗?";
         document.title = "文章编辑";
@@ -181,18 +187,20 @@ export default class ArticleEdit extends React.Component<Props> {
 
     render() {
         let {
-            title,
-            cls,
-            secret,
-            tags,
-            error,
-            message
-        } = this.state;
-
-        let { saved } = this.props;
+            state: {
+                title,
+                cls,
+                secret,
+                tags,
+                error,
+                message,
+                search
+            },
+            props: { saved }
+        } = this;
 
         if (error) {
-            return <NoArticle message={message}/>
+            return <NoArticle message={message} />
         }
 
         return (
@@ -252,7 +260,7 @@ export default class ArticleEdit extends React.Component<Props> {
                         variant="contained"
                         onClick={this.save}
                         color="primary">保存</Button>
-                    <Link to="/xsys/articles">
+                    <Link to={`/xsys/articles${search || ""}`}>
                         <Button
                             style={{ marginLeft: 20 }}
                             className="ml-10"
