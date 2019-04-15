@@ -62,15 +62,12 @@ export default class Calendar extends React.Component {
 
     getMonthDays(year: number, mon: number) {
         let monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-        let oneDay = 24 * 60 * 60 * 1000;
-        let totalItems = 42;
         let firstDay = new Date(`${year}/${mon + 1}/01`);
         let week = firstDay.getDay();
         if (mon === 1 && this.isLeap(year)) {
             monthDays[1] = 29;
         }
         let curDays = monthDays[mon];
-        let lastDay = new Date(`${year}/${mon + 1}/${curDays}`);
         let days = [];
         let index = 0;
         for (let i = 1; i <= curDays; i++) {
@@ -109,26 +106,10 @@ export default class Calendar extends React.Component {
         }
         if (week !== 0) {
             for (let i = 1; i <= week; i++) {
-                let prev = new Date(firstDay.getTime() - oneDay * i);
-                days.unshift({
-                    year: prev.getFullYear(),
-                    mon: prev.getMonth(),
-                    day: prev.getDate(),
-                    id: uuid++
-                });
+                days.unshift(null)
             }
         }
-        if (days.length <= totalItems) {
-            for (let i = 1, t = totalItems - days.length; i <= t; i++) {
-                let next = new Date(lastDay.getTime() + oneDay * i);
-                days.push({
-                    year: next.getFullYear(),
-                    mon: next.getMonth(),
-                    day: next.getDate(),
-                    id: uuid++
-                });
-            }
-        }
+        console.log(days)
         return days;
     }
 
@@ -147,11 +128,13 @@ export default class Calendar extends React.Component {
         let ret = [];
         if (!days) return null;
         for (let i = 0, l = days.length; i < l; i += 7) {
+            let cls = classnames("item-list", {"flex-end": i === 0});
             ret.push(
-                <List key={uuid++} className="item-list">
+                <List key={uuid++} className={cls}>
                     {
                         Array.from({ length: 7 }).map((item, index) => {
                             let tmp: any = days[i + index];
+                            if (!tmp) return null;
                             let date = new Date(`${tmp.year}/${tmp.mon + 1}/${tmp.day}`);
                             let dayStr = `${tmp.mon + 1}.${tmp.day}`;
                             let fes = tmp.fes || FESTIVAL[dayStr]|| "";
