@@ -24,6 +24,11 @@ export default class ImageComp extends React.Component<Props> {
     loaded: boolean = false;
     error: boolean = false;
 
+    state = {
+        loaded: false,
+        error: false
+    };
+
     handleMouseEvent = (evt: React.MouseEvent<HTMLImageElement> & React.WheelEvent<HTMLImageElement>) => {
         let {
             onMouseDown,
@@ -50,11 +55,18 @@ export default class ImageComp extends React.Component<Props> {
 
     handleLoad = () => {
         this.loaded = true;
+        this.setState({
+            loaded: true
+        });
         this.resize(true);
     }
 
     handleError = () => {
-        this.error = true;
+        this.error = this.loaded = true;
+        this.setState({
+            error: true,
+            loaded: true
+        });
     }
 
     //fit screen or real size
@@ -63,24 +75,9 @@ export default class ImageComp extends React.Component<Props> {
             loaded,
             error,
             image: { current: img },
-            wrapper: { current: wrapper },
-            props: { rotateAngle }
+            wrapper: { current: wrapper }
         } = this;
         if (loaded && !error) {
-            /* let width: number;
-            let height: number;
-            //rotate 0 deg or 180deg;
-            if (rotateAngle / 90 % 2 === 0) {
-                width = window.innerWidth;
-                height = window.innerHeight;
-            } else {
-                //90deg or 270deg;
-                width = window.innerHeight;
-                height = window.innerWidth;
-            }
-            wrapper.style.width = `${width}px`;
-            wrapper.style.height = `${height}px`; */
-            //after update(width and height of wrapper changed)
             setTimeout(() => {
                 calcScale(img, wrapper, fit);
                 center(wrapper, img);
@@ -105,6 +102,10 @@ export default class ImageComp extends React.Component<Props> {
             translateX,
             rotateAngle
         } = this.props;
+        let {
+            loaded,
+            error
+        } = this.state;
         let style: React.CSSProperties = {
             transform: `rotate(${rotateAngle}deg) translateX(${translateX}px)`,
             left: 0,
@@ -129,20 +130,28 @@ export default class ImageComp extends React.Component<Props> {
                 ref={this.wrapper}
                 style={style}
                 className="img-wrapper transition">
-                <img
-                    ref={this.image}
-                    draggable={false}
-                    className={imgClass}
-                    onLoad={this.handleLoad}
-                    onError={this.handleError}
-                    onMouseDown={this.handleMouseEvent}
-                    onWheel={this.handleMouseEvent}
-                    onMouseUp={this.handleMouseUp}
-                    onClick={this.preventClick}
-                    src={src} />
-                {/* <div className="loading-status">
-                    <CircularProgress/>
-                </div> */}
+                {
+                    error ? <span>图片加载出错</span> : (
+                        <img
+                            ref={this.image}
+                            draggable={false}
+                            className={imgClass}
+                            onLoad={this.handleLoad}
+                            onError={this.handleError}
+                            onMouseDown={this.handleMouseEvent}
+                            onWheel={this.handleMouseEvent}
+                            onMouseUp={this.handleMouseUp}
+                            onClick={this.preventClick}
+                            src={src} />
+                    )
+                }
+                {
+                    !loaded && (
+                        <div className="loading-status">
+                            <CircularProgress />
+                        </div>
+                    )
+                }
             </div>
         );
     }

@@ -1,20 +1,24 @@
 @import "../styles/variables";
 
 .image-viewer-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    @mixin position {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    @mixin center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    @include center();
+    @include position();
     background-color: rgba(0, 0, 0, .3);
     z-index: 999999;
-
-    .loading-wrapper {
-        background-color: transparent;
-    }
 
     .close-btn {
         position: absolute;
@@ -67,6 +71,12 @@
         bottom: 50px;
         transform: translateX(-50%);
         z-index: 99;
+    }
+
+    .loading-status {
+        @include center();
+        @include position();
+        z-index: 10;
     }
 
     button {
