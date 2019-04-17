@@ -4,7 +4,7 @@ import {
     withRouter
 } from "react-router-dom";
 import ArticleCard from "@common/article-card";
-import InlineLoading from "../loading";
+import InlineLoading from "@common/inline-loading";
 import NoResult from "@common/no-article";
 import "./index.scss";
 
