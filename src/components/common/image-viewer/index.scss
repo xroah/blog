@@ -24,7 +24,10 @@
     }
 
     .img-wrapper {
-        position: relative;
+        position: absolute;
+        left: 0;
+        top: 0;
+        overflow: hidden;
 
         img {
             position: absolute;
@@ -35,6 +38,10 @@
                 cursor: grabbing;
             }
         }
+    }
+
+    .transition {
+        transition: transform .3s;
     }
 
     .nav-btn {

@@ -1,50 +1,40 @@
 import * as React from "react";
 import {
-    ZoomIn,
-    ZoomOut,
-    RotateLeft,
-    RotateRight,
-    NavigateBefore,
-    NavigateNext,
-    PhotoSizeSelectActual,
-    CropSquare,
-    SaveAlt,
-    Close
-} from "@material-ui/icons";
-import {
     IconButton,
-    Toolbar,
     Zoom
 } from "@material-ui/core";
+import {
+    Close, Translate
+} from "@material-ui/icons";
 import {
     zoom,
     zoomIn,
     zoomOut,
-    calcScale,
-    center,
     calcDistance,
     getMiddlePos,
     getImageSize,
     handleEdge,
     handleTouchZoomOut
 } from "./zoom";
-import Loading from "@common/loading";
 import message from "@common/message";
 import { download } from "@common/util";
+import ImageComp from "./image";
+import ViewerToolbar from "./toolbar";
 import "./index.scss";
+
+let uuid = 0;
 
 interface Props {
     //find images element from, default body
     findFrom?: HTMLElement;
 }
 
+const MARGIN = 20;
+
 export default class ImageViewer extends React.Component<Props> {
 
     timer: NodeJS.Timeout;
-    image: React.RefObject<HTMLImageElement> = React.createRef();
-    imgWrapper: React.RefObject<HTMLDivElement> = React.createRef();
     root: React.RefObject<HTMLDivElement> = React.createRef();
-    rotateAngle: number = 0;
     mouseDowned: boolean = false;
     startX: number | number[] = 0;
     startY: number | number[] = 0;
@@ -53,6 +43,9 @@ export default class ImageViewer extends React.Component<Props> {
     startTop: number = 0;
     imgCls = `img-${Date.now()}`;
     resized = false;
+    current: any;
+    isTransitionEnd: boolean = true;
+    img: HTMLImageElement;
 
     static defaultProps = {
         findFrom: document.body
@@ -60,11 +53,9 @@ export default class ImageViewer extends React.Component<Props> {
 
     state = {
         visible: false,
-        current: "",
         images: [],
         index: 0,
-        loaded: false,
-        error: false
+        curImages: []
     };
 
     componentDidMount() {
@@ -79,31 +70,6 @@ export default class ImageViewer extends React.Component<Props> {
         document.body.removeEventListener("touchmove", this.preventDefault);
     }
 
-    handleImageLoad = () => {
-        this.setState({
-            loaded: true,
-            error: false
-        }, () => {
-            this.rotate(0);
-        });
-    }
-
-    handleImageError = () => {
-        let {
-            state: {
-                current,
-                visible
-            }
-        } = this;
-        if (visible && current) {
-            message.error("图片加载出错");
-        }
-        this.setState({
-            error: true,
-            loaded: false
-        });
-    }
-
     preventDefault = (evt: TouchEvent | WheelEvent) => {
         evt.preventDefault();
     }
@@ -116,37 +82,48 @@ export default class ImageViewer extends React.Component<Props> {
         document.body.removeEventListener("wheel", this.preventDefault);
     }
 
+    getCurrent = (isImage: boolean = false) => {
+        if (!this.current) return null;
+        const current = this.current.ref.current as ImageComp;
+        if (!current) return null;
+        return isImage ? current.image.current : current;
+    }
+
     handleClickImage = (evt: MouseEvent) => {
         if (evt.button !== 0) return;//right click also fire click event in firefox
         let tgt = evt.target as HTMLImageElement;
         let nodeName = tgt.nodeName.toLowerCase();
         let {
-            image: { current: img },
             props: { findFrom },
             state: {
-                current,
                 index
             },
             imgCls
         } = this;
-        if (nodeName === "img" && tgt !== img && findFrom.contains(tgt)) {
+        if (nodeName === "img" && findFrom.contains(tgt)) {
             let imgs = Array.from(
                 findFrom.querySelectorAll(`img:not(.${imgCls})`)
             ).map((i: HTMLImageElement) => i.src);
-            let state: any = {
+            let state = {
                 visible: true,
-                images: imgs
+                images: imgs,
+                curImages: [],
+                rotateAngle: 0,
+                index
             };
-            if (current !== tgt.src) {
-                state.current = tgt.src;
-                state.loaded = false;
-                for (let i = 0, l = imgs.length; i < l; i++) {
-                    if (tgt.src === imgs[i]) {
-                        index = i;
-                        break;
-                    }
+            let src: string;
+            for (let i = 0, l = imgs.length; i < l; i++) {
+                if (tgt.src === imgs[i]) {
+                    index = i;
+                    src = imgs[i];
+                    break;
                 }
             }
+            state.curImages.push(this.current = this.getItem(src, 0));
+            let next = this.getNext(index, imgs);
+            let prev = this.getPrev(index, imgs);
+            next && state.curImages.push(next);
+            prev && state.curImages.unshift(prev);
             state.index = index;
             //prevent from scaling the page
             document.body.addEventListener("touchmove", this.preventDefault, { passive: false });
@@ -156,70 +133,132 @@ export default class ImageViewer extends React.Component<Props> {
         }
     }
 
-    to = (index: number) => {
+    getItem = (src: string, translateX: number) => {
+        return {
+            src,
+            translateX,
+            ref: React.createRef(),
+            id: uuid++,
+            rotateAngle: 0
+        }
+    }
+
+    getPrev = (index: number, images: any[]) => {
+        if (index > 0) {
+            return this.getItem(images[index - 1], -window.innerWidth - MARGIN);
+        }
+    }
+
+    getNext = (index: number, images: any[]) => {
+        if (index < images.length - 1) {
+            return this.getItem(images[index + 1], window.innerWidth + MARGIN);
+        }
+    }
+
+    to = (dir: number) => {
         let {
-            state: { images },
-            image: { current: image }
-        } = this;
-        if (index < 0 || index >= images.length) return;
-        image.style.width = "0px";
-        image.style.height = "0px";
-        this.setState({
+            images,
             index,
-            current: images[index],
-            loaded: false
+            curImages
+        } = this.state;
+        let _index = index + dir;
+        if (index > images.length - 1 || index < 0 || !this.isTransitionEnd) return;
+        this.setState({
+            rotateAngle: 0
         });
+        this.isTransitionEnd = false;
+        if (index === 0) {
+            curImages.unshift(null);
+        } else if (index === images.length - 1) {
+            curImages.push(null);
+        }
+        let first = curImages[0];
+        let mid = curImages[1];
+        let last = curImages[2];
+        if (dir === 1) {
+            last.translateX = 0;
+            mid.translateX = -window.innerWidth - MARGIN;
+        } else if (dir === -1) {
+            first.translateX = 0;
+            mid.translateX = window.innerWidth + MARGIN;
+        }
+        this.setState(
+            {
+                curImages: [first, mid, last].map(img => {
+                    if (img && img.id === this.current.id) {
+                        //rotate to 0deg
+                        img.rotateAngle = 0;
+                    }
+                    return img;
+                })
+            },
+            //then resize the current img
+            () => this.resize()
+        );
+        //after transition end
+        setTimeout(() => {
+            // mid.cls = "";
+            if (dir === 1) {
+                curImages = [mid, last];
+                this.current = last;
+                if (_index < images.length - 1) {
+                    curImages.push(this.getNext(_index, images));
+                }
+            } else if (dir === -1) {
+                curImages = [first, mid];
+                this.current = first;
+                if (_index > 0) {
+                    curImages.unshift(this.getPrev(_index, images));
+                }
+            }
+            this.setState({
+                curImages,
+                index: _index
+            });
+            this.isTransitionEnd = true;
+        }, 300);
     }
 
     next = () => {
-        this.to(this.state.index + 1);
+        this.to(1);
     }
 
     prev = () => {
-        this.to(this.state.index - 1);
+        this.to(-1);
     }
 
     handleResize = () => {
         if (this.timer != undefined) {
             clearTimeout(this.timer);
         }
-        this.timer = setTimeout(this.resize, 300);
-    }
-
-    //fit screen or real size
-    resize = (fit: boolean = true) => {
-        let {
-            state: { loaded, error },
-            image: { current: img },
-            imgWrapper: { current: wrapper },
-            rotateAngle
-        } = this;
-        if (loaded && !error) {
-            let width;
-            let height;
-            //rotate 0 deg or 180deg;
-            if (rotateAngle / 90 % 2 === 0) {
-                width = window.innerWidth;
-                height = window.innerHeight;
-            } else {
-                //90deg or 270deg;
-                width = window.innerHeight;
-                height = window.innerWidth;
-            }
-            wrapper.style.width = `${width}px`;
-            wrapper.style.height = `${height}px`;
-            calcScale(img, wrapper, fit);
-            center(wrapper, img);
-            this.resized = true;
-        }
+        this.timer = setTimeout(() => {
+            let { curImages } = this.state;
+            curImages = curImages.map(img => {
+                if (img) {
+                    const ref = img.ref.current as ImageComp;
+                    ref && ref.resize();
+                    if (img.translateX < 0) {
+                        img.translateX = -window.innerWidth - MARGIN
+                    } else if (img.translateX > 0) {
+                        img.translateX = window.innerWidth + MARGIN;
+                    }
+                }
+                return img;
+            });
+            this.setState({
+                curImages
+            });
+        }, 300);
     }
 
     handleZoomIn = () => {
-        zoomIn(this.image.current);
+        let img = this.getCurrent(true) as HTMLImageElement;
+        img && zoomIn(img);
     }
 
     handleZoomOut = () => {
-        zoomOut(this.image.current);
+        let img = this.getCurrent(true) as HTMLImageElement;
+        img && zoomOut(img);
     }
 
     //reset to real size
@@ -227,44 +266,49 @@ export default class ImageViewer extends React.Component<Props> {
         this.resize(false);
     }
 
+    resize = (fit: boolean = true) => {
+        if (this.current) {
+            let ref = this.current.ref.current as ImageComp;
+            ref && ref.resize(fit);
+        }
+    }
+
     rotate = (angle: number) => {
-        let {
-            imgWrapper: { current: wrapper },
-            state: { loaded, error }
-        } = this;
-        if (!loaded || error) return;
-        this.rotateAngle = angle;
-        wrapper.style.transform = `rotate(${angle}deg)`;
-        this.resize();
+        const current = this.getCurrent() as ImageComp;
+        if (!current || !current.loaded || current.error) return;
+        let { curImages } = this.state;
+        curImages = curImages.map(img => {
+            if (img.id === this.current.id) {
+                img.rotateAngle = angle;
+            }
+            return img;
+        });
+        this.setState({
+            curImages
+        });
+        setTimeout(() => {
+            const current = this.getCurrent() as ImageComp;
+            if (current) {
+                current.resize();
+            }
+        });
     }
 
     rotateLeft = () => {
-        let angle = this.rotateAngle;
-        if (angle === 0) {
-            angle = 270;
-        } else {
-            angle -= 90;
-        }
+        if (!this.current) return;
+        let angle = this.current.rotateAngle;
+        angle -= 90;
         this.rotate(angle);
     }
 
     rotateRight = () => {
-        let angle = this.rotateAngle;
-        if (angle === 270) {
-            angle = 0;
-        } else {
-            angle += 90;
-        }
+        if (!this.current) return;
+        let angle = this.current.rotateAngle || 0;
+        angle += 90;
         this.rotate(angle);
     }
 
-    handleMouseWheel = (evt: React.WheelEvent) => {
-        let dir = evt.deltaY;
-        let x = evt.nativeEvent.offsetX;
-        let y = evt.nativeEvent.offsetY;
-        let {
-            image: { current: img }
-        } = this;
+    handleMouseWheel = (img: HTMLImageElement, x: number, y: number, dir: number) => {
         if (dir < 0) {
             zoomIn(img, x, y);
         } else {
@@ -273,31 +317,32 @@ export default class ImageViewer extends React.Component<Props> {
         this.resized = false;
     }
 
-    handleMouseDown = (evt: React.MouseEvent) => {
-        let style = getComputedStyle(this.image.current);
+    handleMouseDown = (img: HTMLImageElement, x: number, y: number) => {
+        let style = getComputedStyle(img);
         this.mouseDowned = true;
-        this.startX = evt.clientX;
-        this.startY = evt.clientY;
+        this.startX = x;
+        this.startY = y;
         this.startLeft = parseFloat(style.getPropertyValue("left"));
         this.startTop = parseFloat(style.getPropertyValue("top"));
+        this.img = img;
     }
 
     handleMouseMove = (evt: React.MouseEvent) => {
         let {
-            image: { current: img },
             mouseDowned,
-            rotateAngle,
             startLeft,
-            startTop
+            startTop,
+            img
         } = this;
-        if (!mouseDowned) return;
+        if (!img || !mouseDowned) return;
         let x = evt.clientX;
         let y = evt.clientY;
         let sx: any = this.startX;
         let sy: any = this.startY;
         let disX: any;
         let disY: number;
-        switch (rotateAngle) {
+        const angle = this.current.rotateAngle;
+        switch (angle) {
             case 90:
                 disX = y - sy;
                 disY = sx - x;
@@ -323,7 +368,8 @@ export default class ImageViewer extends React.Component<Props> {
     }
 
     download = () => {
-        download(this.image.current.src);
+        let img = this.getCurrent(true) as HTMLImageElement;
+        img && download(img.src);
     }
 
     handleTouchStart = (evt: React.TouchEvent) => {
@@ -431,43 +477,12 @@ export default class ImageViewer extends React.Component<Props> {
     }
 
     render() {
-        const btns = [{
-            icon: ZoomIn,
-            title: "放大",
-            handler: this.handleZoomIn
-        }, {
-            icon: ZoomOut,
-            title: "缩小",
-            handler: this.handleZoomOut
-        }, {
-            icon: PhotoSizeSelectActual,
-            title: "原始大小",
-            handler: this.reset
-        }, {
-            icon: CropSquare,
-            title: "适应屏幕",
-            handler: this.resize
-        }, {
-            icon: RotateLeft,
-            title: "左旋转90度",
-            handler: this.rotateLeft
-        }, {
-            icon: RotateRight,
-            title: "右旋转90度",
-            handler: this.rotateRight
-        }, {
-            icon: SaveAlt,
-            title: "下载",
-            handler: this.download
-        }];
 
         let {
             visible,
-            loaded,
-            current,
             images,
             index,
-            error
+            curImages
         } = this.state;
         return (
             <Zoom in={visible}>
@@ -485,61 +500,35 @@ export default class ImageViewer extends React.Component<Props> {
                         className="close-btn">
                         <Close fontSize="large" />
                     </IconButton>
+                    <ViewerToolbar
+                        showPrev={index > 0}
+                        showNext={index < images.length - 1}
+                        zoomIn={this.handleZoomIn}
+                        zoomOut={this.handleZoomOut}
+                        reset={this.reset}
+                        resize={this.resize}
+                        rotateLeft={this.rotateLeft}
+                        rotateRight={this.rotateRight}
+                        download={this.download}
+                        prev={this.prev}
+                        next={this.next} />
                     {
-                        images.length > 1 && (
-                            <>
-                                {
-                                    index > 0 && (
-                                        <IconButton
-                                            onClick={this.prev}
-                                            className="nav-btn nav-prev"
-                                            title="上一张">
-                                            <NavigateBefore fontSize="large" />
-                                        </IconButton>
-                                    )
-                                }
-                                {
-                                    index < images.length - 1 && (
-                                        <IconButton
-                                            onClick={this.next}
-                                            className="nav-btn nav-next"
-                                            title="下一张">
-                                            <NavigateNext fontSize="large" />
-                                        </IconButton>
-                                    )
-                                }
-                            </>
-                        )
+                        curImages.map(img => {
+                            if (!img) return null;
+                            return (
+                                <ImageComp
+                                    key={img.id}
+                                    src={img.src}
+                                    translateX={img.translateX}
+                                    rotateAngle={img.rotateAngle || 0}
+                                    imgClass={this.imgCls}
+                                    ref={img.ref}
+                                    onMouseDown={this.handleMouseDown}
+                                    onMouseWheel={this.handleMouseWheel} />
+                            );
+                        })
                     }
-                    {!loaded && !error && <Loading />}
-                    <div ref={this.imgWrapper} className="img-wrapper">
-                        <img
-                            draggable={false}
-                            src={current}
-                            className={this.imgCls}
-                            onLoad={this.handleImageLoad}
-                            onError={this.handleImageError}
-                            onWheel={this.handleMouseWheel}
-                            onMouseDown={this.handleMouseDown}
-                            onTouchStart={this.handleTouchStart}
-                            onTouchMove={this.handleTouchMove}
-                            onTouchEnd={this.handleTouchEnd}
-                            ref={this.image} />
-                    </div>
-                    <Toolbar className="tool-bar">
-                        {
-                            btns.map(
-                                btn => (
-                                    <IconButton
-                                        onClick={btn.handler}
-                                        title={btn.title}
-                                        key={btn.title}>
-                                        {React.createElement(btn.icon)}
-                                    </IconButton>
-                                )
-                            )
-                        }
-                    </Toolbar>
+
                 </div>
             </Zoom>
         );
