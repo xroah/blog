@@ -1,14 +1,15 @@
 import * as React from "react";
-import { 
+import {
     render,
     unmountComponentAtNode
- } from "react-dom";
+} from "react-dom";
+import { CircularProgress } from "@material-ui/core";
 import "./index.scss";
 
-export default function Loading () {
+export default function Loading() {
     return (
         <div className="loading-wrapper">
-           <div className="loading-rotate"></div> 
+            <CircularProgress className="loading-indicator"/>
         </div>
     );
 }
@@ -20,7 +21,7 @@ const loading = {
         if (!div.parentNode) {
             document.body.appendChild(div);
         }
-        render(<Loading/>, div);
+        render(<Loading />, div);
     },
     hide() {
         unmountComponentAtNode(div);

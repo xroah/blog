@@ -3,7 +3,7 @@ $defaultBorderColor: #d9d9d9;
 
 $primaryColor: #2196f3;
 $errorColor: #d32f2f;
-$infoColor: #1976d2; 
+$infoColor: #1976d2;
 $successColor: #43a047;
 
 $maxResolution: 640px;
@@ -14,4 +14,18 @@ $maxPageWidth: 1000px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+@mixin fixed {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+@mixin flex_center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

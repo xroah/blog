@@ -9,6 +9,7 @@ import Homepage from "../homepage";
 import PhotoAlbum from "@containers/common/photo-album";
 import ViewArticle from "@containers/common/view-article";
 import AlbumImages from "@containers/common/album-image";
+import About from "@common/about";
 import {
     FETCH_PUBLIC_ARTICLE,
     PUBLIC_ALBUM_URL,
@@ -38,6 +39,7 @@ export default class UserHome extends React.Component {
                     <Route exact path="/photo-album" component={_PhotoAlbum} />
                     <Route exact path="/photo-album/:id" component={_AlbumImages} />
                     <Route exact path="/articles/:id" component={_ViewArticle} />
+                    <Route exact path="/about" component={About}/>
                     <Redirect to="/404" />
                 </Switch>
             </section>

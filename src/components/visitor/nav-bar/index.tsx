@@ -70,6 +70,7 @@ export default class NavBar extends React.Component {
                         <div className="nav-menu">
                             <NavLink to="/" exact className="nav-link">首页</NavLink>
                             <NavLink to="/photo-album" className="nav-link">相册</NavLink>
+                            <NavLink to="/about" className="nav-link">关于</NavLink>
                         </div>
                     </Toolbar>
                     <Drawer className="drawer-nav" open={visible} onClose={this.closeMenu}>

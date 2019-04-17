@@ -11,9 +11,11 @@ export const ADMIN_ALBUM_URL = "/api/xsys/album";
 export const ADMIN_IMAGE_URL = "/api/xsys/image";
 export const SET_ALBUM_COVER = "/api/xsys/setAlbumCover"
 export const STATISTICS = "/api/xsys/count";
+export const UPDATE_VERSION = "/api/xsys/version";
 
 export const FETCH_COMMENT = "/api/comment";
 export const FETCH_PUBLIC_ARTICLE = "/api/articles/list";
 export const UPDATE_VIEWED_TIME = "/api/updateViewedTime";
 export const PUBLIC_ALBUM_URL = "/api/album";
 export const PUBLIC_IMAGE_URL = "/api/image";
+export const FETCH_VERSION = "/api/version";

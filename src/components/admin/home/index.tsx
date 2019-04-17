@@ -11,6 +11,8 @@ import ViewArticle from "@containers/common/view-article";
 import CommentsManagement from "../comment-management";
 import AlbumImages from "@containers/common/album-image";
 import UploadImage from "@containers/admin/upload-dialog";
+import Version from "../version";
+import About from "@common/about";
 import {
     ADMIN_ARTICLE_URL,
     ADMIN_ALBUM_URL,
@@ -49,6 +51,8 @@ export default class AdminHome extends React.Component {
                         <Route path="/xsys/article/edit" exact component={ArticleEdit} />
                         <Route path="/xsys/articles" exact component={Articles} />
                         <Route path="/xsys/articles/:id" exact component={_ViewArticle} />
+                        <Route path="/xsys/version" exact component={Version} />
+                        <Route path="/xsys/about" exact component={About} />
                         <Redirect to="/404" />
                     </Switch>
                     <ModifyPwd />
