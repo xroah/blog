@@ -15,6 +15,7 @@
     }
 
     .img-wrapper {
+        @include flex_center();
         position: absolute;
         left: 0;
         top: 0;

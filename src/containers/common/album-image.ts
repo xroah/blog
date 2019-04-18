@@ -4,11 +4,12 @@ import {
      FETCH_IMAGES_START,
      EMPTY_IMAGES,
      SHOW_UPLOAD_DIALOG,
-     DELETE_IMAGE_BY_ID,
-     FETCH_ALBUMS_START,
-     UPDATE_IMAGE_NAME_BY_ID,
      FETCH_ALBUM_BY_ID_START
  } from "@redux/actions";
+ import {
+     ADMIN_ALBUM_URL,
+     PUBLIC_ALBUM_URL
+ } from "@common/api";
 
 export default connect(
     (state: any) => ({
@@ -27,7 +28,8 @@ export default connect(
         fetchAlbum(id: string) {
             dispatch({
                 ...FETCH_ALBUM_BY_ID_START,
-                id
+                id,
+                url: ownProps.isAdmin ? ADMIN_ALBUM_URL : PUBLIC_ALBUM_URL
             });
         },
         emptyImages() {

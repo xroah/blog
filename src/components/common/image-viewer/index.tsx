@@ -16,7 +16,6 @@ import {
     handleEdge,
     handleTouchZoomOut
 } from "./zoom";
-import message from "@common/message";
 import { download } from "@common/util";
 import ImageComp from "./image";
 import ViewerToolbar from "./toolbar";
@@ -60,26 +59,30 @@ export default class ImageViewer extends React.Component<Props> {
 
     componentDidMount() {
         window.addEventListener("resize", this.handleResize);
-        window.addEventListener("click", this.handleClickImage);
+        document.body.addEventListener("click", this.handleClickImage);
     }
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.handleResize);
-        window.removeEventListener("click", this.handleClickImage);
-        document.body.removeEventListener("wheel", this.preventDefault);
+        document.body.removeEventListener("click", this.handleClickImage);
+        this.offEvent();
+    }
+
+    offEvent = () => {
         document.body.removeEventListener("touchmove", this.preventDefault);
+        document.body.removeEventListener("wheel", this.preventDefault);
+        document.removeEventListener("keyup", this.handleKeyDown);
     }
 
     preventDefault = (evt: TouchEvent | WheelEvent) => {
         evt.preventDefault();
     }
 
-    handleClose = (evt: React.MouseEvent) => {
+    handleClose = () => {
         this.setState({
             visible: false
         });
-        document.body.removeEventListener("touchmove", this.preventDefault);
-        document.body.removeEventListener("wheel", this.preventDefault);
+        this.offEvent();
     }
 
     getCurrent = (isImage: boolean = false) => {
@@ -98,30 +101,34 @@ export default class ImageViewer extends React.Component<Props> {
             state: {
                 index
             },
-            imgCls
+            imgCls,
+            root: {current: root}
         } = this;
+        if (root.contains(tgt)) return;
         if (nodeName === "img" && findFrom.contains(tgt)) {
-            let imgs = Array.from(
-                findFrom.querySelectorAll(`img:not(.${imgCls})`)
-            ).map((i: HTMLImageElement) => i.src);
+            let imgs = findFrom.querySelectorAll(`img:not(.${imgCls})`);
+            console.log("===============>click")
             let state = {
                 visible: true,
-                images: imgs,
+                images: [],
                 curImages: [],
                 rotateAngle: 0,
                 index
             };
             let src: string;
+            let _imgs: string[] = [];
             for (let i = 0, l = imgs.length; i < l; i++) {
-                if (tgt.src === imgs[i]) {
+                const tmp = imgs[i] as HTMLImageElement; 
+                if (!src && tgt.src === tmp.src) {//src maybe duplicated
                     index = i;
-                    src = imgs[i];
-                    break;
+                    src = tmp.src;
                 }
+                _imgs.push(tmp.src);
             }
+            state.images = _imgs;
             state.curImages.push(this.current = this.getItem(src, 0));
-            let next = this.getNext(index, imgs);
-            let prev = this.getPrev(index, imgs);
+            let next = this.getNext(index, _imgs);
+            let prev = this.getPrev(index, _imgs);
             next && state.curImages.push(next);
             prev && state.curImages.unshift(prev);
             state.index = index;
@@ -129,6 +136,7 @@ export default class ImageViewer extends React.Component<Props> {
             document.body.addEventListener("touchmove", this.preventDefault, { passive: false });
             //prevent from scrolling the page
             document.body.addEventListener("wheel", this.preventDefault, { passive: false });
+            document.addEventListener("keyup", this.handleKeyDown);
             this.setState(state);
         }
     }
@@ -143,13 +151,13 @@ export default class ImageViewer extends React.Component<Props> {
         }
     }
 
-    getPrev = (index: number, images: any[]) => {
+    getPrev = (index: number, images: any) => {
         if (index > 0) {
             return this.getItem(images[index - 1], -window.innerWidth - MARGIN);
         }
     }
 
-    getNext = (index: number, images: any[]) => {
+    getNext = (index: number, images: any) => {
         if (index < images.length - 1) {
             return this.getItem(images[index + 1], window.innerWidth + MARGIN);
         }
@@ -162,10 +170,7 @@ export default class ImageViewer extends React.Component<Props> {
             curImages
         } = this.state;
         let _index = index + dir;
-        if (index > images.length - 1 || index < 0 || !this.isTransitionEnd) return;
-        this.setState({
-            rotateAngle: 0
-        });
+    if (!this.isTransitionEnd) return;
         this.isTransitionEnd = false;
         if (index === 0) {
             curImages.unshift(null);
@@ -220,10 +225,16 @@ export default class ImageViewer extends React.Component<Props> {
     }
 
     next = () => {
+        let {
+            index,
+            images
+        } = this.state;
+        if (index === images.length - 1) return;
         this.to(1);
     }
 
     prev = () => {
+        if (this.state.index === 0) return;
         this.to(-1);
     }
 
@@ -278,20 +289,14 @@ export default class ImageViewer extends React.Component<Props> {
         if (!current || !current.loaded || current.error) return;
         let { curImages } = this.state;
         curImages = curImages.map(img => {
-            if (img.id === this.current.id) {
+            if (img && img.id === this.current.id) {
                 img.rotateAngle = angle;
             }
             return img;
         });
         this.setState({
             curImages
-        });
-        setTimeout(() => {
-            const current = this.getCurrent() as ImageComp;
-            if (current) {
-                current.resize();
-            }
-        });
+        }, this.resize);
     }
 
     rotateLeft = () => {
@@ -474,6 +479,32 @@ export default class ImageViewer extends React.Component<Props> {
                 this.touchSwitch(disX);
             }
         }
+    }
+
+    handleKeyDown = (evt: KeyboardEvent) => {
+        const key = evt.key.toLowerCase();
+        const ctrlPressed = evt.ctrlKey;
+        switch (key) {
+            case "arrowleft":
+                ctrlPressed ? this.rotateLeft() : this.prev();
+                break;
+            case "arrowright":
+                ctrlPressed ? this.rotateRight() : this.next();
+                break;
+            case "escape":
+                this.handleClose();
+                break;
+            case "=":
+                ctrlPressed && this.handleZoomIn();
+                break;
+            case "-":
+                ctrlPressed && this.handleZoomOut()
+                break;
+            case "0":
+                ctrlPressed && this.resize();
+                break;
+        }
+        evt.preventDefault();
     }
 
     render() {

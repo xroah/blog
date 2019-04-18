@@ -78,21 +78,14 @@ export default class ImageComp extends React.Component<Props> {
             wrapper: { current: wrapper }
         } = this;
         if (loaded && !error) {
-            setTimeout(() => {
-                calcScale(img, wrapper, fit);
-                center(wrapper, img);
-            });
+            calcScale(img, wrapper, fit);
+            center(wrapper, img);
         }
     }
 
     //reset to real size
     reset = () => {
         this.resize(false);
-    }
-
-    preventClick = (evt: React.MouseEvent) => {
-        evt.preventDefault();
-        evt.stopPropagation();
     }
 
     render() {
@@ -131,7 +124,7 @@ export default class ImageComp extends React.Component<Props> {
                 style={style}
                 className="img-wrapper transition">
                 {
-                    error ? <span>图片加载出错</span> : (
+                    error ? <span style={{color: "red"}}>图片加载出错</span> : (
                         <img
                             ref={this.image}
                             draggable={false}
@@ -141,7 +134,6 @@ export default class ImageComp extends React.Component<Props> {
                             onMouseDown={this.handleMouseEvent}
                             onWheel={this.handleMouseEvent}
                             onMouseUp={this.handleMouseUp}
-                            onClick={this.preventClick}
                             src={src} />
                     )
                 }

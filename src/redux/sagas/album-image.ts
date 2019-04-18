@@ -47,13 +47,13 @@ function* fetchImages(action: any) {
 }
 
 function* fetchAlbum(action: any) {
-    let { id } = action;
+    let { id, url } = action;
     yield put({
         ...FETCH_ALBUM_BY_ID,
         album: null
     });
     try {
-        let album = yield call(_fetch, `${ADMIN_ALBUM_URL}?id=${id}`);
+        let album = yield call(_fetch, `${url}?id=${id}`);
         yield put({
             ...FETCH_ALBUM_BY_ID,
             album

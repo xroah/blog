@@ -43,8 +43,8 @@ class AlbumImages extends React.Component<Props> {
             fetchAlbum
         } = this.props;
         fetchImages(id);
+        fetchAlbum(id);
         if (isAdmin) {
-            fetchAlbum(id);
             eventBus.on("upload.done", this.handleUploadDone);
         }
     }
@@ -118,6 +118,8 @@ class AlbumImages extends React.Component<Props> {
         let docTitle = document.title;
         if (curAlbum && curAlbum.name !== docTitle) {
             document.title = curAlbum.name;
+        } else {
+            document.title = "相册";
         }
 
         return (
