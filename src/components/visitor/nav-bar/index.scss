@@ -16,6 +16,13 @@
     }
 }
 
+.fixed-menu {
+    display: flex;
+    li {
+        padding: 0;
+    }
+}
+
 .drawer-nav {
     ul {
         padding: 0;
