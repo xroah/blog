@@ -15,6 +15,9 @@ interface Props {
     onMouseDown?: (img: HTMLImageElement, x: number, y: number) => any;
     onMouseUp?: () => any;
     onMouseWheel?: (img: HTMLImageElement, x: number, y: number, delta: number) => any;
+    onTouchStart?: (evt: React.TouchEvent) => any;
+    onTouchMove?: (evt: React.TouchEvent) => any;
+    onTouchEnd?: (evt: React.TouchEvent) => any;
 }
 
 export default class ImageComp extends React.Component<Props> {
@@ -88,12 +91,19 @@ export default class ImageComp extends React.Component<Props> {
         this.resize(false);
     }
 
+    componentDidUpdate() {
+        this.resize();
+    }
+
     render() {
         let {
             src,
             imgClass,
             translateX,
-            rotateAngle
+            rotateAngle,
+            onTouchStart,
+            onTouchMove,
+            onTouchEnd
         } = this.props;
         let {
             loaded,
@@ -122,6 +132,9 @@ export default class ImageComp extends React.Component<Props> {
             <div
                 ref={this.wrapper}
                 style={style}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
                 className="img-wrapper transition">
                 {
                     error ? <span style={{color: "red"}}>图片加载出错</span> : (

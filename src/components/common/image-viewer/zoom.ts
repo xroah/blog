@@ -58,8 +58,8 @@ function zoom(img: HTMLImageElement, ratio: number, baseX?: number | null, baseY
     `;
 }
 
-function handleTouchZoomOut(img: HTMLImageElement, ratio: number, baseX?: number | null, baseY?: number | null) {
-    zoom(img, ratio, baseX, baseY);
+function handleTouchZoomOut(img: HTMLImageElement, ratio: number) {
+    zoom(img, ratio);
     let {
         left,
         top

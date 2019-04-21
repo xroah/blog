@@ -18,9 +18,11 @@ interface Props extends RouteComponentProps {
 }
 
 const win = window;
-const LOAD_DISTANCE = 50;
+const LOAD_DISTANCE = 100;
 
 class Articles extends React.Component<Props> {
+
+    timer: NodeJS.Timeout;
 
     componentDidMount() {
         let {
@@ -39,24 +41,30 @@ class Articles extends React.Component<Props> {
     }
 
     handleScroll = () => {
-        let {
-            page,
-            hasMore,
-            fetchArticle,
-            updatePage,
-            started
-        } = this.props;
-        if (!hasMore || started) return;
-        let htmlEl = win.document.documentElement
-        let scrollH = htmlEl.scrollHeight;
-        let sTop = htmlEl.scrollTop || win.document.body.scrollTop;
-        let winH = win.innerHeight;
-        let dis = scrollH - winH - sTop;
-        if (dis <= LOAD_DISTANCE) {
-            page++;
-            updatePage(page);
-            fetchArticle(page);
+        let scrollLoad = () => {
+            let {
+                page,
+                hasMore,
+                fetchArticle,
+                updatePage,
+                started
+            } = this.props;
+            if (!hasMore || started) return;
+            let htmlEl = win.document.documentElement
+            let scrollH = htmlEl.scrollHeight;
+            let sTop = htmlEl.scrollTop || win.document.body.scrollTop;
+            let winH = win.innerHeight;
+            let dis = scrollH - winH - sTop;
+            if (dis <= LOAD_DISTANCE) {
+                page++;
+                updatePage(page);
+                fetchArticle(page);
+            }
         }
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
+        this.timer = setTimeout(scrollLoad, 50);
     };
 
     renderArticle() {
