@@ -75,9 +75,9 @@ function handleTouchZoomOut(img: HTMLImageElement, ratio: number) {
 
     if (left >= 0 && rect.right <= window.innerWidth) {
         left = (window.innerWidth - rect.width) / 2;
-    } else if (top > 0 && rect.width > window.innerWidth) {
+    } else if (left > 0 && rect.width > window.innerWidth) {
         left = 0;
-    } else if (top < 0 && rect.width - Math.abs(left) < window.innerWidth) {
+    } else if (left < 0 && rect.width - Math.abs(left) < window.innerWidth) {
         left = window.innerWidth - rect.width;
     }
 

@@ -189,14 +189,14 @@ export default class ImageViewer extends React.Component<Props, State> {
             mid.translateX = window.innerWidth + MARGIN;
         }
         this.setState({
-                curImages: [first, mid, last].map(img => {
-                    if (img) {
-                        //rotate to 0deg
-                        img.rotateAngle = 0;
-                    }
-                    return img;
-                })
-            });
+            curImages: [first, mid, last].map(img => {
+                if (img) {
+                    //rotate to 0deg
+                    img.rotateAngle = 0;
+                }
+                return img;
+            })
+        });
         //after transition end
         setTimeout(() => {
             let curImg: any;
