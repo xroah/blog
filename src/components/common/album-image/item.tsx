@@ -11,6 +11,7 @@ interface Props {
     showContextMenu?: (x: number, y: number) => any;
     switchImage?: (image: any) => any;
     updateName?: (id: string, name: string, callback: Function) => any;
+    onClick?: (evt: React.MouseEvent, image: any) => any;
 }
 
 export default class Item extends React.Component<Props> {
@@ -106,6 +107,16 @@ export default class Item extends React.Component<Props> {
             });
     }
 
+    handleClickImage = (evt: React.MouseEvent) => {
+        let { 
+            onClick,
+            image
+         } = this.props;
+        if (typeof onClick === "function") {
+            onClick(evt, image);
+        }
+    }
+
     render() {
 
         let {
@@ -135,6 +146,7 @@ export default class Item extends React.Component<Props> {
                     <dt className="image-wrapper">
                         <img
                             src={placeholder}
+                            onClick={this.handleClickImage}
                             data-src={image.relPath} />
                     </dt>
                     <dd className="ellipsis"

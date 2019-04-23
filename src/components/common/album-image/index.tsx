@@ -40,6 +40,11 @@ class AlbumImages extends React.Component<Props> {
     observer: IntersectionObserver;
     timer: NodeJS.Timeout;
 
+    state = {
+        viewerVisible: false,
+        curImage: null
+    };
+
     isInViewport = (el: HTMLElement) => {
         const rect = el.getBoundingClientRect();
         return rect.top > 0 &&
@@ -163,6 +168,20 @@ class AlbumImages extends React.Component<Props> {
         fetchImages(id, () => this.imageFetched = true);
     }
 
+    handleClickImage = (evt: React.MouseEvent, image: any) => {
+        const tgt = evt.target as HTMLImageElement;
+        this.setState({
+            curImage: image.relPath,
+            viewerVisible: true
+        });
+    }
+
+    closeViewer = () => {
+        this.setState({
+            viewerVisible: false
+        });
+    }
+
     renderImage() {
         let {
             isAdmin,
@@ -174,6 +193,7 @@ class AlbumImages extends React.Component<Props> {
         if (list.length) {
             return list.map(
                 image => <Item
+                    onClick={this.handleClickImage}
                     isAdmin={isAdmin}
                     isCover={coverInfo._id === image._id}
                     key={image._id}
@@ -186,8 +206,14 @@ class AlbumImages extends React.Component<Props> {
     render() {
         let {
             isAdmin,
-            curAlbum
+            curAlbum,
+            list
         } = this.props;
+
+        let {
+            viewerVisible,
+            curImage
+        } = this.state;
 
         let docTitle = document.title;
         if (curAlbum && curAlbum.name !== docTitle) {
@@ -201,7 +227,12 @@ class AlbumImages extends React.Component<Props> {
                 <div className="image-list">
                     {this.renderImage()}
                 </div>
-                <ImageViewer />
+                <ImageViewer
+                    images={list}
+                    visible={viewerVisible}
+                    current={curImage}
+                    srcProp="relPath"
+                    onClose={this.closeViewer} />
                 <ContextMenu />
                 {
                     isAdmin && (

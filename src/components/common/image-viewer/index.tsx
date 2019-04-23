@@ -4,19 +4,21 @@ import {
     Zoom
 } from "@material-ui/core";
 import {
-    Close, Translate
+    Close
 } from "@material-ui/icons";
 import {
     zoom,
     zoomIn,
     zoomOut,
     calcDistance,
-    getMiddlePos,
     getImageSize,
     handleEdge,
     handleTouchZoomOut
 } from "./zoom";
-import { download } from "@common/util";
+import {
+    download,
+    eventBus
+} from "@common/util";
 import ImageComp from "./image";
 import ViewerToolbar from "./toolbar";
 import "./index.scss";
@@ -24,13 +26,48 @@ import "./index.scss";
 let uuid = 0;
 
 interface Props {
-    //find images element from, default body
-    findFrom?: HTMLElement;
+    visible?: boolean;
+    images: Array<object | string>;
+    srcProp?: string;
+    current?: string;
+    onClose: Function;
+}
+
+interface State {
+    index: number;
+    curImages: any[];
+    from?: string;
+    current: string;
+    curImg: any;
 }
 
 const MARGIN = 20;
 
-export default class ImageViewer extends React.Component<Props> {
+const getItem = (src: string, translateX: number) => {
+    return {
+        src,
+        translateX,
+        ref: React.createRef(),
+        id: uuid++,
+        rotateAngle: 0
+    }
+}
+
+const getPrev = (index: number, images: any, srcProp: string) => {
+    if (index > 0) {
+        const img = images[index - 1];
+        return getItem(srcProp ? img[srcProp] : img, -window.innerWidth - MARGIN);
+    }
+}
+
+const getNext = (index: number, images: any, srcProp: string) => {
+    if (index < images.length - 1) {
+        const img = images[index + 1];
+        return getItem(srcProp ? img[srcProp] : img, window.innerWidth + MARGIN);
+    }
+}
+
+export default class ImageViewer extends React.Component<Props, State> {
 
     timer: NodeJS.Timeout;
     root: React.RefObject<HTMLDivElement> = React.createRef();
@@ -40,32 +77,65 @@ export default class ImageViewer extends React.Component<Props> {
     endX: number = 0;
     startLeft: number = 0;
     startTop: number = 0;
-    imgCls = `img-${Date.now()}`;
     resized = false;
-    current: any;
     isTransitionEnd: boolean = true;
     img: HTMLImageElement;
 
-    static defaultProps = {
-        findFrom: document.body
-    };
-
     state = {
-        visible: false,
-        images: [],
         index: 0,
-        curImages: []
+        curImages: [],
+        current: "",
+        from: "",
+        curImg: null
     };
 
     componentDidMount() {
         window.addEventListener("resize", this.handleResize);
-        document.body.addEventListener("click", this.handleClickImage);
+        eventBus.on("viewer.show", this.addEvent);
     }
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.handleResize);
-        document.body.removeEventListener("click", this.handleClickImage);
         this.offEvent();
+        eventBus.off("viewer.show", this.addEvent);
+    }
+
+    static getDerivedStateFromProps(props: Props, state: State) {
+        if (state.from) {
+            state.from = "";
+            return state;
+        }
+        if (props.visible) {
+            eventBus.emit("viewer.show");
+            if (props.current === state.current) return state;
+            state.current = props.current;
+            for (let i = 0, l = props.images.length; i < l; i++) {
+                let img = props.images[i];
+                let tmp = img;
+                if (props.srcProp) {
+                    tmp = img[props.srcProp];
+                }
+                if (tmp === props.current) {
+                    let next = getNext(i, props.images, props.srcProp);
+                    let prev = getPrev(i, props.images, props.srcProp);
+                    state.curImages = [state.curImg = getItem(tmp, 0)];
+                    state.index = i;
+                    state.current = tmp;
+                    next && state.curImages.push(next);
+                    prev && state.curImages.unshift(prev);
+                    break;
+                }
+            }
+        }
+        return state;
+    }
+
+    addEvent = () => {
+        //prevent from scaling the page
+        document.body.addEventListener("touchmove", this.preventDefault, { passive: false });
+        //prevent from scrolling the page
+        document.body.addEventListener("wheel", this.preventDefault, { passive: false });
+        document.addEventListener("keyup", this.handleKeyDown);
     }
 
     offEvent = () => {
@@ -79,98 +149,29 @@ export default class ImageViewer extends React.Component<Props> {
     }
 
     handleClose = () => {
-        this.setState({
-            visible: false
-        });
         this.offEvent();
+        this.props.onClose();
     }
 
     getCurrent = (isImage: boolean = false) => {
-        if (!this.current) return null;
-        const current = this.current.ref.current as ImageComp;
+        let { curImg } = this.state;
+        if (!curImg) return null;
+        const current = curImg.ref.current as ImageComp;
         if (!current) return null;
         return isImage ? current.image.current : current;
     }
 
-    handleClickImage = (evt: MouseEvent) => {
-        if (evt.button !== 0) return;//right click also fire click event in firefox
-        let tgt = evt.target as HTMLImageElement;
-        let nodeName = tgt.nodeName.toLowerCase();
+    to = (dir: 1 | -1) => {
         let {
-            props: { findFrom },
-            state: {
-                index
-            },
-            imgCls,
-            root: {current: root}
-        } = this;
-        if (root.contains(tgt)) return;
-        if (nodeName === "img" && findFrom.contains(tgt)) {
-            let imgs = findFrom.querySelectorAll(`img:not(.${imgCls})`);
-            console.log("===============>click")
-            let state = {
-                visible: true,
-                images: [],
-                curImages: [],
-                rotateAngle: 0,
-                index
-            };
-            let src: string;
-            let _imgs: string[] = [];
-            for (let i = 0, l = imgs.length; i < l; i++) {
-                const tmp = imgs[i] as HTMLImageElement; 
-                if (!src && tgt.src === tmp.src) {//src maybe duplicated
-                    index = i;
-                    src = tmp.src;
-                }
-                _imgs.push(tmp.src);
-            }
-            state.images = _imgs;
-            state.curImages.push(this.current = this.getItem(src, 0));
-            let next = this.getNext(index, _imgs);
-            let prev = this.getPrev(index, _imgs);
-            next && state.curImages.push(next);
-            prev && state.curImages.unshift(prev);
-            state.index = index;
-            //prevent from scaling the page
-            document.body.addEventListener("touchmove", this.preventDefault, { passive: false });
-            //prevent from scrolling the page
-            document.body.addEventListener("wheel", this.preventDefault, { passive: false });
-            document.addEventListener("keyup", this.handleKeyDown);
-            this.setState(state);
-        }
-    }
-
-    getItem = (src: string, translateX: number) => {
-        return {
-            src,
-            translateX,
-            ref: React.createRef(),
-            id: uuid++,
-            rotateAngle: 0
-        }
-    }
-
-    getPrev = (index: number, images: any) => {
-        if (index > 0) {
-            return this.getItem(images[index - 1], -window.innerWidth - MARGIN);
-        }
-    }
-
-    getNext = (index: number, images: any) => {
-        if (index < images.length - 1) {
-            return this.getItem(images[index + 1], window.innerWidth + MARGIN);
-        }
-    }
-
-    to = (dir: number) => {
-        let {
-            images,
             index,
             curImages
         } = this.state;
+        let {
+            images,
+            srcProp
+        } = this.props;
         let _index = index + dir;
-    if (!this.isTransitionEnd) return;
+        if (!this.isTransitionEnd) return;
         this.isTransitionEnd = false;
         if (index === 0) {
             curImages.unshift(null);
@@ -187,38 +188,35 @@ export default class ImageViewer extends React.Component<Props> {
             first.translateX = 0;
             mid.translateX = window.innerWidth + MARGIN;
         }
-        this.setState(
-            {
+        this.setState({
                 curImages: [first, mid, last].map(img => {
-                    if (img && img.id === this.current.id) {
+                    if (img) {
                         //rotate to 0deg
                         img.rotateAngle = 0;
                     }
                     return img;
                 })
-            },
-            //then resize the current img
-            () => this.resize()
-        );
+            });
         //after transition end
         setTimeout(() => {
-            // mid.cls = "";
+            let curImg: any;
             if (dir === 1) {
                 curImages = [mid, last];
-                this.current = last;
+                curImg = last;
                 if (_index < images.length - 1) {
-                    curImages.push(this.getNext(_index, images));
+                    curImages.push(getNext(_index, images, srcProp));
                 }
             } else if (dir === -1) {
                 curImages = [first, mid];
-                this.current = first;
+                curImg = first;
                 if (_index > 0) {
-                    curImages.unshift(this.getPrev(_index, images));
+                    curImages.unshift(getPrev(_index, images, srcProp));
                 }
             }
             this.setState({
                 curImages,
-                index: _index
+                index: _index,
+                curImg
             });
             this.isTransitionEnd = true;
         }, 300);
@@ -226,9 +224,9 @@ export default class ImageViewer extends React.Component<Props> {
 
     next = () => {
         let {
-            index,
-            images
+            index
         } = this.state;
+        let { images } = this.props;
         if (index === images.length - 1) return;
         this.to(1);
     }
@@ -239,7 +237,7 @@ export default class ImageViewer extends React.Component<Props> {
     }
 
     handleResize = () => {
-        if (!this.state.visible) return;
+        if (!this.props.visible) return;
         if (this.timer != undefined) {
             clearTimeout(this.timer);
         }
@@ -260,7 +258,7 @@ export default class ImageViewer extends React.Component<Props> {
             this.setState({
                 curImages
             });
-        }, 300);
+        }, 50);
     }
 
     handleZoomIn = () => {
@@ -279,8 +277,9 @@ export default class ImageViewer extends React.Component<Props> {
     }
 
     resize = (fit: boolean = true) => {
-        if (this.current) {
-            let ref = this.current.ref.current as ImageComp;
+        const { curImg } = this.state;
+        if (curImg) {
+            let ref = curImg.ref.current as ImageComp;
             ref && ref.resize(fit);
         }
     }
@@ -288,9 +287,12 @@ export default class ImageViewer extends React.Component<Props> {
     rotate = (angle: number) => {
         const current = this.getCurrent() as ImageComp;
         if (!current || !current.loaded || current.error) return;
-        let { curImages } = this.state;
+        let {
+            curImages,
+            curImg
+        } = this.state;
         curImages = curImages.map(img => {
-            if (img && img.id === this.current.id) {
+            if (img && img.id === curImg.id) {
                 img.rotateAngle = angle;
             }
             return img;
@@ -300,18 +302,20 @@ export default class ImageViewer extends React.Component<Props> {
         }, this.resize);
     }
 
-    rotateLeft = () => {
-        if (!this.current) return;
-        let angle = this.current.rotateAngle;
-        angle -= 90;
+    rotateTo = (dir: 1 | -1) => {
+        const { curImg } = this.state;
+        if (!curImg) return;
+        let angle = curImg.rotateAngle || 0;
+        angle += 90 * dir;
         this.rotate(angle);
     }
 
+    rotateLeft = () => {
+        this.rotateTo(-1);
+    }
+
     rotateRight = () => {
-        if (!this.current) return;
-        let angle = this.current.rotateAngle || 0;
-        angle += 90;
-        this.rotate(angle);
+        this.rotateTo(1);
     }
 
     handleMouseWheel = (img: HTMLImageElement, x: number, y: number, dir: number) => {
@@ -338,7 +342,8 @@ export default class ImageViewer extends React.Component<Props> {
             mouseDowned,
             startLeft,
             startTop,
-            img
+            img,
+            state: { curImg }
         } = this;
         if (!img || !mouseDowned) return;
         let x = evt.clientX;
@@ -347,7 +352,7 @@ export default class ImageViewer extends React.Component<Props> {
         let sy: any = this.startY;
         let disX: any;
         let disY: number;
-        const angle = this.current.rotateAngle;
+        const angle = curImg.rotateAngle;
         switch (angle) {
             case 90:
                 disX = y - sy;
@@ -498,12 +503,15 @@ export default class ImageViewer extends React.Component<Props> {
 
     render() {
 
-        let {
-            visible,
-            images,
+        const {
             index,
             curImages
         } = this.state;
+        const {
+            images,
+            visible
+        } = this.props;
+        if (!images || !images.length) return null;
         return (
             <Zoom in={visible}>
                 <div
@@ -541,7 +549,6 @@ export default class ImageViewer extends React.Component<Props> {
                                     src={img.src}
                                     translateX={img.translateX}
                                     rotateAngle={img.rotateAngle || 0}
-                                    imgClass={this.imgCls}
                                     ref={img.ref}
                                     onMouseDown={this.handleMouseDown}
                                     onMouseWheel={this.handleMouseWheel}
