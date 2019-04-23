@@ -41,6 +41,7 @@ export default class ArticleEdit extends React.Component<Props> {
     editorRef: React.RefObject<any> = React.createRef();
     titleEl: React.RefObject<HTMLInputElement> = React.createRef();
     id: string;
+    uploadedImages: Array<any> = [];
 
     fetchSuccess = (ret: any) => {
         if (!ret) {
@@ -57,8 +58,12 @@ export default class ArticleEdit extends React.Component<Props> {
             secret: !!ret.secret,
             tags: ret.tags.join(";")
         });
-        this.editorRef.current.editor.root.innerHTML = ret.content;
+        const editor = this.editorRef.current.editor as Quill;
+        editor.root.innerHTML = ret.content;
         document.title = `编辑-${ret.title}`;
+        setTimeout(() => {
+            this.uploadedImages = this.getImages();
+        });
     }
 
     fetchError = () => {
@@ -95,6 +100,18 @@ export default class ArticleEdit extends React.Component<Props> {
         window.onbeforeunload = null;
     }
 
+    getImages = () => {
+        let editor: Quill = this.editorRef.current.editor;
+        let content = editor.getContents();
+        let images = [];
+        content.ops.forEach((item: any) => {
+            if (item.insert && item.insert.image) {
+                images.push(item.insert.image);
+            }
+        });
+        return images;
+    }
+
     handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         let nodeName = evt.target.nodeName.toLowerCase();
         if (nodeName === "input") {
@@ -126,6 +143,7 @@ export default class ArticleEdit extends React.Component<Props> {
         let editor: Quill = this.editorRef.current.editor;
         let text = editor.getText().trim(); //only get text, filter images
         let content = editor.root.innerHTML;
+        let delImages = [];
         if (!title.trim()) {
             return this.titleEl.current.focus();
         } else if (!cls) {
@@ -141,6 +159,20 @@ export default class ArticleEdit extends React.Component<Props> {
         } else {
             tags = [] as any;
         }
+        let images = this.getImages();
+        console.log(this.uploadedImages, images)
+        this.uploadedImages.forEach(img => {
+            let exists = false;
+            images.forEach(item => {
+                if (item === img) {
+                    exists = true;
+                }
+
+            });
+            if (!exists) {
+                delImages.push(img);
+            }
+        });
         let body: any = {
             id: this.id,
             title,
@@ -148,7 +180,8 @@ export default class ArticleEdit extends React.Component<Props> {
             tags,
             secret,
             content,
-            summary: text.substring(0, 150)
+            summary: text.substring(0, 150),
+            delImages
         };
         this.props.saveArticle(body);
     }
@@ -161,14 +194,14 @@ export default class ArticleEdit extends React.Component<Props> {
         let fd = new FormData();
         let editor = this.editorRef.current.editor;
         fd.append("attachment", file);
-        let urlInfo: any = null;
         loading.show();
         try {
-            urlInfo = await _fetch(UPLOAD_FILE, {
+            const ret: any = await _fetch(UPLOAD_FILE, {
                 method: "post",
                 body: fd
             });
-            editor.insertEmbed(editor.getText().length, "image", urlInfo.url);
+            editor.insertEmbed(editor.getText().length, "image", ret.url);
+            this.uploadedImages.push(ret);
         } catch (error) { }
         loading.hide();
     }

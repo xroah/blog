@@ -71,6 +71,7 @@ function* editArticle(action) {
     } catch (error) {
 
     }
+    message.success("保存成功!");
     loading.hide();
 }
 
