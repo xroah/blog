@@ -20,13 +20,16 @@ import {
 } from "@redux/actions";
 import message from "@common/message";
 import {
-    ADMIN_ALBUM_URL,
     SET_ALBUM_COVER,
     ADMIN_IMAGE_URL
 } from "@common/api";
 
 function* fetchImages(action: any) {
-    let { url, id } = action;
+    let {
+        url,
+        id,
+        callback
+    } = action;
     yield put({
         ...FETCH_IMAGES_STARTED,
         started: true
@@ -37,6 +40,9 @@ function* fetchImages(action: any) {
             ...FETCH_IMAGES,
             images
         });
+        if (typeof callback === "function") {
+            callback(images);
+        }
     } catch (error) {
 
     }

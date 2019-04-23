@@ -18,11 +18,12 @@ export default connect(
         curAlbum: state.albumImage.curAlbum,
     }),
     (dispatch, ownProps: any)=> ({
-        fetchImages(id: string) {
+        fetchImages(id: string, callback?: Function) {
             dispatch({
                 ...FETCH_IMAGES_START,
                 url: ownProps.url,
-                id
+                id,
+                callback
             });
         },
         fetchAlbum(id: string) {

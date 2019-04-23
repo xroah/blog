@@ -23,17 +23,76 @@ interface Props extends RouteComponentProps {
     list: any[];
     started: boolean;
     curAlbum?: any;
-    fetchImages?: (id: string) => any;
+    fetchImages?: (id: string, callback: Function) => any;
     emptyImages?: () => any;
     showUpload?: (album: any) => any;
     fetchAlbum?: (id: string) => any;
 }
+
+const supportIO = typeof IntersectionObserver === "function";
 
 class AlbumImages extends React.Component<Props> {
 
     static defaultProps = {
         isAdmin: false
     };
+    imageFetched: boolean;
+    observer: IntersectionObserver;
+    timer: NodeJS.Timeout;
+
+    isInViewport = (el: HTMLElement) => {
+        const rect = el.getBoundingClientRect();
+        return rect.top > 0 &&
+            rect.top < window.innerHeight &&
+            rect.left > 0 &&
+            rect.left < window.innerWidth;
+    }
+
+    loadImage = (img: HTMLImageElement) => {
+        img.src = img.dataset.src;
+        img.removeAttribute("data-src");
+    }
+
+    scrollLazyLoad = () => {
+        const images: HTMLImageElement[] = Array.from(document.querySelectorAll(".image-item img[data-src]"));
+        let inVisibleCount = 0;
+        if (!images.length) return;
+        for (let img of images) {
+            if (this.isInViewport(img)) {
+                this.loadImage(img);
+            } else {
+                inVisibleCount++;
+                //more then 5 images are invisible, just break;
+                if (inVisibleCount > 5) {
+                    break;
+                }
+            }
+        }
+    }
+
+    handleScroll = () => {
+        if (this.timer != undefined) {
+            clearTimeout(this.timer);
+        }
+        this.timer = setTimeout(this.scrollLazyLoad, 50);
+    }
+
+    lazyLoad = () => {
+        if (!supportIO) return;
+        const images = Array.from(document.querySelectorAll(".image-item img[data-src]"));
+        if (!this.observer) {
+            this.observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const tgt = entry.target as HTMLImageElement;
+                        this.observer.unobserve(tgt);
+                        this.loadImage(tgt);
+                    }
+                });
+            });
+        }
+        images.forEach((img: HTMLImageElement) => this.observer.observe(img));
+    }
 
     componentDidMount() {
         let id = this.getId();
@@ -42,10 +101,13 @@ class AlbumImages extends React.Component<Props> {
             isAdmin,
             fetchAlbum
         } = this.props;
-        fetchImages(id);
+        fetchImages(id, () => this.imageFetched = true);
         fetchAlbum(id);
         if (isAdmin) {
             eventBus.on("upload.done", this.handleUploadDone);
+        }
+        if (!supportIO) {
+            window.addEventListener("scroll", this.handleScroll);
         }
     }
 
@@ -57,6 +119,18 @@ class AlbumImages extends React.Component<Props> {
         emptyImages();
         if (isAdmin) {
             eventBus.off("upload.done", this.handleUploadDone);
+        }
+        window.removeEventListener("scroll", this.handleScroll);
+    }
+
+    componentDidUpdate() {
+        if (this.imageFetched) {
+            this.imageFetched = false;
+            if (supportIO) {
+                this.lazyLoad();
+            } else {
+                this.scrollLazyLoad();
+            }
         }
     }
 
@@ -86,7 +160,7 @@ class AlbumImages extends React.Component<Props> {
         } = this.props;
         let id = this.getId();
         emptyImages();
-        fetchImages(id);
+        fetchImages(id, () => this.imageFetched = true);
     }
 
     renderImage() {

@@ -2,6 +2,8 @@ import * as React from "react";
 import { Typography } from "@material-ui/core";
 import _fetch from "@common/fetch";
 
+const placeholder = require("@images/image.png");
+
 interface Props {
     image?: any;
     isAdmin?: boolean;
@@ -131,7 +133,9 @@ export default class Item extends React.Component<Props> {
                 }
                 <dl>
                     <dt className="image-wrapper">
-                        <img src={image.relPath} />
+                        <img
+                            src={placeholder}
+                            data-src={image.relPath} />
                     </dt>
                     <dd className="ellipsis"
                         style={{ overflow: isEdit ? "visible" : "hidden" }}>
