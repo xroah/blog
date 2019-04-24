@@ -19,3 +19,4 @@ export const UPDATE_VIEWED_TIME = "/api/updateViewedTime";
 export const PUBLIC_ALBUM_URL = "/api/album";
 export const PUBLIC_IMAGE_URL = "/api/image";
 export const FETCH_VERSION = "/api/version";
+export const FETCH_CALENDAR = "/static/calendar/";

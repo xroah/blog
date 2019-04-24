@@ -7,6 +7,7 @@
     .calendar-action {
         display: flex;
         justify-content: space-between;
+        align-items: center;
 
         button {
             margin: 0;
@@ -15,7 +16,7 @@
     }
 
     .week-list {
-        color: #666;
+        color: #555;
     }
 
     .other-mon {
@@ -39,14 +40,27 @@
         display: inline-block;
         width: 100%;
         font-size: 12px;
+        text-align: center;
+    }
+
+    .status {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 12px;
+        height: 12px;
+        line-height: 12px;
+        color: red;
+        font-size: 12px;
     }
 
     .item-list {
         display: flex;
         padding: 5px 0;
-
+        border-bottom: 1px dashed $defaultBorderColor;
         .week-item {
             display: flex;
+            justify-content: center;
             flex-direction: column;
             flex-grow: 0;
             flex-shrink: 0;

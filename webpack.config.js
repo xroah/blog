@@ -82,6 +82,8 @@ let cfg = {
     ]
 };
 
+const PROXY_URL = "http://localhost:8000";
+
 if (env === "development") {
     cfg.watch = true;
     cfg.watchOptions = {
@@ -96,8 +98,9 @@ if (env === "development") {
         contentBase: "dist",
         host: "192.168.0.104",
         proxy: {
-            "/api": "http://localhost:8000",
-            "/uploads": "http://localhost:8000"
+            "/api": PROXY_URL,
+            "/uploads": PROXY_URL,
+            "/static": PROXY_URL
         }
     };
 } else {

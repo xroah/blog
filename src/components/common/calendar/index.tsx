@@ -11,6 +11,8 @@ import {
     FirstPage,
     LastPage
 } from "@material-ui/icons";
+import _fetch from "@common/fetch";
+import { FETCH_CALENDAR } from "@common/api";
 import "./index.scss";
 
 let uuid = 0;
@@ -42,7 +44,8 @@ export default class Calendar extends React.Component {
         today: null,
         year: null,
         mon: null,
-        days: null
+        days: null,
+        info: null
     };
 
     constructor(props: any) {
@@ -52,8 +55,41 @@ export default class Calendar extends React.Component {
             today: date,
             year: date.getFullYear(),
             mon: date.getMonth(),
-            days: []
+            days: [],
+            info: null
         };
+    }
+
+    componentWillMount() {
+        let { year } = this.state;
+        this.fetchCalendarInfo(year);
+    }
+
+    fetchCalendarInfo = async (year: number) => {
+        const info = JSON.parse(localStorage.getItem(`${year}`));
+        if (info) {
+            return this.setState({
+                info
+            });
+        }
+        try {
+            let ret = await fetch(`${FETCH_CALENDAR}${year}.json`);
+            if (ret.ok) {
+                let info = await ret.json();
+                this.setState({
+                    info
+                });
+                localStorage.setItem(`${year}`, JSON.stringify(info));
+            } else {
+                this.setState({
+                    info: null
+                });
+            }
+        } catch (error) {
+            this.setState({
+                info: null
+            });
+        }
     }
 
     isLeap(year: number) {
@@ -88,7 +124,7 @@ export default class Calendar extends React.Component {
                     }
                 }
             } else if (_mon === 6) {
-                if (date.getDay() === 0 ) {
+                if (date.getDay() === 0) {
                     index++;
                     if (index === 3) {
                         obj.fes = "父亲节";
@@ -109,7 +145,6 @@ export default class Calendar extends React.Component {
                 days.unshift(null)
             }
         }
-        console.log(days)
         return days;
     }
 
@@ -123,12 +158,13 @@ export default class Calendar extends React.Component {
     renderItem = () => {
         let {
             days,
-            mon
+            mon,
+            info
         } = this.state;
         let ret = [];
         if (!days) return null;
         for (let i = 0, l = days.length; i < l; i += 7) {
-            let cls = classnames("item-list", {"flex-end": i === 0});
+            let cls = classnames("item-list", { "flex-end": i === 0 });
             ret.push(
                 <List key={uuid++} className={cls}>
                     {
@@ -137,7 +173,11 @@ export default class Calendar extends React.Component {
                             if (!tmp) return null;
                             let date = new Date(`${tmp.year}/${tmp.mon + 1}/${tmp.day}`);
                             let dayStr = `${tmp.mon + 1}.${tmp.day}`;
-                            let fes = tmp.fes || FESTIVAL[dayStr]|| "";
+                            let fes = tmp.fes || FESTIVAL[dayStr] || "";
+                            let dayInfo: any;
+                            if (info && info[tmp.mon + 1]) {
+                                dayInfo = info[tmp.mon + 1][tmp.day];
+                            }
                             let cls = classnames(
                                 "week-item",
                                 {
@@ -145,12 +185,14 @@ export default class Calendar extends React.Component {
                                     "today": this.isToday(date)
                                 },
                             );
+                            fes = dayInfo ? (dayInfo.fes || fes) : fes;
                             return (
                                 <ListItem key={tmp.id} className={cls}>
                                     <span>{tmp.day}</span>
-                                    <span className="festival ellipsis" title={fes}>
-                                        {fes}
-                                    </span>
+                                    {
+                                        fes && <span className="festival ellipsis" title={fes}>{fes}</span>
+                                    }
+                                    {dayInfo && <span className="status">{dayInfo.status}</span>}
                                 </ListItem>
                             );
                         })
@@ -186,6 +228,7 @@ export default class Calendar extends React.Component {
             year
         });
         this.changeDays(year, mon);
+        this.fetchCalendarInfo(year);
     }
 
     toNextYear = () => {
@@ -198,6 +241,7 @@ export default class Calendar extends React.Component {
             year
         });
         this.changeDays(year, mon);
+        this.fetchCalendarInfo(year);
     }
 
     toPrevMon = () => {
@@ -209,6 +253,7 @@ export default class Calendar extends React.Component {
             mon = 11;
             year -= 1;
             if (year === 0) return;
+            this.fetchCalendarInfo(year);
         } else {
             mon -= 1;
         }
@@ -227,6 +272,7 @@ export default class Calendar extends React.Component {
         if (mon === 11) {
             mon = 0;
             year += 1;
+            this.fetchCalendarInfo(year);
         } else {
             mon += 1;
         }
