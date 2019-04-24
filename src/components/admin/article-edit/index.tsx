@@ -144,6 +144,7 @@ export default class ArticleEdit extends React.Component<Props> {
         let text = editor.getText().trim(); //only get text, filter images
         let content = editor.root.innerHTML;
         let delImages = [];
+        let uploadedImages = [];
         if (!title.trim()) {
             return this.titleEl.current.focus();
         } else if (!cls) {
@@ -160,12 +161,12 @@ export default class ArticleEdit extends React.Component<Props> {
             tags = [] as any;
         }
         let images = this.getImages();
-        console.log(this.uploadedImages, images)
         this.uploadedImages.forEach(img => {
             let exists = false;
             images.forEach(item => {
                 if (item === img) {
                     exists = true;
+                    uploadedImages.push(img);
                 }
 
             });
@@ -181,7 +182,8 @@ export default class ArticleEdit extends React.Component<Props> {
             secret,
             content,
             summary: text.substring(0, 150),
-            delImages
+            delImages,
+            uploadedImages
         };
         this.props.saveArticle(body);
     }
@@ -194,6 +196,7 @@ export default class ArticleEdit extends React.Component<Props> {
         let fd = new FormData();
         let editor = this.editorRef.current.editor;
         fd.append("attachment", file);
+        fd.append("isArticle", "true");
         loading.show();
         try {
             const ret: any = await _fetch(UPLOAD_FILE, {
@@ -201,7 +204,7 @@ export default class ArticleEdit extends React.Component<Props> {
                 body: fd
             });
             editor.insertEmbed(editor.getText().length, "image", ret.url);
-            this.uploadedImages.push(ret);
+            this.uploadedImages.push(ret.url);
         } catch (error) { }
         loading.hide();
     }

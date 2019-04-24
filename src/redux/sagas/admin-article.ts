@@ -68,10 +68,9 @@ function* editArticle(action) {
         yield put(CHANGE_ARTICLE_SAVED);
         yield put(push("/xsys/articles"));
         yield fetchArticles({ page: 1 });
+        message.success("保存成功!");
     } catch (error) {
-
     }
-    message.success("保存成功!");
     loading.hide();
 }
 
