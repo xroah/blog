@@ -77,8 +77,8 @@ export default class ImageViewer extends React.Component<Props, State> {
     endX: number = 0;
     startLeft: number = 0;
     startTop: number = 0;
-    resized = false;
     isTransitionEnd: boolean = true;
+    translated: boolean = false;
     img: HTMLImageElement;
 
     state = {
@@ -121,8 +121,8 @@ export default class ImageViewer extends React.Component<Props, State> {
                     state.curImages = [state.curImg = getItem(tmp, 0)];
                     state.index = i;
                     state.current = tmp;
-                    next && state.curImages.push(next);
-                    prev && state.curImages.unshift(prev);
+                    state.curImages.push(next);
+                    state.curImages.unshift(prev);
                     break;
                 }
             }
@@ -136,6 +136,7 @@ export default class ImageViewer extends React.Component<Props, State> {
         //prevent from scrolling the page
         document.body.addEventListener("wheel", this.preventDefault, { passive: false });
         document.addEventListener("keyup", this.handleKeyDown);
+        this.handleResize();
     }
 
     offEvent = () => {
@@ -173,20 +174,14 @@ export default class ImageViewer extends React.Component<Props, State> {
         let _index = index + dir;
         if (!this.isTransitionEnd) return;
         this.isTransitionEnd = false;
-        if (index === 0) {
-            curImages.unshift(null);
-        } else if (index === images.length - 1) {
-            curImages.push(null);
-        }
         let first = curImages[0];
         let mid = curImages[1];
         let last = curImages[2];
+        mid.translateX = -dir * (window.innerWidth + MARGIN);
         if (dir === 1) {
             last.translateX = 0;
-            mid.translateX = -window.innerWidth - MARGIN;
         } else if (dir === -1) {
             first.translateX = 0;
-            mid.translateX = window.innerWidth + MARGIN;
         }
         this.setState({
             curImages: [first, mid, last].map(img => {
@@ -195,28 +190,29 @@ export default class ImageViewer extends React.Component<Props, State> {
                     img.rotateAngle = 0;
                 }
                 return img;
-            })
+            }),
+            from: "state"
         });
         //after transition end
         setTimeout(() => {
             let curImg: any;
+            this.translated = false;
             if (dir === 1) {
                 curImages = [mid, last];
                 curImg = last;
-                if (_index < images.length - 1) {
-                    curImages.push(getNext(_index, images, srcProp));
-                }
+                curImages.push(getNext(_index, images, srcProp));
             } else if (dir === -1) {
                 curImages = [first, mid];
                 curImg = first;
-                if (_index > 0) {
-                    curImages.unshift(getPrev(_index, images, srcProp));
-                }
+                curImages.unshift(getPrev(_index, images, srcProp));
             }
+            this.resize();
             this.setState({
                 curImages,
                 index: _index,
-                curImg
+                curImg,
+                current: curImg.src,
+                from: "state"
             });
             this.isTransitionEnd = true;
         }, 300);
@@ -246,17 +242,19 @@ export default class ImageViewer extends React.Component<Props, State> {
             curImages = curImages.map(img => {
                 if (img) {
                     const ref = img.ref.current as ImageComp;
+                    const translate = window.innerWidth + MARGIN;
                     ref && ref.resize();
                     if (img.translateX < 0) {
-                        img.translateX = -window.innerWidth - MARGIN
+                        img.translateX = -translate;
                     } else if (img.translateX > 0) {
-                        img.translateX = window.innerWidth + MARGIN;
+                        img.translateX = translate;
                     }
                 }
                 return img;
             });
             this.setState({
-                curImages
+                curImages,
+                from: "state"
             });
         }, 50);
     }
@@ -298,7 +296,8 @@ export default class ImageViewer extends React.Component<Props, State> {
             return img;
         });
         this.setState({
-            curImages
+            curImages,
+            from: "state"
         }, this.resize);
     }
 
@@ -324,7 +323,6 @@ export default class ImageViewer extends React.Component<Props, State> {
         } else {
             zoomOut(img, x, y);
         }
-        this.resized = false;
     }
 
     handleMouseDown = (img: HTMLImageElement, x: number, y: number) => {
@@ -392,10 +390,43 @@ export default class ImageViewer extends React.Component<Props, State> {
             this.startY = touches[0].clientY;
             this.startLeft = left;
             this.startTop = top;
+            this.toggleTransition(true);
         } else {
             this.startX = [touches[0].clientX, touches[1].clientX];
             this.startY = [touches[0].clientY, touches[1].clientY];
         }
+    }
+
+    toggleTransition = (remove: boolean) => {
+        const { root: { current: root } } = this;
+        const wrappers = Array.from(root.querySelectorAll(".img-wrapper"));
+        wrappers.forEach((el: HTMLElement) => {
+            if (remove) {
+                el.classList.remove("transition")
+            } else {
+                el.classList.add("transition");
+            }
+        });
+    }
+
+    moveImage = (dis: number) => {
+        let { curImages } = this.state;
+        let translate = window.innerWidth + MARGIN;
+        let first = curImages[0];
+        let second = curImages[1];
+        let last = curImages[2];
+        second.translateX = dis;
+        if (first) {
+            first.translateX = -translate + dis;
+        }
+        if (last) {
+            last.translateX = translate + dis;
+        }
+        this.translated = dis !== 0;
+        this.setState({
+            curImages: [first, second, last],
+            from: "state"
+        });
     }
 
     handleTouchMove = (evt: React.TouchEvent) => {
@@ -413,6 +444,7 @@ export default class ImageViewer extends React.Component<Props, State> {
         let disX: number;
         let disY: number;
         if (touches.length > 1) {
+            if (this.translated) return;
             let startDis = calcDistance(startX[0], startY[0], startX[1], startY[1]);
             let endDis = calcDistance(
                 touches[0].clientX,
@@ -431,20 +463,46 @@ export default class ImageViewer extends React.Component<Props, State> {
             }
             this.startX = [touches[0].clientX, touches[1].clientX];
             this.startY = [touches[0].clientY, touches[1].clientY];
-            this.resized = false;
         } else {
             this.endX = touches[0].clientX;
             disX = touches[0].clientX - (startX as any);
             disY = touches[0].clientY - (startY as any);
-            handleEdge(img, startLeft, startTop, disX, disY);
+            const { 
+                left,
+                minLeft
+             } = handleEdge(img, startLeft, startTop, disX, disY);
+            if (width > window.innerWidth) {
+                let edge = 0;
+                if (disX >= 0) {
+                    edge = Math.abs(startLeft);
+                } else {
+                    edge = Math.abs(width - Math.abs(startLeft) - window.innerWidth);
+                }
+                if ((left >= 0  && disX >0 )|| (left <= minLeft && disX < 0)) {
+                    disX = disX > 0 ? (disX - edge) : (disX + edge);
+                    this.moveImage(disX);
+                }
+            } else {
+                this.moveImage(disX);
+            }
+
         }
     }
 
     touchSwitch = (disX: number) => {
-        if (disX <= -100) {
+        const max = window.innerWidth / 2;
+        const {
+            state: { index },
+            props: { images }
+        } = this;
+        if (disX <= -max) {
+            if (index === images.length - 1) return this.moveImage(0);
             this.next();
-        } else if (disX >= 100) {
+        } else if (disX >= max) {
+            if (index === 0) return this.moveImage(0);
             this.prev();
+        } else {
+            this.moveImage(0);
         }
     }
 
@@ -469,8 +527,11 @@ export default class ImageViewer extends React.Component<Props, State> {
             this.startY = touches[0].clientY;
         } else if (!len) {
             let disX = this.endX - (this.startX as number);
+            this.toggleTransition(false);
             if (left >= 0 || width - Math.abs(left) <= window.innerWidth) {
                 this.touchSwitch(disX);
+            } else {
+                this.moveImage(0);
             }
         }
     }

@@ -89,22 +89,41 @@ function handleEdge(img: HTMLImageElement, left: number, top: number, disX: numb
     const rect = img.getBoundingClientRect();
     let _left = left + disX;
     let _top = top + disY;
-    if ( rect.top > 0 && rect.bottom < window.innerHeight) {
+    const minTop = window.innerHeight - rect.height;
+    const minLeft = window.innerWidth - rect.width;
+
+    if (rect.height > window.innerHeight) {
+        if (rect.top > 0 && rect.bottom < window.innerHeight) {
+            _top = top;
+        } else if (disY > 0 && _top >= 0) {
+            _top = 0;
+        } else if (disY < 0 && rect.height - Math.abs(_top) <= window.innerHeight) {
+            _top = minTop;
+        }
+    } else {
         _top = top;
-    } else if (disY > 0 && _top >= 0) {
-        _top = 0;
-    } else if (disY < 0 && rect.height - Math.abs(_top) <= window.innerHeight) {
-        _top = window.innerHeight - rect.height;
     }
-    if (rect.left > 0 && rect.right < window.innerWidth) {
+
+    if (rect.width > window.innerWidth) {
+        if (rect.left > 0 && rect.right < window.innerWidth) {
+            _left = left;
+        } else if (disX > 0 && _left >= 0) {
+            _left = 0;
+        } else if (disX < 0 && rect.width - Math.abs(_left) <= window.innerWidth) {
+            _left = minLeft;
+        }
+    } else {
         _left = left;
-    } else if (disX > 0 && _left >= 0) {
-        _left = 0;
-    } else if (disX < 0 && rect.width - Math.abs(_left) <= window.innerWidth) {
-        _left = window.innerWidth - rect.width;
     }
+
     img.style.left = `${_left}px`;
     img.style.top = `${_top}px`;
+    return {
+        left: _left,
+        top: _top,
+        minLeft,
+        minTop
+    }
 }
 
 function zoomIn(img: HTMLImageElement, baseX?: number, baseY?: number) {

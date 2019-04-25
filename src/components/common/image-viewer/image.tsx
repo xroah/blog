@@ -91,10 +91,6 @@ export default class ImageComp extends React.Component<Props> {
         this.resize(false);
     }
 
-    componentDidUpdate() {
-        this.resize();
-    }
-
     render() {
         let {
             src,
