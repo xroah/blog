@@ -9,7 +9,8 @@ export default (
         visible: false,
         x: 0,
         y: 0,
-        curImage: null
+        curImage: null,
+        isCover: false
     },
     action: any
 ) => {
@@ -19,12 +20,14 @@ export default (
                 ...state,
                 x: action.x,
                 y: action.y,
+                isCover: action.isCover,
                 visible: true
             };
         case HIDE_IMAGE_CONTEXT_MENU.type:
             return {
                 ...state,
-                visible: false
+                visible: false,
+                isCover: false
             };
         case SWITCH_IMAGE.type:
             return {

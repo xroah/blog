@@ -24,6 +24,7 @@ interface Props {
     y?: number;
     curImage?: any;
     curAlbum?: any;
+    isCover?: boolean;
     hideContextMenu?: () => any;
     setCover?: (body: any) => any;
     deleteImage?: (id: string) => any;
@@ -84,12 +85,13 @@ export default class ContextMenu extends React.Component<Props, State> {
         let {
             curAlbum,
             curImage,
-            setCover
+            setCover,
+            isCover
         } = this.props;
         if (!curAlbum) return message.info("请稍候,正在获取相册信息...");
         setCover({
             albumId: curAlbum._id,
-            imageId: curImage._id
+            imageId: isCover ? null : curImage._id
         });
         this.hide();
     }
@@ -123,7 +125,8 @@ export default class ContextMenu extends React.Component<Props, State> {
     render() {
         let {
             props: {
-                visible
+                visible,
+                isCover
             },
             state: {
                 left,
@@ -146,7 +149,7 @@ export default class ContextMenu extends React.Component<Props, State> {
                             onClick={this.handleCover}
                             className="menu-item">
                             <Image />
-                            <span>设为封面</span>
+                            <span>{isCover ? "取消封面" : "设为封面"}</span>
                         </ListItem>
                         <ListItem
                             onClick={this.handleDelete}

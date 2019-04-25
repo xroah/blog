@@ -12,6 +12,7 @@ export default connect(
         visible: state.imageContextMenu.visible,
         x: state.imageContextMenu.x,
         y: state.imageContextMenu.y,
+        isCover: state.imageContextMenu.isCover,
         curImage: state.imageContextMenu.curImage,
         curAlbum: state.albumImage.curAlbum
     }),

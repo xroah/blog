@@ -9,11 +9,12 @@ import {
 export default connect(
     (state: any) => ({}),
     dispatch => ({
-        showContextMenu(x: number, y: number) {
+        showContextMenu(x: number, y: number, isCover: boolean) {
             dispatch({
                 ...SHOW_IMAGE_CONTEXT_MENU,
                 x,
-                y
+                y,
+                isCover
             });
         },
         switchImage(image: any) {

@@ -8,7 +8,7 @@ interface Props {
     image?: any;
     isAdmin?: boolean;
     isCover?: boolean;
-    showContextMenu?: (x: number, y: number) => any;
+    showContextMenu?: (x: number, y: number, isCover: boolean) => any;
     switchImage?: (image: any) => any;
     updateName?: (id: string, name: string, callback: Function) => any;
     onClick?: (evt: React.MouseEvent, image: any) => any;
@@ -28,11 +28,12 @@ export default class Item extends React.Component<Props> {
             isAdmin,
             switchImage,
             image,
-            showContextMenu
+            showContextMenu,
+            isCover
         } = this.props;
         if (!isAdmin) return;
         switchImage(image);
-        showContextMenu(evt.clientX, evt.clientY);
+        showContextMenu(evt.clientX, evt.clientY, isCover);
         evt.preventDefault();
         evt.stopPropagation();
     }
