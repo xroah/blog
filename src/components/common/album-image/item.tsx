@@ -1,5 +1,9 @@
 import * as React from "react";
-import { Typography } from "@material-ui/core";
+import {
+    Typography,
+    Checkbox
+} from "@material-ui/core";
+import classnames from "classnames";
 import _fetch from "@common/fetch";
 
 const placeholder = require("@images/image.png");
@@ -8,20 +12,30 @@ interface Props {
     image?: any;
     isAdmin?: boolean;
     isCover?: boolean;
+    showCheck?: boolean;
     showContextMenu?: (x: number, y: number, isCover: boolean) => any;
     switchImage?: (image: any) => any;
     updateName?: (id: string, name: string, callback: Function) => any;
     onClick?: (evt: React.MouseEvent, image: any) => any;
+    onCheckChange?: (checked: boolean, id: string) => any;
 }
 
 export default class Item extends React.Component<Props> {
 
     state = {
         isEdit: false,
+        checked: false,
         name: ""
     };
 
     inputEl: React.RefObject<HTMLInputElement> = React.createRef();
+
+    static getDerivedStateFromProps(props: Props, state: any) {
+        if (!props.showCheck) {
+            state.checked = false;
+        }
+        return state;
+    }
 
     handleContextMenu = (evt: React.MouseEvent) => {
         let {
@@ -29,9 +43,10 @@ export default class Item extends React.Component<Props> {
             switchImage,
             image,
             showContextMenu,
-            isCover
+            isCover,
+            showCheck
         } = this.props;
-        if (!isAdmin) return;
+        if (!isAdmin || showCheck) return;
         switchImage(image);
         showContextMenu(evt.clientX, evt.clientY, isCover);
         evt.preventDefault();
@@ -109,13 +124,43 @@ export default class Item extends React.Component<Props> {
     }
 
     handleClickImage = (evt: React.MouseEvent) => {
-        let { 
+        let {
             onClick,
             image
-         } = this.props;
+        } = this.props;
         if (typeof onClick === "function") {
             onClick(evt, image);
         }
+    }
+
+    handleCheckChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        const checked = evt.target.checked;
+        this.setState({
+            checked
+        });
+        this.fireChange(checked);
+    }
+
+    handleClickCheck = () => {
+        let { checked } = this.state;
+        checked = !checked;
+        this.setState({
+            checked
+        });
+        this.fireChange(checked);
+    }
+
+    fireChange = (checked: boolean) => {
+        const {
+            image,
+            onCheckChange } = this.props;
+        if (typeof onCheckChange === "function") {
+            onCheckChange(checked, image._id);
+        }
+    }
+
+    stopPropagation = (evt: React.MouseEvent) => {
+        evt.stopPropagation();
     }
 
     render() {
@@ -123,12 +168,14 @@ export default class Item extends React.Component<Props> {
         let {
             state: {
                 isEdit,
-                name
+                name,
+                checked
             },
             props: {
                 image,
                 isCover,
-                isAdmin
+                isAdmin,
+                showCheck
             }
         } = this;
         let imageName = image.name || image.filename;
@@ -143,31 +190,41 @@ export default class Item extends React.Component<Props> {
                             className="cover-text">封面</Typography>
                     )
                 }
-                <dl>
-                    <dt className="image-wrapper">
-                        <img
-                            src={placeholder}
-                            onClick={this.handleClickImage}
-                            data-src={image.relPath} />
-                    </dt>
-                    <dd className="ellipsis"
-                        style={{ overflow: isEdit ? "visible" : "hidden" }}>
-                        {
-                            isEdit ?
-                                <input
-                                    type="text"
-                                    ref={this.inputEl}
-                                    value={name}
-                                    onKeyDown={this.handleKeyDown}
-                                    onChange={this.handleChange}
-                                    onBlur={this.handleBlur}
-                                    className="form-control" /> :
-                                <span
-                                    onClick={this.handleEdit}
-                                    title={imageName}>{imageName}</span>
-                        }
-                    </dd>
-                </dl>
+                <div className="image-wrapper flex-center">
+                    <img
+                        src={placeholder}
+                        onClick={this.handleClickImage}
+                        data-src={image.relPath} />
+                    {
+                        showCheck && (
+                            <div className="check-item" onClick={this.handleClickCheck}>
+                                <Checkbox
+                                    className="checkbox"
+                                    color="secondary"
+                                    checked={checked}
+                                    onClick={this.stopPropagation}
+                                    onChange={this.handleCheckChange} />
+                            </div>
+                        )
+                    }
+                </div>
+                <div className="ellipsis image-name"
+                    style={{ overflow: isEdit ? "visible" : "hidden" }}>
+                    {
+                        isEdit ?
+                            <input
+                                type="text"
+                                ref={this.inputEl}
+                                value={name}
+                                onKeyDown={this.handleKeyDown}
+                                onChange={this.handleChange}
+                                onBlur={this.handleBlur}
+                                className="form-control" /> :
+                            <span
+                                onClick={this.handleEdit}
+                                title={imageName}>{imageName}</span>
+                    }
+                </div>
             </div>
         );
     }

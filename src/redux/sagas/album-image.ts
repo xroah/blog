@@ -23,6 +23,7 @@ import {
     SET_ALBUM_COVER,
     ADMIN_IMAGE_URL
 } from "@common/api";
+import { isFunc } from "@common/util";
 
 function* fetchImages(action: any) {
     let {
@@ -70,7 +71,10 @@ function* fetchAlbum(action: any) {
 }
 
 function* deleteImage(action) {
-    let { id } = action;
+    let {
+        id,
+        success 
+    } = action;
     try {
         yield call(_fetch, ADMIN_IMAGE_URL, {
             method: "delete",
@@ -79,6 +83,9 @@ function* deleteImage(action) {
             }
         });
         message.success("删除成功!");
+        if (isFunc(success)) {
+            success();
+        }
         yield put({
             ...DELETE_IMAGE_BY_ID,
             id

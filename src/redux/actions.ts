@@ -224,10 +224,6 @@ export const UPLOAD_IMAGES_START = {
     type: "UPLOAD_IMAGES_START"
 };
 
-export const DELETE_IMAGES_START = {
-    type: "DELETE_IMAGES_START"
-};
-
 export const EMPTY_IMAGES = {
     type: "EMPTY_IMAGES"
 };

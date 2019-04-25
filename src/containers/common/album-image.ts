@@ -4,7 +4,8 @@ import {
      FETCH_IMAGES_START,
      EMPTY_IMAGES,
      SHOW_UPLOAD_DIALOG,
-     FETCH_ALBUM_BY_ID_START
+     FETCH_ALBUM_BY_ID_START,
+     DELETE_IMAGE_START
  } from "@redux/actions";
  import {
      ADMIN_ALBUM_URL,
@@ -24,6 +25,13 @@ export default connect(
                 url: ownProps.url,
                 id,
                 callback
+            });
+        },
+        delImages(id: string[], success: Function) {
+            dispatch({
+                ...DELETE_IMAGE_START,
+                id,
+                success
             });
         },
         fetchAlbum(id: string) {

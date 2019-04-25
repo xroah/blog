@@ -1,6 +1,8 @@
 import * as React from "react";
 import {
-    Button
+    Button,
+    Toolbar,
+    Typography
 } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import NoResult from "@common/no-article";
@@ -15,6 +17,7 @@ import ImageViewer from "@common/image-viewer";
 import { eventBus } from "@common/util";
 import _fetch from "@common/fetch";
 import message from "@common/message";
+import hint from "@common/hint-dialog";
 import "./index.scss";
 
 interface Props extends RouteComponentProps {
@@ -27,6 +30,7 @@ interface Props extends RouteComponentProps {
     emptyImages?: () => any;
     showUpload?: (album: any) => any;
     fetchAlbum?: (id: string) => any;
+    delImages: (id: string[], success: Function) => any;
 }
 
 const supportIO = typeof IntersectionObserver === "function";
@@ -42,7 +46,9 @@ class AlbumImages extends React.Component<Props> {
 
     state = {
         viewerVisible: false,
-        curImage: null
+        curImage: null,
+        checkedImages: [],
+        showCheck: false
     };
 
     isInViewport = (el: HTMLElement) => {
@@ -169,7 +175,6 @@ class AlbumImages extends React.Component<Props> {
     }
 
     handleClickImage = (evt: React.MouseEvent, image: any) => {
-        const tgt = evt.target as HTMLImageElement;
         this.setState({
             curImage: image.relPath,
             viewerVisible: true
@@ -180,6 +185,51 @@ class AlbumImages extends React.Component<Props> {
         this.setState({
             viewerVisible: false
         });
+    }
+
+    handleCheckChange = (checked: boolean, id: string) => {
+        let { checkedImages } = this.state;
+        let index = checkedImages.indexOf(id);
+        if (checked) {
+            if (index === -1) {
+                checkedImages.push(id);
+            }
+        } else {
+            if (index >= 0) {
+                checkedImages.splice(index, 1);
+            }
+        }
+        this.setState({
+            checkedImages
+        });
+    }
+
+    toggleCheck = () => {
+        let {
+            showCheck,
+            checkedImages
+        } = this.state;
+        showCheck = !showCheck;
+        if (!showCheck) {
+            checkedImages = [];
+        }
+        this.setState({
+            showCheck,
+            checkedImages
+        });
+    }
+
+    handleDel = () => {
+        let { checkedImages } = this.state;
+        hint.confirm(
+            "确定要删除这些图片吗?",
+            () => this.props.delImages(checkedImages, () => {
+                this.setState({
+                    checkedImages: [],
+                    showCheck: false
+                });
+            })
+        );
     }
 
     renderImage() {
@@ -197,6 +247,8 @@ class AlbumImages extends React.Component<Props> {
                     isAdmin={isAdmin}
                     isCover={coverInfo._id === image._id}
                     key={image._id}
+                    onCheckChange={this.handleCheckChange}
+                    showCheck={this.state.showCheck}
                     image={image} />
             );
         }
@@ -212,11 +264,14 @@ class AlbumImages extends React.Component<Props> {
 
         let {
             viewerVisible,
-            curImage
+            curImage,
+            checkedImages,
+            showCheck
         } = this.state;
 
-        let docTitle = document.title;
-        if (curAlbum && curAlbum.name !== docTitle) {
+        let checkedNum = checkedImages.length;
+
+        if (curAlbum && curAlbum.name) {
             document.title = curAlbum.name;
         } else {
             document.title = "相册";
@@ -224,6 +279,31 @@ class AlbumImages extends React.Component<Props> {
 
         return (
             <section className="album-images-container">
+                <Toolbar variant="dense" className="image-toolbar">
+                    {!!checkedNum && (
+                        <Typography color="secondary">
+                            已选中 {checkedNum} 条
+                        </Typography>
+                    )}
+                    <div className="btns">
+                        {
+                            isAdmin && !!checkedNum && (
+                                <Button
+                                    onClick={this.handleDel}
+                                    variant="contained"
+                                    color="secondary">
+                                    删除
+                                </Button>
+                            )
+                        }
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.toggleCheck}>
+                            {showCheck ? "取消选择" : "选择"}
+                        </Button>
+                    </div>
+                </Toolbar>
                 <div className="image-list">
                     {this.renderImage()}
                 </div>

@@ -52,7 +52,7 @@ export default (
                 curAlbum: action.album
             };
         case UPDATE_CUR_ALBUM_COVER.type:
-            let curAlbum = {...state.curAlbum};
+            let curAlbum = { ...state.curAlbum };
             if (curAlbum.coverInfo) {
                 curAlbum.coverInfo._id = action.id;
             } else {
@@ -63,11 +63,25 @@ export default (
                 curAlbum
             };
         case DELETE_IMAGE_BY_ID.type:
+            const id = action.id;
             list = state.list.slice();
-            for (let i = 0, l = list.length; i < l; i++) {
-                if (list[i]._id === action.id) {
-                    list.splice(i, 1);
-                    break;
+            for (let i = list.length; i--;) {
+                let _id = list[i]._id;
+                //delete multiple images
+                if (Array.isArray(id)) {
+                    let index = id.indexOf(_id);
+                    if (index >= 0) {
+                        id.splice(index, 1);
+                        list.splice(i, 1);
+                    }
+                    if (!id.length) {
+                        break;
+                    }
+                } else {
+                    if (_id === id) {
+                        list.splice(i, 1);
+                        break;
+                    }
                 }
             }
             return {
