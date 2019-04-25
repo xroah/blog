@@ -152,6 +152,7 @@ export default class ImageViewer extends React.Component<Props, State> {
     handleClose = () => {
         this.offEvent();
         this.props.onClose();
+        this.resize();
     }
 
     getCurrent = (isImage: boolean = false) => {
