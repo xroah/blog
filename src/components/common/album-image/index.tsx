@@ -279,31 +279,35 @@ class AlbumImages extends React.Component<Props> {
 
         return (
             <section className="album-images-container">
-                <Toolbar variant="dense" className="image-toolbar">
-                    {!!checkedNum && (
-                        <Typography color="secondary">
-                            已选中 {checkedNum} 条
-                        </Typography>
-                    )}
-                    <div className="btns">
-                        {
-                            isAdmin && !!checkedNum && (
-                                <Button
-                                    onClick={this.handleDel}
-                                    variant="contained"
-                                    color="secondary">
-                                    删除
+                {
+                    isAdmin && (
+                        <Toolbar variant="dense" className="image-toolbar">
+                            {!!checkedNum && (
+                                <Typography color="secondary">
+                                    已选中 {checkedNum} 条
+                                </Typography>
+                            )}
+                            <div className="btns">
+                                {
+                                    isAdmin && !!checkedNum && (
+                                        <Button
+                                            onClick={this.handleDel}
+                                            variant="contained"
+                                            color="secondary">
+                                            删除
                                 </Button>
-                            )
-                        }
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={this.toggleCheck}>
-                            {showCheck ? "取消选择" : "选择"}
-                        </Button>
-                    </div>
-                </Toolbar>
+                                    )
+                                }
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={this.toggleCheck}>
+                                    {showCheck ? "取消选择" : "选择"}
+                                </Button>
+                            </div>
+                        </Toolbar>
+                    )
+                }
                 <div className="image-list">
                     {this.renderImage()}
                 </div>

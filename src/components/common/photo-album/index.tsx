@@ -39,8 +39,7 @@ export default class PhotoAlbum extends React.Component<Props> {
         let {
             props: {
                 isAdmin,
-                list,
-                showEdit
+                list
             },
             handleClick
         } = this;
