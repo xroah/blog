@@ -43,6 +43,12 @@
         padding: 0 5px;
         background-color: rgba(0, 0, 0, .2);
         cursor: pointer;
+        transition: all .3s;
+
+        &.checked {
+            border: 1px solid $errorColor;
+            box-shadow: 0 0 10px 0 $errorColor;
+        }
 
         .checkbox {
             position: absolute;
@@ -61,7 +67,8 @@
         border-radius: 50%;
         border: 1px solid $errorColor;
         text-align: center;
-        transform: rotate(-45deg)
+        transform: rotate(-45deg);
+        z-index: 10;
     }
 
     .image-wrapper {

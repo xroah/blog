@@ -13,6 +13,7 @@ interface Props {
     isAdmin?: boolean;
     isCover?: boolean;
     showCheck?: boolean;
+    checked?: boolean;
     showContextMenu?: (x: number, y: number, isCover: boolean) => any;
     switchImage?: (image: any) => any;
     updateName?: (id: string, name: string, callback: Function) => any;
@@ -20,17 +21,36 @@ interface Props {
     onCheckChange?: (checked: boolean, id: string) => any;
 }
 
-export default class Item extends React.Component<Props> {
+interface State {
+    isEdit: boolean;
+    checked: boolean;
+    name: string;
+    from: string;
+}
+
+export default class Item extends React.Component<Props, State> {
+
+    static defaultProps = {
+        isChecked: false
+    };
 
     state = {
         isEdit: false,
         checked: false,
-        name: ""
+        name: "",
+        from: ""
     };
 
     inputEl: React.RefObject<HTMLInputElement> = React.createRef();
 
-    static getDerivedStateFromProps(props: Props, state: any) {
+    static getDerivedStateFromProps(props: Props, state: State) {
+        if (state.from) {
+            state.from = "";
+            return state;
+        }
+        if (props.checked !== state.checked) {
+            state.checked = props.checked;
+        }
         if (!props.showCheck) {
             state.checked = false;
         }
@@ -61,7 +81,8 @@ export default class Item extends React.Component<Props> {
         if (!isAdmin) return;
         this.setState({
             name: image.name || image.filename,
-            isEdit: true
+            isEdit: true,
+            from: "state"
         });
         setTimeout(() => {
             let input = this.inputEl.current;
@@ -71,7 +92,8 @@ export default class Item extends React.Component<Props> {
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
-            name: evt.target.value
+            name: evt.target.value,
+            from: "state"
         });
     }
 
@@ -84,7 +106,8 @@ export default class Item extends React.Component<Props> {
         } else if (key === "esc" || key === "escape") {
             this.setState({
                 isEdit: false,
-                name: ""
+                name: "",
+                from: "state"
             });
         }
     }
@@ -92,7 +115,8 @@ export default class Item extends React.Component<Props> {
     handleBlur = () => {
         let { name } = this.state;
         this.setState({
-            isEdit: false
+            isEdit: false,
+            from: "state"
         });
         if (name) {
             this.saveName();
@@ -110,7 +134,8 @@ export default class Item extends React.Component<Props> {
         if (name === image.name) {
             return this.setState({
                 isEdit: false,
-                name: ""
+                name: "",
+                from: "state"
             });
         }
         updateName(
@@ -118,7 +143,8 @@ export default class Item extends React.Component<Props> {
             name,
             () => {
                 this.setState({
-                    isEdit: false
+                    isEdit: false,
+                    from: "state"
                 });
             });
     }
@@ -136,7 +162,8 @@ export default class Item extends React.Component<Props> {
     handleCheckChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
         const checked = evt.target.checked;
         this.setState({
-            checked
+            checked,
+            from: "state"
         });
         this.fireChange(checked);
     }
@@ -145,7 +172,8 @@ export default class Item extends React.Component<Props> {
         let { checked } = this.state;
         checked = !checked;
         this.setState({
-            checked
+            checked,
+            from: "state"
         });
         this.fireChange(checked);
     }
@@ -197,7 +225,8 @@ export default class Item extends React.Component<Props> {
                         data-src={image.relPath} />
                     {
                         showCheck && (
-                            <div className="check-item" onClick={this.handleClickCheck}>
+                            <div className={classnames("check-item", {checked})} 
+                            onClick={this.handleClickCheck}>
                                 <Checkbox
                                     className="checkbox"
                                     color="secondary"
@@ -208,23 +237,28 @@ export default class Item extends React.Component<Props> {
                         )
                     }
                 </div>
-                <div className="ellipsis image-name"
-                    style={{ overflow: isEdit ? "visible" : "hidden" }}>
-                    {
-                        isEdit ?
-                            <input
-                                type="text"
-                                ref={this.inputEl}
-                                value={name}
-                                onKeyDown={this.handleKeyDown}
-                                onChange={this.handleChange}
-                                onBlur={this.handleBlur}
-                                className="form-control" /> :
-                            <span
-                                onClick={this.handleEdit}
-                                title={imageName}>{imageName}</span>
-                    }
-                </div>
+                {
+                    !showCheck && (
+                        <div
+                            className="ellipsis image-name"
+                            style={{ overflow: isEdit ? "visible" : "hidden" }}>
+                            {
+                                isEdit ?
+                                    <input
+                                        type="text"
+                                        ref={this.inputEl}
+                                        value={name}
+                                        onKeyDown={this.handleKeyDown}
+                                        onChange={this.handleChange}
+                                        onBlur={this.handleBlur}
+                                        className="form-control" /> :
+                                    <span
+                                        onClick={this.handleEdit}
+                                        title={imageName}>{imageName}</span>
+                            }
+                        </div>
+                    )
+                }
             </div>
         );
     }

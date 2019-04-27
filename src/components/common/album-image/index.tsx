@@ -220,8 +220,24 @@ class AlbumImages extends React.Component<Props> {
         });
     }
 
+    checkAll = () => {
+        let {
+            state: { checkedImages },
+            props: { list }
+        } = this;
+        if (checkedImages.length !== list.length) {
+            checkedImages = list.map(img => img._id);
+        } else {
+            checkedImages = [];
+        }
+        this.setState({
+            checkedImages
+        });
+    }
+
     handleDel = () => {
         let { checkedImages } = this.state;
+        return console.log(checkedImages)
         hint.confirm(
             "确定要删除这些图片吗?",
             () => this.props.delImages(checkedImages, () => {
@@ -240,14 +256,16 @@ class AlbumImages extends React.Component<Props> {
             list,
             started
         } = this.props;
+        let { checkedImages } = this.state;
         let coverInfo = curAlbum && curAlbum.coverInfo ? curAlbum.coverInfo : {};
         if (list.length) {
             return list.map(
                 image => <Item
+                    key={image._id}
                     onClick={this.handleClickImage}
                     isAdmin={isAdmin}
+                    checked={checkedImages.indexOf(image._id) >= 0}
                     isCover={coverInfo._id === image._id}
-                    key={image._id}
                     onCheckChange={this.handleCheckChange}
                     showCheck={this.state.showCheck}
                     image={image} />
@@ -297,7 +315,17 @@ class AlbumImages extends React.Component<Props> {
                                             variant="contained"
                                             color="secondary">
                                             删除
-                                </Button>
+                                        </Button>
+                                    )
+                                }
+                                {
+                                    showCheck && (
+                                        <Button
+                                            onClick={this.checkAll}
+                                            variant="contained"
+                                            color="primary">
+                                            {list.length === checkedImages.length ? "取消全选" : "全选"}
+                                        </Button>
                                     )
                                 }
                                 <Button
