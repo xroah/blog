@@ -3,7 +3,9 @@ import {
     SHOW_ALBUM_EDIT,
     HIDE_ALBUM_EDIT,
     SHOW_ALBUM_PROPERTY,
-    HIDE_ALBUM_PROPERTY
+    HIDE_ALBUM_PROPERTY,
+    ALBUM_START_LOADING,
+    ALBUM_STOP_LOADING
 } from "../actions";
 
 export default (
@@ -11,11 +13,22 @@ export default (
         list: [],
         editVisible: false,
         propertyVisible: false,
-        mode: "add"
+        mode: "add",
+        loading: false
     },
     action: any
 ) => {
     switch (action.type) {
+        case ALBUM_START_LOADING.type: 
+            return {
+                ...state,
+                loading: true
+            };
+        case ALBUM_STOP_LOADING.type:
+            return {
+                ...state,
+                loading: false
+            };
         case FETCH_ALBUMS.type:
             return {
                 ...state,

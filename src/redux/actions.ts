@@ -279,3 +279,11 @@ export const UPDATE_CUR_ALBUM_COVER = {
 export const SWITCH_IMAGE = {
     type: "SWITCH_IMAGE"
 };
+
+export const ALBUM_START_LOADING = {
+    type: "ALBUM_START_LOADING"
+};
+
+export const ALBUM_STOP_LOADING = {
+    type: "ALBUM_STOP_LOADING"
+};

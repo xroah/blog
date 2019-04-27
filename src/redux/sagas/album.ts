@@ -2,7 +2,9 @@ import {
     FETCH_ALBUMS,
     ADD_ALBUM_START,
     FETCH_ALBUMS_START,
-    DELETE_ALBUM_START
+    DELETE_ALBUM_START,
+    ALBUM_START_LOADING,
+    ALBUM_STOP_LOADING
 } from "../actions";
 import {
     call,
@@ -16,7 +18,9 @@ import message from "@common/message";
 
 function* fetchAlbum(action: any) {
     let { url = ADMIN_ALBUM_URL } = action
-    loading.show();
+    yield put({
+        ...ALBUM_START_LOADING
+    });
     try {
         let list = yield call(_fetch, url);
         yield put({
@@ -25,7 +29,9 @@ function* fetchAlbum(action: any) {
         });
     } catch (err) {
     }
-    loading.hide();
+    yield put({
+        ...ALBUM_STOP_LOADING
+    });
 }
 
 function* saveAlbum(action: any) {

@@ -7,7 +7,8 @@ import {
 
 export default connect(
     (state: any) => ({
-        list: state.album.list
+        list: state.album.list,
+        loading: state.album.loading
     }),
     (dispatch, ownProps: any) => ({
         fetchAlbums() {

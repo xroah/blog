@@ -19,6 +19,7 @@ import _fetch from "@common/fetch";
 import message from "@common/message";
 import hint from "@common/hint-dialog";
 import "./index.scss";
+import InlineLoading from '@common/inline-loading';
 
 interface Props extends RouteComponentProps {
     isAdmin?: boolean;
@@ -259,7 +260,8 @@ class AlbumImages extends React.Component<Props> {
         let {
             isAdmin,
             curAlbum,
-            list
+            list,
+            started
         } = this.props;
 
         let {
@@ -311,6 +313,7 @@ class AlbumImages extends React.Component<Props> {
                 <div className="image-list">
                     {this.renderImage()}
                 </div>
+                {started && <InlineLoading />}
                 <ImageViewer
                     images={list}
                     visible={viewerVisible}

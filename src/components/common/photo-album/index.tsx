@@ -4,12 +4,14 @@ import Item from "@containers/admin/photo-album-item";
 import ContextMenu from "@containers/admin/album-context-menu";
 import AlbumDialog from "@containers/admin/album-dialog";
 import AlbumProperty from "@containers/admin/album-property";
+import InlineLoading from "@common/inline-loading";
 import "./index.scss";
 
 interface Props {
     isAdmin?: boolean;
     url?: string;
     list?: Array<any>;
+    loading?: boolean;
     fetchAlbums: () => any;
     showEdit: () => any;
 }
@@ -39,10 +41,14 @@ export default class PhotoAlbum extends React.Component<Props> {
         let {
             props: {
                 isAdmin,
-                list
+                list,
+                loading
             },
             handleClick
         } = this;
+        if (loading) {
+            return <InlineLoading/>;
+        }
         return (
             <section className="album-container">
                 {
