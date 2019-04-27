@@ -18,8 +18,9 @@ import { eventBus } from "@common/util";
 import _fetch from "@common/fetch";
 import message from "@common/message";
 import hint from "@common/hint-dialog";
-import "./index.scss";
 import InlineLoading from '@common/inline-loading';
+import { DOWNLOAD_IMAGES } from "@common/api";
+import "./index.scss";
 
 interface Props extends RouteComponentProps {
     isAdmin?: boolean;
@@ -237,7 +238,6 @@ class AlbumImages extends React.Component<Props> {
 
     handleDel = () => {
         let { checkedImages } = this.state;
-        return console.log(checkedImages)
         hint.confirm(
             "确定要删除这些图片吗?",
             () => this.props.delImages(checkedImages, () => {
@@ -247,6 +247,21 @@ class AlbumImages extends React.Component<Props> {
                 });
             })
         );
+    }
+
+    download = () => {
+        let {
+            state: { checkedImages },
+            props: { curAlbum }
+        } = this;
+        if (!checkedImages.length) {
+            return message.error("请选择图片!");
+        }
+        let url = `${DOWNLOAD_IMAGES}?ids=${JSON.stringify(checkedImages)}`;
+        if (curAlbum) {
+            url += `&name=${curAlbum.name}`;
+        }
+        window.open(url, "_blank");
     }
 
     renderImage() {
@@ -300,11 +315,11 @@ class AlbumImages extends React.Component<Props> {
         return (
             <section className="album-images-container">
                 {
-                    isAdmin && (
+                    !!list.length && (
                         <Toolbar variant="dense" className="image-toolbar">
                             {!!checkedNum && (
                                 <Typography color="secondary">
-                                    已选中 {checkedNum} 条
+                                    {checkedNum}
                                 </Typography>
                             )}
                             <div className="btns">
@@ -320,19 +335,27 @@ class AlbumImages extends React.Component<Props> {
                                 }
                                 {
                                     showCheck && (
-                                        <Button
-                                            onClick={this.checkAll}
-                                            variant="contained"
-                                            color="primary">
-                                            {list.length === checkedImages.length ? "取消全选" : "全选"}
-                                        </Button>
+                                        <>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={this.download}>
+                                                下载
+                                            </Button>
+                                            <Button
+                                                onClick={this.checkAll}
+                                                variant="contained"
+                                                color="primary">
+                                                {list.length === checkedImages.length ? "取消全选" : "全选"}
+                                            </Button>
+                                        </>
                                     )
                                 }
                                 <Button
                                     variant="contained"
                                     color="primary"
                                     onClick={this.toggleCheck}>
-                                    {showCheck ? "取消选择" : "选择"}
+                                    {showCheck ? "取消" : "选择"}
                                 </Button>
                             </div>
                         </Toolbar>

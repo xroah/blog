@@ -131,7 +131,7 @@ export default class Item extends React.Component<Props, State> {
             },
             state: { name }
         } = this;
-        if (name === image.name) {
+        if (name === (image.name || image.filename)) {
             return this.setState({
                 isEdit: false,
                 name: "",

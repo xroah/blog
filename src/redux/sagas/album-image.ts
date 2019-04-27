@@ -70,7 +70,7 @@ function* fetchAlbum(action: any) {
     }
 }
 
-function* deleteImage(action) {
+function* deleteImage(action: any) {
     let {
         id,
         success 
@@ -89,6 +89,9 @@ function* deleteImage(action) {
         yield put({
             ...DELETE_IMAGE_BY_ID,
             id
+        });
+        yield put({
+            ...FETCH_ALBUMS_START
         });
     } catch (error) {
 
