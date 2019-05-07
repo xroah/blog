@@ -292,6 +292,7 @@ export default class Calendar extends React.Component {
             mon
         });
         this.changeDays(year, mon);
+        this.fetchCalendarInfo(year);
     }
 
     render() {
