@@ -53,15 +53,13 @@ class App extends React.Component {
     showBackTop = () => {
         let sTop = document.documentElement.scrollTop || document.body.scrollTop;
         let winH = window.innerHeight;
+        let backTopVisible = false;
         if (sTop >= winH * 1.5) {
-            this.setState({
-                backTopVisible: true
-            });
-        } else {
-            this.setState({
-                backTopVisible: false
-            });
-        }
+            backTopVisible = true;
+        } 
+        this.setState({
+            backTopVisible
+        });
     }
 
     cancelScroll = () => {
@@ -74,7 +72,7 @@ class App extends React.Component {
         if (this.scrollTimer !== undefined) {
             clearTimeout(this.scrollTimer);
         }
-        this.scrollTimer = setTimeout(this.showBackTop, 500);
+        this.scrollTimer = setTimeout(this.showBackTop, 300);
     }
 
     backToTop = () => {
