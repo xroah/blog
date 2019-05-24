@@ -1,4 +1,4 @@
-import Articles from "@components/admin/articles";
+import Articles from "@components/admin/articles/published";
 import { 
     FETCH_ARTICLES_START,
     ADMIN_UPDATE_ARTICLE_PAGE,

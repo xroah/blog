@@ -2,7 +2,7 @@ import * as React from "react";
 import NavBar from "@components/admin/nav-bar";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Classification from "../classification";
-import Articles from "@containers/admin/admin-article";
+import Articles from "../articles";
 import PhotoAlbum from "@containers/common/photo-album";
 import ModifyPwd from "@containers/admin/modify-pwd";
 import ArticleEdit from "@containers/admin/article-edit";
@@ -49,8 +49,8 @@ export default class AdminHome extends React.Component {
                         <Route path="/xsys/photo-album" exact component={_PhotoAlbum} />
                         <Route path="/xsys/photo-album/:id" exact component={_AlbumImages} />
                         <Route path="/xsys/article/edit" exact component={ArticleEdit} />
-                        <Route path="/xsys/articles" exact component={Articles} />
-                        <Route path="/xsys/articles/:id" exact component={_ViewArticle} />
+                        <Route path="/xsys/articles" component={Articles} />
+                        <Route path="/xsys/article/:id" exact component={_ViewArticle} />
                         <Route path="/xsys/version" exact component={Version} />
                         <Route path="/xsys/about" exact component={About} />
                         <Redirect to="/404" />
