@@ -15,7 +15,7 @@
         padding-top: 0;
         padding-bottom: 10px;
     }
-    .article-summary {
+    .article-summary:not(.draft) {
         cursor: pointer;
     }
     .tag-list {

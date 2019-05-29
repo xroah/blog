@@ -20,9 +20,10 @@ import Quill from "quill";
 
 interface Props extends RouteComponentProps {
     saveArticle?: (arg: any) => any;
+    saveToDrafts?: (arg: any) => any;
     changeSaved?: (arg?: any) => any;
     saved?: boolean;
-    fetchArticleById?: (id: string, success: Function, error: Function) => any;
+    fetchArticleById?: (body: any, success: Function, error: Function) => any;
 }
 
 export default class ArticleEdit extends React.Component<Props> {
@@ -82,11 +83,16 @@ export default class ArticleEdit extends React.Component<Props> {
         changeSaved(false);
         if (state) {
             if (state.id) {
+                this.id = state.id;
                 fetchArticleById(
-                    this.id = state.id,
+                    {
+                        id: state.id,
+                        isDraft: !!state.isDraft
+                    },
                     this.fetchSuccess,
                     this.fetchError
                 );
+                this.isDraft = !!state.isDraft;
             }
             this.setState({
                 search: state.search
@@ -133,7 +139,7 @@ export default class ArticleEdit extends React.Component<Props> {
         }
     }
 
-    save = async () => {
+    getData = () => {
         let {
             title,
             cls,
@@ -143,6 +149,31 @@ export default class ArticleEdit extends React.Component<Props> {
         let editor: Quill = this.editorRef.current.editor;
         let text = editor.getText().trim(); //only get text, filter images
         let content = editor.root.innerHTML;
+        tags = tags.trim();
+        if (tags) {
+            tags = tags.split(";") as any;
+        } else {
+            tags = [] as any;
+        }
+        return {
+            title,
+            cls,
+            tags,
+            secret,
+            content,
+            text
+        };
+    }
+
+    save = async () => {
+        let {
+            title,
+            cls,
+            tags,
+            secret,
+            content,
+            text
+        } = this.getData();
         let delImages = [];
         let uploadedImages = [];
         if (!title.trim()) {
@@ -154,12 +185,7 @@ export default class ArticleEdit extends React.Component<Props> {
         } else if (!text) {
             return message.error("请输入文章内容!");
         }
-        tags = tags.trim();
-        if (tags) {
-            tags = tags.split(";") as any;
-        } else {
-            tags = [] as any;
-        }
+
         let images = this.getImages();
         this.uploadedImages.forEach(img => {
             let exists = false;
@@ -186,6 +212,26 @@ export default class ArticleEdit extends React.Component<Props> {
             uploadedImages
         };
         this.props.saveArticle(body);
+    }
+
+    saveToDrafts = () => {
+        let {
+            title,
+            cls,
+            tags,
+            secret,
+            content,
+            text
+        } = this.getData();
+        this.props.saveToDrafts({
+            id: this.id,
+            title,
+            clsId: cls,
+            tags,
+            secret,
+            content,
+            summary: text.substring(0, 150)
+        });
     }
 
     upload = () => {
@@ -291,14 +337,17 @@ export default class ArticleEdit extends React.Component<Props> {
                         onUpload={this.upload}
                         className="form-item" />
                 </div>
-                <div className="row text-right">
+                <div className="row text-right action-btns">
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.saveToDrafts}>保存到草稿箱</Button>
                     <Button
                         variant="contained"
                         onClick={this.save}
                         color="primary">保存</Button>
                     <Link to={`/xsys/articles${search || ""}`}>
                         <Button
-                            style={{ marginLeft: 20 }}
                             className="ml-10"
                             variant="contained"
                             color="secondary">取消</Button>

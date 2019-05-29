@@ -32,6 +32,7 @@ export interface Props extends React.HTMLAttributes<any>, RouteComponentProps {
     timeout?: number;
     article: any;
     viewPath: string;
+    isDraft?: boolean;
     showDetails?: (arg: any) => void;
     delArticle?: (id: string) => void;
 }
@@ -49,11 +50,13 @@ class ArticleCard extends React.Component<Props> {
         let {
             id,
             history,
-            location: { search }
+            location: { search },
+            isDraft
         } = this.props;
         history.push("/xsys/article/edit", {
             id,
-            search
+            search,
+            isDraft
         });
     }
 
@@ -78,9 +81,10 @@ class ArticleCard extends React.Component<Props> {
         let {
             id,
             history,
-            viewPath
+            viewPath,
+            isDraft
         } = this.props;
-        history.push(`${viewPath}/${id}`);
+        if (!isDraft) history.push(`${viewPath}/${id}`);
     }
 
     render() {
@@ -88,7 +92,8 @@ class ArticleCard extends React.Component<Props> {
             isAdmin,
             showDetails,
             timeout,
-            article
+            article,
+            isDraft
         } = this.props;
         let date = formatDate(new Date(article.createTime));
         return (
@@ -103,7 +108,7 @@ class ArticleCard extends React.Component<Props> {
                             }
                             subheader={date}
                             action={
-                                isAdmin ?
+                                isAdmin && !isDraft ?
                                     (
                                         <IconButton onClick={showDetails}>
                                             <Info />
@@ -111,7 +116,9 @@ class ArticleCard extends React.Component<Props> {
                                     ) : null
                             } />
                         <CardContent className="card-content">
-                            <div onClick={this.viewArticle} className="article-summary">
+                            <div 
+                                onClick={this.viewArticle} 
+                                className={classnames("article-summary", isDraft ? "draft" : "")}>
                                 {article.summary}...
                             </div>
                             <div className="tag-list">
@@ -129,24 +136,30 @@ class ArticleCard extends React.Component<Props> {
                         <CardActions className="article-action">
                             <div>
                                 {
-                                    isAdmin && (
-                                        <span
-                                            className={classnames(
-                                                "tag permission-tag",
-                                                article.secret ? "secret" : ""
-                                            )}>
+                                    !isDraft && (
+                                        <>
                                             {
-                                                article.secret ? "私密" : "公开"
+                                                isAdmin && (
+                                                    <span
+                                                        className={classnames(
+                                                            "tag permission-tag",
+                                                            article.secret ? "secret" : ""
+                                                        )}>
+                                                        {
+                                                            article.secret ? "私密" : "公开"
+                                                        }
+                                                    </span>
+                                                )
                                             }
-                                        </span>
+                                            <span className="action-item">
+                                                <Visibility />{article.totalViewed}
+                                            </span>
+                                            <span className="action-item">
+                                                <Comment />{article.comments ? article.comments.count : 0}
+                                            </span>
+                                        </>
                                     )
                                 }
-                                <span className="action-item">
-                                    <Visibility />{article.totalViewed}
-                                </span>
-                                <span className="action-item">
-                                    <Comment />{article.comments ? article.comments.count : 0}
-                                </span>
                             </div>
                             {
                                 isAdmin &&

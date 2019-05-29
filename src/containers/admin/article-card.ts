@@ -17,7 +17,8 @@ export default connect(
         delArticle(id) {
             dispatch({
                 ...DELETE_ARTICLE_START,
-                id
+                id,
+                isDraft: ownProps.isDraft
             })
         }
     })

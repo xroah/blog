@@ -5,7 +5,8 @@ import {
     CHANGE_ARTICLE_SAVED,
     CHANGE_ARTICLE_NOT_SAVED,
     ADMIN_UPDATE_ARTICLE_PAGE,
-    EMPTY_ADMIN_ARTICLES
+    EMPTY_ADMIN_ARTICLES,
+    FETCH_DRAFTS
 } from "../actions";
 
 export default function (
@@ -18,7 +19,8 @@ export default function (
         visible: false,
         //edit component, if not saved will show prompt before route change
         saved: false,
-        page: 1
+        page: 1,
+        drafts: []
     }, action
 ) {
     switch (action.type) {
@@ -61,6 +63,11 @@ export default function (
                 ...state,
                 saved: false
             }
+        case FETCH_DRAFTS.type: 
+            return {
+                ...state,
+                drafts: action.list
+            };
         default:
             return state;
     }

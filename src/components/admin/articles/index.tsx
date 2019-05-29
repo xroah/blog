@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 import Aside from "./aside";
 import Published from "@containers/admin/admin-article";
-import Draft from "./draft";
+import Draft from "@containers/admin/drafts";
 import "./index.scss";
 
 export default class Articles extends React.Component {

@@ -4,16 +4,26 @@
         align-items: center;
         margin-top: 10px;
     }
+
     .label-text {
         width: 8%;
     }
+
     .align-top {
         align-self: flex-start;
     }
+
     .text-right {
         justify-content: flex-end;
     }
+
     .form-item {
         width: 92%;
+    }
+
+    .action-btns {
+        button {
+            margin-right: 20px;
+        }
     }
 }

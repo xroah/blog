@@ -4,7 +4,8 @@ import {
     EDIT_ARTICLE_START,
     CHANGE_ARTICLE_NOT_SAVED,
     CHANGE_ARTICLE_SAVED,
-    FETCH_ARTICLE_BY_ID_START
+    FETCH_ARTICLE_BY_ID_START,
+    SAVE_ARTICLE_TO_DRAFTS_START
 } from "@redux/actions";
 import { ADMIN_ARTICLE_URL } from "@common/api";
 
@@ -19,16 +20,23 @@ export default connect(
                 body
             });
         },
+        saveToDrafts(body) {
+            dispatch({
+                ...SAVE_ARTICLE_TO_DRAFTS_START,
+                body,
+                isDraft: true
+            });
+        },
         changeSaved(saved) {
             let action = saved ? CHANGE_ARTICLE_SAVED : CHANGE_ARTICLE_NOT_SAVED;
             dispatch({
                 ...action
             });
         },
-        fetchArticleById(id: string,success: Function, error: Function) {
+        fetchArticleById(body: any,success: Function, error: Function) {
             dispatch({
                 ...FETCH_ARTICLE_BY_ID_START,
-                id,
+                body,
                 success,
                 error,
                 url: ADMIN_ARTICLE_URL

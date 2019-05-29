@@ -1,10 +1,8 @@
-.articles-container {
-    display: flex;
-}
+@import "../../common/styles/variables";
 
 .admin-article-list {
     // padding: 10px;
-    margin-top: -10px;
+    margin-left: 220px;
 
     .article-card {
         margin-top: 20px;
@@ -21,6 +19,23 @@
 }
 
 .article-nav {
+    position: fixed;
+    top: 80px;
     width: 200px;
     margin-right: 20px;
+
+    li {
+        padding: 0;
+    }
+
+    .nav-link {
+        display: inline-block;
+        line-height: 32px;
+        width: 100%;
+        padding: 0 15px;
+        &.active {
+            background-color: $infoColor;
+            color: #fff;
+        }
+    }
 }

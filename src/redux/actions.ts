@@ -83,15 +83,27 @@ export const EMPTY_COMMENT = {
 export const DELETE_ARTICLE_START = {
     type: "DELETE_ARTICLES_START",
     id: ""
-};
+};/* 
 
 export const EDIT_ARTICLE = {
     type: "EDIT_ARTICLE",
     body: {}
-};
+}; */
 
 export const EDIT_ARTICLE_START = {
     type: "EDIT_ARTICLE_START"
+};
+
+export const SAVE_ARTICLE_TO_DRAFTS_START = {
+    type: "SAVE_ARTICLE_TO_DRAFTS_START"
+};
+
+export const FETCH_DRAFTS = {
+    type: "FETCH_DRAFTS"
+};
+
+export const FETCH_DRAFTS_START = {
+    type: "FETCH_DRAFTS_START"
 };
 
 export const CHANGE_ARTICLE_SAVED = {
