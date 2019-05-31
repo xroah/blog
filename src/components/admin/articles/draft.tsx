@@ -13,6 +13,7 @@ interface Props {
 export default class Draft extends React.Component<Props> {
     async componentDidMount() {
         this.props.fetchDrafts();
+        document.title = "文章管理-草稿箱";
     }
 
     render() {

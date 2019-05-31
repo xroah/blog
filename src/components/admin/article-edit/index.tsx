@@ -35,13 +35,14 @@ export default class ArticleEdit extends React.Component<Props> {
         secret: false,
         error: false,
         message: "",
-        search: ""
+        backUrl: ""
     };
 
     fileEl: React.RefObject<HTMLInputElement> = React.createRef();
     editorRef: React.RefObject<any> = React.createRef();
     titleEl: React.RefObject<HTMLInputElement> = React.createRef();
     id: string;
+    isDraft: boolean;
     uploadedImages: Array<any> = [];
 
     fetchSuccess = (ret: any) => {
@@ -95,7 +96,7 @@ export default class ArticleEdit extends React.Component<Props> {
                 this.isDraft = !!state.isDraft;
             }
             this.setState({
-                search: state.search
+                backUrl: state.url
             });
         }
         window.onbeforeunload = () => "文章未保存,确定要离开吗?";
@@ -276,9 +277,11 @@ export default class ArticleEdit extends React.Component<Props> {
                 tags,
                 error,
                 message,
-                search
+                backUrl
             },
-            props: { saved }
+            props: { saved },
+            id,
+            isDraft
         } = this;
 
         if (error) {
@@ -338,15 +341,19 @@ export default class ArticleEdit extends React.Component<Props> {
                         className="form-item" />
                 </div>
                 <div className="row text-right action-btns">
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={this.saveToDrafts}>保存到草稿箱</Button>
+                    {
+                        id && !isDraft ? null : (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={this.saveToDrafts}>保存到草稿箱</Button>
+                        )
+                    }
                     <Button
                         variant="contained"
                         onClick={this.save}
                         color="primary">保存</Button>
-                    <Link to={`/xsys/articles${search || ""}`}>
+                    <Link to={ backUrl || `/xsys/articles}`}>
                         <Button
                             className="ml-10"
                             variant="contained"

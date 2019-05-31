@@ -24,7 +24,7 @@ export default class Published extends React.Component<Props> {
     };
 
     componentDidMount() {
-        document.title = "文章管理";
+        document.title = "文章管理-已发布文章";
     }
 
     static getDerivedStateFromProps(props: Props, state) {

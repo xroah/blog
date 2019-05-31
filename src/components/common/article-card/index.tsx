@@ -50,12 +50,12 @@ class ArticleCard extends React.Component<Props> {
         let {
             id,
             history,
-            location: { search },
+            location: { search, pathname },
             isDraft
         } = this.props;
         history.push("/xsys/article/edit", {
             id,
-            search,
+            url: pathname + search,
             isDraft
         });
     }
