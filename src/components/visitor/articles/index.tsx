@@ -13,16 +13,24 @@ interface Props extends RouteComponentProps {
     started?: boolean;
     page?: number;
     hasMore?: boolean;
-    fetchArticle?: (page: number) => any;
+    fetchArticle?: (page: number, callback?: Function) => any;
     updatePage?: (page: number) => any;
+    emptyArticle?: () => any;
 }
 
 const win = window;
 const LOAD_DISTANCE = 100;
+const MAX_DIS = 50;
 
 class Articles extends React.Component<Props> {
 
     timer: NodeJS.Timeout;
+    startY: number = 0;
+
+    state = {
+        dis: 0,
+        showMsg: false
+    };
 
     componentDidMount() {
         let {
@@ -80,27 +88,84 @@ class Articles extends React.Component<Props> {
         );
     }
 
+    handleTouchStart = (evt: React.TouchEvent) => {
+        this.startY = evt.touches[0].pageY;
+    }
+
+    handleTouchMove = (evt: React.TouchEvent) => {
+        let sTop = document.body.scrollTop || document.documentElement.scrollTop;
+        let offset = evt.touches[0].pageY;
+        if (sTop === 0 && offset > this.startY) {
+            let dis = offset - this.startY;
+            this.setState({
+                showMsg: true,
+                dis
+            });
+        } 
+    }
+
+    handleTouchEnd = (evt: React.TouchEvent) => {
+        if (evt.touches.length) return;
+        if (this.state.dis >= MAX_DIS) {
+            let {
+                fetchArticle,
+                emptyArticle,
+                updatePage
+            } = this.props;
+            emptyArticle();
+            updatePage(1);
+            fetchArticle(1);
+        }
+        this.setState({
+            dis: this.startY = 0,
+            showMsg: false
+        });
+    }
+
     render() {
         let {
             started,
             hasMore,
             list
         } = this.props;
+        let {
+            dis,
+            showMsg
+        } = this.state;
+        const top = 20;
         return (
-            <div className="article-list">
-                {this.renderArticle()}
+            <>
                 {
-                    started ? <InlineLoading /> :
-                        list.length ? null :
-                            <NoResult message="没有文章" img="noResult" />
+                    showMsg && (
+                        <div
+                            className="dropdown-msg"
+                            style={{ top: top + dis }}>
+                            {
+                                dis >= MAX_DIS ? "释放刷新" : "下拉刷新"
+                            }
+                        </div>
+                    )
                 }
-                {
-                    !hasMore && list.length > 0 &&
-                    <div className="no-more">
-                        <span>没有更多了</span>
-                    </div>
-                }
-            </div>
+                <div
+                    className="article-list"
+                    onTouchStart={this.handleTouchStart}
+                    onTouchMove={this.handleTouchMove}
+                    onTouchEnd={this.handleTouchEnd}
+                    style={{ transform: `translateY(${dis}px)` }}>
+                    {this.renderArticle()}
+                    {
+                        started ? <InlineLoading /> :
+                            list.length ? null :
+                                <NoResult message="没有文章" img="noResult" />
+                    }
+                    {
+                        !hasMore && list.length > 0 &&
+                        <div className="no-more">
+                            <span>没有更多了</span>
+                        </div>
+                    }
+                </div>
+            </>
         );
     }
 }

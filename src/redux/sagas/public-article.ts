@@ -36,6 +36,9 @@ function* fetchArticle(action) {
         ...FETCH_ARTICLE_STARTED,
         started: false
     });
+    if (typeof action.callback === "function") {
+        action.callback();
+    }
 }
 
 function* watchFetchArticle() {

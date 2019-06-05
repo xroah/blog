@@ -17,7 +17,9 @@ export default connect(
         fetchArticle(id) {
             dispatch({
                 ...FETCH_ARTICLE_BY_ID_START,
-                id,
+                body: {
+                    id
+                },
                 url: ownProps.fetchUrl
             });
         },

@@ -16,7 +16,7 @@ export default (state = {
                 ...state,
                 list: state.list.concat(action.articles)
             };
-        case EMPTY_PUBLIC_ARTICLES:
+        case EMPTY_PUBLIC_ARTICLES.type:
             return {
                 ...state,
                 list: []
