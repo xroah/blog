@@ -25,12 +25,12 @@ function* fetchArticleById(action) {
     let {
         body: {
             id,
-            isDraft
+            isEdit
         },
         url = FETCH_PUBLIC_ARTICLE
     } = action;
     try {
-        let ret = yield call(_fetch, `${url}?id=${id}&isDraft=${!!isDraft}`);
+        let ret = yield call(_fetch, `${url}?id=${id}&isEdit=${!!isEdit}`);
         yield put({
             ...FETCH_ARTICLE_BY_ID,
             article: ret

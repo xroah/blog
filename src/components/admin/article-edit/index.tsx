@@ -88,7 +88,7 @@ export default class ArticleEdit extends React.Component<Props> {
                 fetchArticleById(
                     {
                         id: state.id,
-                        isDraft: !!state.isDraft
+                        isEdit: true
                     },
                     this.fetchSuccess,
                     this.fetchError

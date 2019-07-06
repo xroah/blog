@@ -13,6 +13,7 @@ export const ADMIN_IMAGE_URL = "/api/xsys/image";
 export const SET_ALBUM_COVER = "/api/xsys/setAlbumCover"
 export const STATISTICS = "/api/xsys/count";
 export const UPDATE_VERSION = "/api/xsys/version";
+export const FETCH_ARTICLE_COUNT = "/api/xsys/articles/count";
 
 export const FETCH_COMMENT = "/api/comment";
 export const FETCH_PUBLIC_ARTICLE = "/api/articles/list";

@@ -4,12 +4,6 @@
     display: flex;
     padding: 10px 0;
 
-    .article-card {
-        & ~ .article-card {
-            margin-top: 15px;
-        }
-    }
-
     .article-list {
         flex: 1;
     }

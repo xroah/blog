@@ -54,7 +54,7 @@ class App extends React.Component {
         let sTop = document.documentElement.scrollTop || document.body.scrollTop;
         let winH = window.innerHeight;
         let backTopVisible = false;
-        if (sTop >= winH * 1.5) {
+        if (sTop >= winH * 1) {
             backTopVisible = true;
         } 
         this.setState({
