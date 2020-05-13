@@ -1,0 +1,40 @@
+html, body {
+    --w100: 100%;
+    width: var(--w100);
+    height: var(--w100);
+}
+
+.background {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--w100);
+    height: var(--w100);
+    background: url(https://cn.bing.com/th?id=OHR.MooseWatching_ZH-CN9115714564_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp) no-repeat center center;
+    background-size: cover;
+    transition: all .3s;
+    z-index: -1;
+}
+
+.container {
+    height: var(--w100);
+}
+
+.login-wrapper {
+    width: 380px;
+    border-radius: 10px;;
+    background-color: rgba(0, 0, 0, .6);
+}
+
+.login-wrapper form > .form-group {
+    margin: 24px;
+}
+
+.login-btn {
+    margin-top: 36px;
+}
+
+.custom-control-label::before,
+.custom-control-label::after {
+    top: .16rem;
+}
