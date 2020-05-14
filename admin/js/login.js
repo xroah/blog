@@ -1,5 +1,7 @@
 
-import request from "./common/request.js";
+import request from "./modules/request.js";
+import loading from "./modules/loading.js";
+import message from "./modules/message.js";
 
 const form = document.forms["loginForm"];
 const elements = form.elements;
@@ -46,16 +48,23 @@ async function login (){
     const username = elements.username.value.trim();
     const password = elements.password.value;
 
+    message.destroy();
+
     if (!username) {
+        message.error("请输入用户名！");
         return elements.username.focus();
     }
 
     if (!password) {
+        message.error("请输入密码！");
         return elements.password.focus();
     }
 
     let res;
 
+    btn.disabled = true;
+
+    loading.show();
     try {
         res = await request("/api/admin/login", {
             method: "POST",
@@ -65,7 +74,15 @@ async function login (){
             })
         });
     } catch (error) {
+        if(error.code) {
+            message.error(error.msg);
+        }
+
         return;
+    } finally {
+        btn.disabled = false;
+
+        loading.hide();
     }
 
     if (elements.remember.checked) {
