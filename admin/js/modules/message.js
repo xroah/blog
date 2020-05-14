@@ -33,13 +33,19 @@ class Message {
         emulateTransitionEnd(this.el, () => {
             this.el.style.display = "none";
 
-            if (this.el.parentNode === wrapper) {
-                wrapper.removeChild(this.el);
-            }
+            remove(this.el);
             callback(cb);
         }, this.delay);
     }
 }
+
+function remove(el) {
+    if (el.parentNode === wrapper) {
+        wrapper.removeChild(el);
+    }
+}
+
+const msgMap = new Map();
 
 function factory(type) {
     return (message = "", cb) => {
@@ -54,6 +60,7 @@ function factory(type) {
         msg.el.innerHTML = message;
 
         msg.show(cb);
+        msgMap.set(msg.uuid, msg);
 
         timer = setTimeout(msg.hide.bind(msg), 3000);
 
@@ -61,6 +68,7 @@ function factory(type) {
             hide() {
                 clearTimeout(timer);
                 msg.hide();
+                msgMap.delete(msg.uuid);
             }
         }
     }
@@ -71,12 +79,10 @@ export default {
     success: factory("info"),
     error: factory("danger"),
     destroy() {
-        const children = wrapper.children;
-
-        for (let child of children) {
-            if (child.parentNode === wrapper) {
-                wrapper.removeChild(child);
-            }
+        for (let [key, val] of msgMap) {
+            remove(val.el);
         }
+
+        msgMap.clear();
     }
 }

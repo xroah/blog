@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     --w100: 100%;
     width: var(--w100);
     height: var(--w100);
@@ -10,10 +11,24 @@ html, body {
     top: 0;
     width: var(--w100);
     height: var(--w100);
-    background: url(https://cn.bing.com/th?id=OHR.MooseWatching_ZH-CN9115714564_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp) no-repeat center center;
+    background: no-repeat center center;
     background-size: cover;
     transition: all .3s;
     z-index: -1;
+}
+
+.copyright {
+    position: fixed;
+    color: #fff;
+    left: 15px;
+    bottom: 15px;
+    text-shadow: -2px -2px 1px rgba(0, 0, 0, .1),
+        -1px -1px 1px rgba(0, 0, 0, .1),
+        1px 1px 1px rgba(0, 0, 0, .1),
+        2px 2px 2px rgba(0, 0, 0, .2),
+        3px 3px 3px rgba(0, 0, 0, .3),
+        4px 4px 4px rgba(0, 0, 0, .4),
+        5px 5px 5px rgba(0, 0, 0, .5);
 }
 
 .container {
@@ -22,11 +37,12 @@ html, body {
 
 .login-wrapper {
     width: 380px;
-    border-radius: 10px;;
+    border-radius: 10px;
+    ;
     background-color: rgba(0, 0, 0, .6);
 }
 
-.login-wrapper form > .form-group {
+.login-wrapper form>.form-group {
     margin: 24px;
 }
 

@@ -2,6 +2,10 @@
 import request from "./modules/request.js";
 import loading from "./modules/loading.js";
 import message from "./modules/message.js";
+import { 
+    ADMIN_LOGIN,
+    FETCH_BG
+ } from "./modules/api.js";
 
 const form = document.forms["loginForm"];
 const elements = form.elements;
@@ -13,6 +17,22 @@ const savedUsername = localStorage.getItem("username");
 if (savedUsername) {
     elements.username.value = savedUsername;
     elements.remember.checked = true;
+}
+
+async function fetchBg() {
+    let bg;
+
+    try {
+        bg = await request(FETCH_BG);        
+    } catch (error) {
+        return;
+    }
+
+    const bgEl = document.querySelector(".background");
+    const crEl = document.querySelector(".copyright");
+
+    bgEl.style.backgroundImage = `url(${bg.url})`;
+    crEl.innerHTML = bg.copyright;
 }
 
 function handleFocus(evt) {
@@ -44,7 +64,7 @@ function handleKeydown(evt) {
     }
 }
 
-async function login (){
+function validate() {
     const username = elements.username.value.trim();
     const password = elements.password.value;
 
@@ -52,21 +72,33 @@ async function login (){
 
     if (!username) {
         message.error("请输入用户名！");
-        return elements.username.focus();
+        elements.username.focus();
+
+        return false;
     }
 
     if (!password) {
         message.error("请输入密码！");
-        return elements.password.focus();
+        elements.password.focus();
+
+        return false;
     }
 
+    return true;
+}
+
+async function login (){
+    const username = elements.username.value.trim();
+    const password = elements.password.value;
     let res;
+
+    if (!validate()) return;
 
     btn.disabled = true;
 
     loading.show();
     try {
-        res = await request("/api/admin/login", {
+        res = await request(ADMIN_LOGIN, {
             method: "POST",
             body: JSON.stringify({
                 username,
@@ -90,7 +122,11 @@ async function login (){
     } else {
         localStorage.removeItem("username");
     }
+
+    location.assign("index.html");
 }
+
+fetchBg();
 
 form.addEventListener("focusin", handleFocus);
 form.addEventListener("focusout", handleFocus);
