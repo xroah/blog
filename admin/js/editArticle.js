@@ -1,3 +1,3 @@
-import editor from "./common/quillEditor.js";
+import editor from "./modules/quillEditor.js";
 
 console.log(editor)

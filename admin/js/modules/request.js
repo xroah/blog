@@ -14,7 +14,7 @@ export default function request(url, options = {}) {
 
     if (!headers) {
         headers = _options.headers = new Headers();
-    } 
+    }
 
     headers.append("X-Requested-With", "XMLHttpRequest");
 
@@ -25,15 +25,26 @@ export default function request(url, options = {}) {
     return new Promise((resolve, reject) => {
         fetch(url, _options)
             .then(res => {
-                res.json()
-                    .then(ret => {
-                        if (res.ok && ret.code === 0) {
-                            return resolve(ret.data);
-                        }
+                const contentType = res.headers.get("content-type");
+                if (contentType.startsWith("application/json")) {
+                    res.json()
+                        .then(ret => {
+                            if (res.ok && ret.code === 0) {
+                                return resolve(ret.data);
+                            }
 
-                        reject(ret);
-                    })
-                    .catch(reject);
+                            reject(ret);
+                        })
+                        .catch(reject);
+                } else if (contentType.startsWith("text")) {
+                    res.text()
+                        .then(resolve)
+                        .catch(reject)
+                } else {
+                    res.blob()
+                        .then(resolve)
+                        .catch(reject)
+                }
             }).catch(err => reject(err));
     });
 }
