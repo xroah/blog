@@ -1,11 +1,8 @@
 export default function request(url, options = {}) {
-    const defaultOptions = {
+    const _options = {
         method: "GET",
         mode: "same-origin",
-        credentials: "same-origin"
-    };
-    const _options = {
-        ...defaultOptions,
+        credentials: "same-origin",
         ...options
     };
     const method = _options.method.toLowerCase();
