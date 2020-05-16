@@ -411,6 +411,7 @@ loading-mask.transparent {
 .message-wrapper .alert {
     display: none;
     max-width: 50%;
+    padding: 5px 10px;
     transform: translateY(-100%);
     transition: all .3s;
     opacity: 0;
