@@ -32,7 +32,7 @@ async function fetchBg() {
     const crEl = document.querySelector(".copyright");
 
     bgEl.style.backgroundImage = `url(${bg.url})`;
-    crEl.innerHTML = bg.copyright;
+    crEl.innerHTML = bg.copyright || "";
 }
 
 function handleFocus(evt) {
