@@ -15,7 +15,7 @@ class Message {
         wrapper.appendChild(this.el);
     }
 
-    show(cb) {
+    show = (cb) => {
         if (this.el.classList.contains("show")) return;
 
         this.el.style.display = "block";
@@ -26,7 +26,7 @@ class Message {
         emulateTransitionEnd(this.el, callback(cb), this.delay);
     }
 
-    hide(cb) {
+    hide = (cb) => {
         if (!this.el.classList.contains("show")) return;
 
         this.el.classList.remove("show");
@@ -34,7 +34,7 @@ class Message {
             this.el.style.display = "none";
 
             remove(this.el);
-            callback(cb);
+            callback(cb)();
         }, this.delay);
     }
 }
@@ -45,7 +45,7 @@ function remove(el) {
     }
 }
 
-const msgMap = new Map();
+const messages = new Map();
 
 function factory(type) {
     return (message = "", cb) => {
@@ -62,12 +62,16 @@ function factory(type) {
         msg.show(cb);
         msgMap.set(msg.uuid, msg);
 
-        timer = setTimeout(msg.hide.bind(msg), 3000);
+        timer = setTimeout(() => {
+            msg.hide(() => {
+                msgMap.delete(msg.uuid);
+            });
+        }, 3000);
 
         return {
-            hide() {
+            hide(cb) {
                 clearTimeout(timer);
-                msg.hide();
+                msg.hide(cb);
                 msgMap.delete(msg.uuid);
             }
         }
@@ -79,8 +83,8 @@ export default {
     success: factory("info"),
     error: factory("danger"),
     destroy() {
-        for (let [key, val] of msgMap) {
-            remove(val.el);
+        for (let [id, msg] of messages) {
+            remove(msg.el);
         }
 
         msgMap.clear();
