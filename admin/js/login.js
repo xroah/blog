@@ -123,6 +123,7 @@ async function login (){
         localStorage.removeItem("username");
     }
 
+    localStorage.setItem("token", res.token);
     location.assign("index.html");
 }
 

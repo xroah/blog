@@ -13,6 +13,10 @@ export default function request(url, options = {}) {
         headers = _options.headers = new Headers();
     }
 
+    headers.append(
+        "Authorization",
+        `token ${localStorage.getItem("token") || ""}`
+    );
     headers.append("X-Requested-With", "XMLHttpRequest");
 
     if (set.has(method)) {
