@@ -60,11 +60,11 @@ function factory(type) {
         msg.el.innerHTML = message;
 
         msg.show(cb);
-        msgMap.set(msg.uuid, msg);
+        messages.set(msg.uuid, msg);
 
         timer = setTimeout(() => {
             msg.hide(() => {
-                msgMap.delete(msg.uuid);
+                messages.delete(msg.uuid);
             });
         }, 3000);
 
@@ -72,7 +72,7 @@ function factory(type) {
             hide(cb) {
                 clearTimeout(timer);
                 msg.hide(cb);
-                msgMap.delete(msg.uuid);
+                messages.delete(msg.uuid);
             }
         }
     }
@@ -87,6 +87,6 @@ export default {
             remove(msg.el);
         }
 
-        msgMap.clear();
+        messages.clear();
     }
 }
