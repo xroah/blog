@@ -25,9 +25,4 @@ const editor = new Quill("#editor", {
     theme: "snow"
 });
 
-const toolbar = editor.getModule("toolbar");
-toolbar.addHandler("image", function () {
-    console.log("upload images")
-});
-
-export default toolbar;
+export default editor;
