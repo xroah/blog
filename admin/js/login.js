@@ -106,9 +106,6 @@ async function login (){
             })
         });
     } catch (error) {
-        if(error.code) {
-            message.error(error.msg);
-        }
 
         return;
     } finally {

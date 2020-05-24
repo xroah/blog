@@ -112,7 +112,7 @@
 }
 
 .editor-container .ql-editor {
-    height: 360px;
+    height: 500px;
 }
 
 
@@ -220,3 +220,4 @@
 .upload-image-wrapper .progress-wrapper.show {
     display: flex;
 }
+

@@ -17,6 +17,10 @@ loading-mask.transparent {
     background-color: transparent;
 }
 
+.container {
+    min-width: 960px;
+}
+
 .message-wrapper {
     display: flex;
     flex-direction: column;
@@ -50,4 +54,9 @@ loading-mask.transparent {
 .bs-dialog .modal-footer {
     padding-top: 0;
     border-top: none;
+}
+
+.custom-control-label::before,
+.custom-control-label::after {
+    top: .16rem;
 }

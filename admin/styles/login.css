@@ -50,7 +50,3 @@ body {
     margin-top: 36px;
 }
 
-.custom-control-label::before,
-.custom-control-label::after {
-    top: .16rem;
-}
