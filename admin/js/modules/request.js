@@ -1,3 +1,11 @@
+import message from "./message.js";
+
+function rejectPromise(reject, error = {}) {
+    reject();
+    message.destroy();
+    message.error(error.message || error.msg || "操作失败");
+}
+
 export default function request(url, options = {}) {
     const _options = {
         method: "GET",
@@ -24,28 +32,35 @@ export default function request(url, options = {}) {
     }
 
     return new Promise((resolve, reject) => {
+        const _reject = err => rejectPromise(reject, err);
+
         fetch(url, _options)
             .then(res => {
+                if (!res.ok) {
+                    return rejectPromise(reject, { message: res.statusText });
+                }
+
                 const contentType = res.headers.get("content-type");
+
                 if (contentType.startsWith("application/json")) {
                     res.json()
                         .then(ret => {
-                            if (res.ok && ret.code === 0) {
+                            if (ret.code === 0) {
                                 return resolve(ret.data);
                             }
 
-                            reject(ret);
+                            rejectPromise(reject, ret);
                         })
-                        .catch(reject);
+                        .catch(_reject);
                 } else if (contentType.startsWith("text")) {
                     res.text()
                         .then(resolve)
-                        .catch(reject)
+                        .catch(_reject)
                 } else {
                     res.blob()
                         .then(resolve)
-                        .catch(reject)
+                        .catch(_reject)
                 }
-            }).catch(err => reject(err));
+            }).catch(_reject);
     });
 }
