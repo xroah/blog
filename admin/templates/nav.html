@@ -1,0 +1,111 @@
+<nav class="sys-nav">
+    <div class="info">
+        <img src="/images/avatar.svg" />
+        <span class="username">Admin</span>
+        <div class="operation">
+            <a href="javascript: void 0" id="changePwd">修改密码</a>
+            <a href="javascript: void 0;" id="exit">退出</a>
+        </div>
+    </div>
+    <ul class="item-list">
+        <li>
+            <a href="/" class="home">首页</a>
+        </li>
+        <li>
+            <a href="/category.html" class="category">分类管理</a>
+        </li>
+        <li>
+            <a href="/comment.html" class="comment">评论管理</a>
+        </li>
+    </ul>
+</nav>
+
+<style>
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .sys-nav {
+        display: block;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        background-color: #081630;
+        color: #ccc;
+        font-weight: 600;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 10px;
+        text-align: center;
+        
+    }
+
+    .info .username {
+        margin: 10px 0;
+    }
+
+    .operation {
+        --color: #3d7eff;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .operation a {
+        color: var(--color);
+    }
+
+    .operation a:first-child::after {
+        content: "";
+        display: inline-block;
+        width: 2px;
+        height: 15px;
+        padding-right: 10px;
+        margin-right: 10px;
+        border-right: 2px solid var(--color);
+        vertical-align: text-bottom;
+    }
+
+    .item-list li {
+        display: flex;
+    }
+
+    .item-list a {
+        flex: 1;
+        padding: 10px 15px 10px 45px;
+        color: #ccc;
+        transition: all .3s;
+        background: no-repeat 20px center / 20px 20px;
+    }
+
+    .item-list .home {
+        background-image: url("../images/home.svg");
+    }
+
+    .item-list .category {
+        background-image: url("../images/category.svg");
+    }
+
+    .item-list .comment {
+        background-image: url("../images/comment.svg");
+    }
+
+    .item-list a:hover {
+        background-color: rgba(255, 255, 255, .1);
+    }
+
+    .item-list a:active,
+    .item-list a.active {
+        background-color: #004eff;
+    }
+</style>

@@ -6,6 +6,7 @@ import { UPLOAD_IMAGE, ARTICLE } from "./modules/api.js";
 import request from "./modules/request.js";
 import loading from "./modules/loading.js";
 import getSearchParams from "./modules/utils/getSearchParams.js";
+import "./modules/nav.js";
 import "./modules/404.js";
 
 window.editor = editor;
