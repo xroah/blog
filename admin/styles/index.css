@@ -1,0 +1,55 @@
+.container {
+    position: relative;
+}
+
+.add-btn {
+    --size: 60px;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    font-size: 30px;
+}
+
+.article-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.article-list .card {
+    position: relative;
+    width: 46%;
+    margin: 1%;
+    flex-shrink: 0;
+    flex-grow: 0;
+    transition: all .3s;
+}
+
+.article-list .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 5px 5px 5px 0 rgba(0,0,0,.1);
+}
+
+.article-list .card:hover .close {
+    display: inline-block;
+}
+
+.article-list .card .close {
+    --size: 24px;
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: var(--size);
+    height: var(--size);
+}
+
+.article-list .card .close:hover {
+    color: #fff;
+}
+
+.article-list .card-body {
+    min-height: 215px;
+}
