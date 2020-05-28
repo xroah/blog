@@ -37,7 +37,13 @@ export default function request(url, options = {}) {
         fetch(url, _options)
             .then(res => {
                 if (!res.ok) {
-                    return rejectPromise(reject, { message: res.statusText });
+                    res.json()
+                        .then(ret => rejectPromise(reject, ret))
+                        .catch(() => {
+                            rejectPromise(reject, { message: res.statusText });
+                        });
+
+                    return;
                 }
 
                 const contentType = res.headers.get("content-type");
