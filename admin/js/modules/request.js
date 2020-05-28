@@ -14,7 +14,7 @@ export default function request(url, options = {}) {
         ...options
     };
     const method = _options.method.toLowerCase();
-    const set = new Set(["post", "put", "patch"]);
+    const set = new Set(["post", "put", "patch", "delete"]);
     let headers = _options.headers;
 
     if (!headers) {

@@ -46,7 +46,11 @@ sys-nav {
     background-color: #fff;
     color: #666;
     box-shadow: -2px 1px 5px 0 rgba(0, 0, 0, .3);
-    z-index: 99999;
+    z-index: 10;
+}
+
+.modal {
+    z-index: 1050;
 }
 
 .ellipsis {
