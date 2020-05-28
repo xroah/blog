@@ -32,12 +32,13 @@
     }
 
     .sys-nav {
+        --color: #f2f2f2;
         display: block;
         position: sticky;
         top: 0;
         height: 100vh;
         background-color: #081630;
-        color: #ccc;
+        color: var(--color);
         font-weight: 600;
     }
 
@@ -83,7 +84,7 @@
     .item-list a {
         flex: 1;
         padding: 10px 15px 10px 45px;
-        color: #ccc;
+        color: var(--color);
         transition: all .3s;
         background: no-repeat 20px center / 20px 20px;
     }
