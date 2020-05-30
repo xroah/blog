@@ -6,7 +6,6 @@ import { ARTICLE } from "./api.js";
 import message from "./message.js";
 
 const tpl = `
-    <div class="card">
         <div class="card-body">
             <button class="close btn btn-danger">&times;</button>
             <h5 class="card-title ellipsis"></h5>
@@ -15,7 +14,6 @@ const tpl = `
             <a href="#" class="card-link view">查看全文</a>
             <a href="#" class="card-link edit">编辑</a>
         </div>
-    </div>
 `;
 
 class ArticleCard extends HTMLElement {
@@ -23,6 +21,7 @@ class ArticleCard extends HTMLElement {
         this.innerHTML = tpl;
         this.deleteArticle = this.deleteArticle.bind(this);
 
+        this.classList.add("card");
         this.setInfo();
         this.querySelector(".close")
             .addEventListener("click", this.deleteArticle);

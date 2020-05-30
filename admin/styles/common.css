@@ -30,9 +30,27 @@ sys-nav {
     flex-shrink: 0;
 }
 
+not-found {
+    display: block;
+    width: 100%;
+}
+
 .main-content {
     width: 100%;
     padding-left: 20px;
+}
+
+.add-btn {
+    --size: 60px;
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    width: var(--size);
+    height: var(--size);
+    line-height: var(--size);
+    padding: 0;
+    border-radius: 50%;
+    font-size: 36px;
 }
 
 .top-title {
@@ -47,6 +65,15 @@ sys-nav {
     color: #666;
     box-shadow: -2px 1px 5px 0 rgba(0, 0, 0, .3);
     z-index: 10;
+}
+
+.page-item {
+    user-select: none;
+}
+
+.page-item.active .page-link,
+.page-item.disabled .page-link {
+    pointer-events: none;
 }
 
 .modal {

@@ -2,17 +2,6 @@
     position: relative;
 }
 
-.add-btn {
-    --size: 60px;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    width: var(--size);
-    height: var(--size);
-    border-radius: 50%;
-    font-size: 30px;
-}
-
 .article-list {
     display: flex;
     flex-wrap: wrap;
@@ -48,8 +37,4 @@
 
 .article-list article-card .close:hover {
     color: #fff;
-}
-
-.article-list .card-body {
-    min-height: 215px;
 }
