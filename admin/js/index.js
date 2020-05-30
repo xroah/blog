@@ -52,7 +52,7 @@ function renderList(res) {
 
 function handlePageChange(evt) {
     const page = evt.detail;
-    location.href = "/index.html#page=" + page;
+    location.href = `${location.pathname}#page=${page}`;
 
     fetchArticleList({ page });
 }
@@ -70,6 +70,7 @@ function init() {
         }
     }
 
+    pagination.current = page;
     fetchArticleList({ page });
     pagination.addEventListener(PAGE_CHANGE, handlePageChange)
 }

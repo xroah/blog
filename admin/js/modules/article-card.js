@@ -43,7 +43,7 @@ class ArticleCard extends HTMLElement {
         titleEl.innerHTML = this.getAttribute("aTitle");
         subTitleEl.innerHTML = formatDate(this.getAttribute("subTitle"), "YYYY-MM-DD HH:mm");
         textEl.innerHTML = this.getAttribute("summary");
-        // viewEl.href = `this.getAttribute("aId")`;
+        viewEl.href = `/view-article.html?articleId=${aId}`;
         editEl.href = `/edit-article.html?articleId=${aId}`;
     }
 
