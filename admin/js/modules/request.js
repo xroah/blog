@@ -1,9 +1,12 @@
 import message from "./message.js";
 
-function rejectPromise(reject, error = {}) {
+function rejectPromise(reject, error = {}, errorPrompt = true) {
     reject();
-    message.destroy();
-    message.error(error.message || error.msg || "操作失败");
+
+    if (errorPrompt) {
+        message.destroy();
+        message.error(error.message || error.msg || "操作失败");
+    }
 }
 
 export default function request(url, options = {}) {
@@ -15,6 +18,10 @@ export default function request(url, options = {}) {
     };
     const method = _options.method.toLowerCase();
     const set = new Set(["post", "put", "patch", "delete"]);
+    const errorPrompt = _options.errorPrompt;
+
+    delete _options.errorPrompt;
+
     let headers = _options.headers;
 
     if (!headers) {
@@ -32,15 +39,17 @@ export default function request(url, options = {}) {
     }
 
     return new Promise((resolve, reject) => {
-        const _reject = err => rejectPromise(reject, err);
+        const _reject = err => rejectPromise(reject, err, errorPrompt);
 
         fetch(url, _options)
             .then(res => {
                 if (!res.ok) {
                     res.json()
-                        .then(ret => rejectPromise(reject, ret))
+                        .then(_reject)
                         .catch(() => {
-                            rejectPromise(reject, { message: res.statusText });
+                            const err = { message: res.statusText };
+
+                            _reject(err);
                         });
 
                     return;
@@ -55,7 +64,7 @@ export default function request(url, options = {}) {
                                 return resolve(ret.data);
                             }
 
-                            rejectPromise(reject, ret);
+                            _reject(ret);
                         })
                         .catch(_reject);
                 } else if (contentType.startsWith("text")) {

@@ -145,9 +145,14 @@ class Modal {
 
     onOk = () => {
         const { onOk } = this.options;
+        const ret = onOk.call(this);
 
-        onOk();
-        this.hide();
+        //promise
+        if (ret.then && ret.catch) {
+            ret.then(this.hide);
+        } else if (ret !== false) {
+            this.hide();
+        }
     }
 
     onCancel = () => {
