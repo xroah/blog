@@ -167,7 +167,8 @@ async function save(evt) {
     const contentHTML = editor.scrollingContainer.innerHTML;
     const secret = document.getElementById("secret").checked;
     const title = titleEl.value;
-    const category = document.getElementById("category").value;
+    const categoryEl = document.getElementById("category");
+    const category = categoryEl.value;
     const tag = tagEl.value;
     const saveBtn = document.getElementById("save");
     let errorMsg;
@@ -176,6 +177,9 @@ async function save(evt) {
     if (!title) {
         errorMsg = "请输入文章标题";
         focusEl = titleEl;
+    } else if(!category) {
+        errorMsg = "请选择分类";
+        focusEl = categoryEl;
     } else if (!content) {
         errorMsg = "请输入文章内容";
         focusEl = editor;

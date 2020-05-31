@@ -18,14 +18,14 @@ function fetchArticleList(param) {
 
     request(`${ARTICLE}?${query.join("&")}`)
         .then(res => {
-            document.querySelector("bs-pagination").total = res.total;
+            document.querySelector("bs-pagination").total = res.total || 1;
             renderList(res.list);
         });
 }
 
 function renderList(res) {
     const wrapper = document.querySelector(".article-list");
-    wrapper.innerHTML = '<div class="text-muted text-center">无记录</div>';
+    wrapper.innerHTML = '<div class="text-muted w-100 p-3 h5 text-center">无记录</div>';
 
     if (!res.length) return;
 

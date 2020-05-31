@@ -62,7 +62,7 @@ class Pagination extends HTMLElement {
     }
 
     getTotalPages() {
-        return Math.ceil(this._total / this._pageSize);
+        return Math.ceil(this._total / this._pageSize) || 1;
     }
 
     renderItem() {

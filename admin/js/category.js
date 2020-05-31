@@ -92,7 +92,9 @@ function renderList(res) {
     let html = "";
 
     if (!res || !res.length) {
-        return tbody.innerHTML = `<tr><td class="text-center text-muted">无记录</td></tr>`;
+        return tbody.innerHTML = `
+            <tr><td colspan="5" class="text-center text-muted h5">无记录</td></tr>
+        `;
     }
 
     res.forEach(c => {
@@ -118,7 +120,7 @@ function handleClick(evt) {
         edit(evt);
     } else if (cls.contains("delete")) {
         del(evt);
-    } 
+    }
 }
 
 function edit(evt) {
@@ -141,7 +143,7 @@ function del(evt) {
     const tr = target.parentNode.parentNode;
     const name = tr.querySelector(".name").innerHTML.trim();
 
-    
+
     dialog.confirm(`确定要删除 <span class="text-danger">${name}</span> 吗?`, {
         async onOk() {
             message.destroy();
