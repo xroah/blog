@@ -1,0 +1,18 @@
+.category-table {
+    table-layout: fixed;
+}
+
+.category-table th {
+    width: 20%;
+}
+
+.category-table th:nth-child(3) {
+    width: 35%;
+}
+
+.category-table th:nth-child(4) {
+    width: 10%;
+}
+.category-table th:last-child {
+    width: 15%;
+}

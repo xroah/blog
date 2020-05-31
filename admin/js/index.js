@@ -3,16 +3,12 @@ import request from "./modules/request.js";
 import { ARTICLE } from "./modules/api.js";
 import { PAGE_CHANGE } from "./modules/pagination.js";
 import "./modules/article-card.js";
+import "./modules/inline-loading.js";
 
 function fetchArticleList(param) {
     const query = [];
 
-    document.querySelector(".article-list")
-        .innerHTML = `
-            <div class="text-center m-2 w-100">
-                <div class="spinner-grow text-dark"></div>
-            </div>
-        `;
+    document.querySelector(".article-list").innerHTML = "<inline-loading></inline-loading>";
 
     if (param) {
         Object.keys(param).forEach(key => {

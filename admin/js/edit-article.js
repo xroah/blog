@@ -2,7 +2,7 @@ import editor from "./modules/quill-editor.js";
 import emulateTransitionEnd from "./modules/utils/emulateTransitionEnd.js";
 import reflow from "./modules/utils/reflow.js";
 import message from "./modules/message.js";
-import { UPLOAD_IMAGE, ARTICLE } from "./modules/api.js";
+import { UPLOAD_IMAGE, ARTICLE, CATEGORY } from "./modules/api.js";
 import request from "./modules/request.js";
 import loading from "./modules/loading.js";
 import getSearchParams from "./modules/utils/getSearchParams.js";
@@ -234,7 +234,7 @@ function initEvent() {
 }
 
 function initEdit(data) {
-    console.log(data)
+    document.getElementById("category").value = data.categoryId;
     editor.scrollingContainer.innerHTML = data.content;
     document.getElementById("title").value = data.title;
     document.getElementById("tag").value = (data.tag || []).join(";");
@@ -249,28 +249,53 @@ function set404() {
     con.innerHTML = '<not-found>文章不存在</not-found>';
 }
 
+function initCategory(res) {
+    const select = document.getElementById("category");
+    const frag = document.createDocumentFragment();
+    
+    select.innerHTML = "";
+
+    for (let c of res) {
+        const option = new Option(c.name, c._id);
+
+        frag.appendChild(option);
+    }
+
+    select.appendChild(frag);
+}
+
 async function fetchArticle(id) {
     let ret;
+    let category;
 
     loading.show();
+    message.destroy();
 
     try {
-        ret = await request(`${ARTICLE}?articleId=${id}`);        
+        const promises = [request(CATEGORY)];
+
+        if (id) {
+            id = id.trim();
+
+            promises.push(request(`${ARTICLE}?articleId=${id}`));
+        }
+
+        [category, ret] = await Promise.all(promises);
     } catch (err) {
-        return set404();
+        err && err.code === 404 && set404();
+
+        return;
     } finally {
         loading.hide();
     }
 
-    initEdit(ret);
+    initCategory(category);
+    ret && initEdit(ret);
 }
 
-function init() {
-    if (location.search.includes("articleId")) {
-        fetchArticle(getSearchParams("articleId"));
-    } else {
-        initEvent();
-    }
+async function init() {
+    fetchArticle(getSearchParams("articleId"));
+    initEvent();
 }
 
 init();

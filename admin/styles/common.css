@@ -6,6 +6,10 @@ html, body {
     height: 100%;
 }
 
+textarea {
+    resize: none;
+}
+
 loading-mask {
     display: none;
     position: fixed;
@@ -37,6 +41,13 @@ sys-nav {
 not-found {
     display: block;
     width: 100%;
+}
+
+inline-loading {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
 }
 
 .main-content {
