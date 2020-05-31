@@ -29,7 +29,9 @@ function showEditDialog(data = {}) {
                 const categoryDesc = document.getElementById("categoryDesc").value;
 
                 if (!categoryName) {
-                    return nameEl.focus();
+                    nameEl.focus();
+
+                    return Promise.reject();
                 }
 
                 message.destroy();

@@ -2,8 +2,8 @@ import "./modules/nav.js";
 import request from "./modules/request.js";
 import { ARTICLE } from "./modules/api.js";
 import { PAGE_CHANGE } from "./modules/pagination.js";
-import "./modules/article-card.js";
 import "./modules/inline-loading.js";
+import { DELETE_ARTICLE } from "./modules/article-card.js";
 
 function fetchArticleList(param) {
     const query = [];
@@ -49,13 +49,11 @@ function renderList(res) {
 function handlePageChange(evt) {
     const page = evt.detail;
     location.href = `${location.pathname}#page=${page}`;
-
-    fetchArticleList({ page });
 }
 
-function init() {
-    const pagination = document.querySelector("bs-pagination");
+function handleHashChange() {
     const hash = location.hash.substring(1).split("&");
+    const pagination = document.querySelector("bs-pagination");
     let page = 1;
 
     for (let p of hash) {
@@ -63,12 +61,24 @@ function init() {
 
         if (tmp[0] === "page") {
             page = +tmp[1];
+            break;
         }
     }
 
     pagination.current = page;
+
     fetchArticleList({ page });
-    pagination.addEventListener(PAGE_CHANGE, handlePageChange)
+
+    return page;
+}
+
+function init() {
+    const pagination = document.querySelector("bs-pagination");
+
+    handleHashChange();
+    pagination.addEventListener(PAGE_CHANGE, handlePageChange);
+    window.addEventListener("hashchange", handleHashChange);
+    document.body.addEventListener(DELETE_ARTICLE, handleHashChange);
 }
 
 init();

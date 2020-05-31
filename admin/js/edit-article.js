@@ -202,7 +202,7 @@ async function save(evt) {
                 tag,
                 content: contentHTML,
                 summary: editor.getText().substring(0, 101),
-                category,
+                categoryId: category,
                 images: getImages(),
                 articleId: getSearchParams("articleId")
             })

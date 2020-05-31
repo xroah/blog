@@ -1,6 +1,7 @@
 .ql-editor {
     overflow: visible;
     height: auto;
+    padding: 0;
 }
 
 .article-container .title {

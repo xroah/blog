@@ -17,6 +17,8 @@ class Pagination extends HTMLElement {
     }
 
     set total(total) {
+        if (this._total === total) return;
+
         this._total = +total || 0;
         this.renderItem();
     }
@@ -26,6 +28,8 @@ class Pagination extends HTMLElement {
     }
 
     set current(cur) {
+        if (this._current === cur) return;
+
         this._current = +cur || 1;
         this.renderItem();
     }

@@ -4,6 +4,9 @@ import dialog from "./dialog.js";
 import request from "./request.js";
 import { ARTICLE } from "./api.js";
 import message from "./message.js";
+import loading from "./loading.js";
+
+export const DELETE_ARTICLE = "delete-article";
 
 const tpl = `
         <div class="card-body">
@@ -51,16 +54,25 @@ class ArticleCard extends HTMLElement {
         const aId = this.getAttribute("aId");
 
         dialog.confirm("确定要删除该文章吗？", {
-            onOk: () => {
-                request(ARTICLE, {
-                    method: "delete",
-                    body: JSON.stringify({
-                        articleId: aId
-                    })
-                }).then(() => {
-                    message.success("删除成功!");
-                    this.remove();
-                });
+            onOk: async () => {
+                loading.show();
+
+                try {
+                    await request(ARTICLE, {
+                        method: "delete",
+                        body: JSON.stringify({
+                            articleId: aId
+                        })
+                    });
+                } catch (error) {
+                    return;
+                } finally {
+                    loading.hide();
+                }
+
+                message.success("删除成功!");
+                this.remove();
+                document.body.dispatchEvent(new CustomEvent(DELETE_ARTICLE));
             }
         });
     }

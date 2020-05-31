@@ -148,7 +148,7 @@ class Modal {
         const ret = onOk.call(this);
 
         //promise
-        if (ret.then && ret.catch) {
+        if (ret && ret.then && ret.catch) {
             ret.then(this.hide);
         } else if (ret !== false) {
             this.hide();

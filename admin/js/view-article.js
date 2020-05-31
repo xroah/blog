@@ -12,10 +12,10 @@ async function fetchArticle() {
     loading.show();
 
     try {
-        ret = await request(`${ARTICLE}?articleId=${articleId}`);        
+        ret = await request(`${ARTICLE}?articleId=${articleId}`);
     } catch (error) {
         throw error;
-    } finally{
+    } finally {
         loading.hide();
     }
 
@@ -34,15 +34,20 @@ function renderArticle(res) {
     &nbsp;&nbsp;分类： ${res.categoryName}
     &nbsp;&nbsp;阅读${res.totalViewed}次
     &nbsp;&nbsp;今日阅读${res.todayViewed}次
-    `
+    `;
+    document.title = `查看--${res.title}`;
 }
 
 async function init() {
     try {
         await fetchArticle();
     } catch (error) {
-        
+
     }
+
+    document.querySelectorAll("pre").forEach((block) => {
+        hljs.highlightBlock(block);
+    });
 }
 
 init();
