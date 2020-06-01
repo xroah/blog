@@ -5,8 +5,16 @@ import { PAGE_CHANGE } from "./modules/pagination.js";
 import "./modules/inline-loading.js";
 import { DELETE_ARTICLE } from "./modules/article-card.js";
 
-function fetchArticleList(param) {
+async function fetchArticleList(param) {
     const query = [];
+    const pagination = document.querySelector("bs-pagination");
+    let res;
+
+    if (fetchArticleList.abortCtrl) {
+        fetchArticleList.abortCtrl.abort();
+    }
+
+    const ctrl = fetchArticleList.abortCtrl = new AbortController();
 
     document.querySelector(".article-list").innerHTML = "<inline-loading></inline-loading>";
 
@@ -16,11 +24,19 @@ function fetchArticleList(param) {
         });
     }
 
-    request(`${ARTICLE}?${query.join("&")}`)
-        .then(res => {
-            document.querySelector("bs-pagination").total = res.total || 1;
-            renderList(res.list);
+    try {
+        res = await request(`${ARTICLE}?${query.join("&")}`, {
+            signal: ctrl.signal
         });
+    } catch (error) {
+        return;
+    } finally {
+        fetchArticleList.abortCtrl = null;
+    }
+
+    pagination.total = res.total || 1;
+    pagination.style.display = "";
+    renderList(res.list);
 }
 
 function renderList(res) {
@@ -78,9 +94,27 @@ function handleHashChange() {
     fetchArticleList(getHashParams());
 }
 
+function handleDelete() {
+    const card = document.querySelector("article-card");
+
+    //no any article on this page
+    if (!card) {
+        let page = getHashParams().page || 1;
+
+        if (page > 1) {
+            page--;
+
+            return updateHash({ page });
+        }
+    }
+
+    handleHashChange();
+}
+
 function updateHash(obj) {
     const params = getHashParams();
     const pathname = location.pathname;
+    const pagination = document.querySelector("bs-pagination");
     let hash = [];
 
     for (let key in obj) {
@@ -91,6 +125,7 @@ function updateHash(obj) {
         hash.push(`${key}=${params[key]}`);
     });
 
+    pagination.current = params.page || 1;
     location.href = `${pathname}#${hash.join("&")}`;
 }
 
@@ -127,13 +162,13 @@ function init() {
     const params = getHashParams();
 
     pagination.current = params.page || 1;
-
+    
     updateSelectValue(secretEl, params.secret);
     updateSelectValue(draftEl, params.draft);
     handleHashChange();
     pagination.addEventListener(PAGE_CHANGE, handlePageChange);
     window.addEventListener("hashchange", handleHashChange);
-    document.body.addEventListener(DELETE_ARTICLE, handleHashChange);
+    document.body.addEventListener(DELETE_ARTICLE, handleDelete);
     secretEl.addEventListener("change", handleChange);
     draftEl.addEventListener("change", handleChange);
 }

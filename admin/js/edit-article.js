@@ -160,19 +160,24 @@ function getImages() {
     return ret;
 }
 
-function autoSave() {
+function cancelAutoSave() {
     if (autoSave.timer != undefined) {
         clearTimeout(autoSave.timer);
         autoSave.timer = null;
     }
 
+    if (autoSave.abortCtrl) {
+        autoSave.abortCtrl.abort();
+        autoSave.abortCtrl = null;
+    }
+}
+
+function autoSave() {
+    cancelAutoSave();
+
     const _save = async () => {
         const abortCtrl = new AbortController();
         const aIdEl = document.getElementById("articleId");
-
-        if (autoSave.abortCtrl) {
-            autoSave.abortCtrl.abort();
-        }
 
         autoSave.abortCtrl = abortCtrl;
 
@@ -180,10 +185,14 @@ function autoSave() {
             const ret = await saveRequest(true, abortCtrl.signal);
 
             aIdEl.value = ret._id;
+
+            message.destroy();
+            message.success("自动保存成功");
         } catch (error) {
 
         } finally {
             autoSave.abortCtrl = null;
+            autoSave.timer = null;
         }
     }
 
@@ -223,6 +232,8 @@ async function save() {
     const saveBtn = document.getElementById("save");
     let errorMsg;
     let focusEl;
+
+    cancelAutoSave();
 
     if (!title) {
         errorMsg = "请输入文章标题";

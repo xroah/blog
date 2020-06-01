@@ -75,6 +75,14 @@ async function fetchCategories() {
     renderList(res);
 }
 
+function noResult() {
+    const tbody = document.querySelector(".category-table tbody");
+
+    tbody.innerHTML = `
+            <tr><td colspan="5" class="text-center text-muted h5">无记录</td></tr>
+        `;
+}
+
 function renderList(res) {
     const tbody = document.querySelector(".category-table tbody");
     const tpl = `
@@ -92,9 +100,7 @@ function renderList(res) {
     let html = "";
 
     if (!res || !res.length) {
-        return tbody.innerHTML = `
-            <tr><td colspan="5" class="text-center text-muted h5">无记录</td></tr>
-        `;
+        return noResult();
     }
 
     res.forEach(c => {
@@ -142,7 +148,7 @@ function del(evt) {
     const id = target.dataset.id;
     const tr = target.parentNode.parentNode;
     const name = tr.querySelector(".name").innerHTML.trim();
-
+    const table = document.querySelector(".category-table");
 
     dialog.confirm(`确定要删除 <span class="text-danger">${name}</span> 吗?`, {
         async onOk() {
@@ -164,6 +170,10 @@ function del(evt) {
 
             tr.remove();
             message.success("删除成功");
+
+            if (!table.querySelector("tbody tr")) {
+                noResult();
+            }
         }
     });
 }

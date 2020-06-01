@@ -3,7 +3,7 @@ import message from "./message.js";
 function rejectPromise(reject, error = {}, errorPrompt = true) {
     reject();
 
-    if (errorPrompt) {
+    if (errorPrompt && error.name !== "AbortError" /* aborted */) {
         message.destroy();
         message.error(error.message || error.msg || "操作失败");
     }
