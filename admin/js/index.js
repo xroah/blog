@@ -51,37 +51,91 @@ function renderList(res) {
 
 function handlePageChange(evt) {
     const page = evt.detail;
-    location.href = `${location.pathname}#page=${page}`;
+
+    updateHash({ page });
 }
 
-function handleHashChange() {
+function getHashParams() {
     const hash = location.hash.substring(1).split("&");
-    const pagination = document.querySelector("bs-pagination");
-    let page = 1;
+    let params = {};
 
     for (let p of hash) {
         const tmp = p.split("=");
 
+        if (!tmp[0]) continue;
+
         if (tmp[0] === "page") {
-            page = +tmp[1];
+            params.page = +tmp[1];
+        } else {
+            params[tmp[0]] = tmp[1];
+        }
+    }
+
+    return params;
+}
+
+function handleHashChange() {
+    fetchArticleList(getHashParams());
+}
+
+function updateHash(obj) {
+    const params = getHashParams();
+    const pathname = location.pathname;
+    let hash = [];
+
+    for (let key in obj) {
+        params[key] = obj[key];
+    }
+
+    Object.keys(params).forEach(key => {
+        hash.push(`${key}=${params[key]}`);
+    });
+
+    location.href = `${pathname}#${hash.join("&")}`;
+}
+
+function handleChange(evt) {
+    const target = evt.target;
+    const name = target.name;
+
+    updateHash({
+        [name]: target.value,
+        page: 1
+    });
+}
+
+function updateSelectValue(sel, val) {
+    const children = sel.children;
+    let hasVal = false;
+
+    for (let opt of children) {
+        if (opt.value === val) {
+            hasVal = true;
             break;
         }
     }
 
-    pagination.current = page;
-
-    fetchArticleList({ page });
-
-    return page;
+    if (hasVal) {
+        sel.value = val;
+    }
 }
 
 function init() {
     const pagination = document.querySelector("bs-pagination");
+    const secretEl = document.getElementById("secret");
+    const draftEl = document.getElementById("draft");
+    const params = getHashParams();
 
+    pagination.current = params.page || 1;
+
+    updateSelectValue(secretEl, params.secret);
+    updateSelectValue(draftEl, params.draft);
     handleHashChange();
     pagination.addEventListener(PAGE_CHANGE, handlePageChange);
     window.addEventListener("hashchange", handleHashChange);
     document.body.addEventListener(DELETE_ARTICLE, handleHashChange);
+    secretEl.addEventListener("change", handleChange);
+    draftEl.addEventListener("change", handleChange);
 }
 
 init();

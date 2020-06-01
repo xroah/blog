@@ -48,3 +48,7 @@
     transform: rotate(-45deg);
     font-size: 12px;
 }
+
+.form-inline select.form-control {
+    width: 130px;
+}
