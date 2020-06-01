@@ -9,7 +9,7 @@ import getSearchParams from "./modules/utils/getSearchParams.js";
 import "./modules/nav.js";
 import "./modules/404.js";
 
-window.editor = editor;
+let saved = false;
 
 function setLayerVisible(visible) {
     const el = document.querySelector(".upload-image-wrapper");
@@ -114,7 +114,7 @@ function upload() {
                 setLayerVisible(false);
                 insertImage(res.data.url);
             } else {
-                error(res.msg ||xhr.statusText || "上传失败");
+                error(res.msg || xhr.statusText || "上传失败");
             }
 
             hideProgress();
@@ -160,16 +160,66 @@ function getImages() {
     return ret;
 }
 
-async function save(evt) {
-    const titleEl = document.getElementById("title");
-    const tagEl = document.getElementById("tag");
-    const content = editor.getText().trim();
-    const contentHTML = editor.scrollingContainer.innerHTML;
+function autoSave() {
+    if (autoSave.timer != undefined) {
+        clearTimeout(autoSave.timer);
+        autoSave.timer = null;
+    }
+
+    const _save = async () => {
+        const abortCtrl = new AbortController();
+        const aIdEl = document.getElementById("articleId");
+
+        if (autoSave.abortCtrl) {
+            autoSave.abortCtrl.abort();
+        }
+
+        autoSave.abortCtrl = abortCtrl;
+
+        try {
+            const ret = await saveRequest(true, abortCtrl.signal);
+
+            aIdEl.value = ret._id;
+        } catch (error) {
+
+        } finally {
+            autoSave.abortCtrl = null;
+        }
+    }
+
+    autoSave.timer = setTimeout(_save, 3000);
+}
+
+async function saveRequest(draft, signal) {
     const secret = document.getElementById("secret").checked;
+    const title = document.getElementById("title").value;
+    const category = document.getElementById("category").value;
+    const tag = document.getElementById("tag").value;
+    const aIdEl = document.getElementById("articleId");
+
+    return request(ARTICLE, {
+        method: "POST",
+        signal,
+        body: JSON.stringify({
+            secret,
+            title,
+            tag,
+            content: editor.scrollingContainer.innerHTML,
+            summary: editor.getText().substring(0, 101),
+            categoryId: category,
+            images: getImages(),
+            draft,
+            articleId: aIdEl.value
+        })
+    });
+}
+
+async function save() {
+    const titleEl = document.getElementById("title");
+    const content = editor.getText().trim();
     const title = titleEl.value;
     const categoryEl = document.getElementById("category");
     const category = categoryEl.value;
-    const tag = tagEl.value;
     const saveBtn = document.getElementById("save");
     let errorMsg;
     let focusEl;
@@ -177,7 +227,7 @@ async function save(evt) {
     if (!title) {
         errorMsg = "请输入文章标题";
         focusEl = titleEl;
-    } else if(!category) {
+    } else if (!category) {
         errorMsg = "请选择分类";
         focusEl = categoryEl;
     } else if (!content) {
@@ -186,10 +236,8 @@ async function save(evt) {
     }
 
     if (errorMsg) {
-        if (evt) { //click save button
-            error(errorMsg);
-            focusEl.focus();
-        }
+        error(errorMsg);
+        focusEl.focus();
 
         return;
     }
@@ -198,19 +246,7 @@ async function save(evt) {
     saveBtn.disabled = true;
 
     try {
-        await request(ARTICLE, {
-            method: "POST",
-            body: JSON.stringify({
-                secret,
-                title,
-                tag,
-                content: contentHTML,
-                summary: editor.getText().substring(0, 101),
-                categoryId: category,
-                images: getImages(),
-                articleId: getSearchParams("articleId")
-            })
-        });
+        await saveRequest();
     } catch (err) {
         saveBtn.disabled = false;
 
@@ -220,21 +256,39 @@ async function save(evt) {
     }
 
     message.success("保存成功");
+    saved = true;
     setTimeout(() => location.assign("./index.html"), 500);
 }
 
-function initEvent() {
+function initEvents() {
     const toolbar = editor.getModule("toolbar");
     const closeBtn = document.querySelector(".upload-image-wrapper .close-preview");
     const fileInput = document.getElementById("pickImage");
     const uploadBtn = document.getElementById("upload");
     const saveBtn = document.getElementById("save");
+    const title = document.getElementById("title");
+    const tag = document.getElementById("tag");
+    const secret = document.getElementById("secret");
+    const category = document.getElementById("category");
 
     toolbar.addHandler("image", () => setLayerVisible(true));
     closeBtn.addEventListener("click", () => setLayerVisible(false));
     fileInput.addEventListener("change", handleFileChange);
     uploadBtn.addEventListener("click", upload);
     saveBtn.addEventListener("click", save);
+    editor.on("text-change", autoSave);
+    [
+        title,
+        tag,
+        secret,
+        category
+    ].forEach(el => el.addEventListener("change", autoSave));
+    window.addEventListener("beforeunload", e => {
+        if (!saved) {
+            e.preventDefault();
+            e.returnValue = "";
+        }
+    });
 }
 
 function initEdit(data) {
@@ -243,20 +297,18 @@ function initEdit(data) {
     document.getElementById("title").value = data.title;
     document.getElementById("tag").value = (data.tag || []).join(";");
     document.getElementById("secret").checked = !!data.secret;
-
-    initEvent();
 }
 
 function set404() {
     const con = document.querySelector(".container");
 
-    con.innerHTML = '<not-found>文章不存在</not-found>';
+    con.innerHTML = `<not-found>文章不存在</not-found>`;
 }
 
 function initCategory(res) {
     const select = document.getElementById("category");
     const frag = document.createDocumentFragment();
-    
+
     select.innerHTML = "";
 
     for (let c of res) {
@@ -298,8 +350,9 @@ async function fetchArticle(id) {
 }
 
 async function init() {
-    fetchArticle(getSearchParams("articleId"));
-    initEvent();
+    const articleId = getSearchParams("articleId") || "";
+    await fetchArticle(document.getElementById("articleId").value = articleId);
+    initEvents();
 }
 
 init();

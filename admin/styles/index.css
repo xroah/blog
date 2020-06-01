@@ -14,6 +14,7 @@
     flex-shrink: 0;
     flex-grow: 0;
     transition: all .3s;
+    overflow: hidden;
 }
 
 .article-list article-card:hover {
@@ -37,4 +38,13 @@
 
 .article-list article-card .close:hover {
     color: #fff;
+}
+
+.article-list article-card .status {
+    position: absolute;
+    left: -3px;
+    top: 3px;
+    padding: 1px 5px;
+    transform: rotate(-45deg);
+    font-size: 12px;
 }

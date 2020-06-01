@@ -10,6 +10,7 @@ export const DELETE_ARTICLE = "delete-article";
 
 const tpl = `
         <div class="card-body">
+            <span class="status bg-info text-white">草稿</span>
             <button class="close btn btn-danger">&times;</button>
             <h5 class="card-title ellipsis"></h5>
             <h6 class="card-subtitle mb-2 text-muted"></h6>
@@ -26,6 +27,7 @@ class ArticleCard extends HTMLElement {
 
         this.classList.add("card");
         this.setInfo();
+        this.updateStatus();
         this.querySelector(".close")
             .addEventListener("click", this.deleteArticle);
     }
@@ -33,6 +35,14 @@ class ArticleCard extends HTMLElement {
     disconnectedCallback() {
         this.querySelector(".close")
             .removeEventListener("click", this.deleteArticle);
+    }
+
+    updateStatus() {
+        const status = this.hasAttribute("draft");
+
+        if (!status) {
+            this.querySelector(".status").remove();
+        }
     }
 
     setInfo() {
@@ -45,7 +55,7 @@ class ArticleCard extends HTMLElement {
 
         titleEl.innerHTML = this.getAttribute("aTitle");
         subTitleEl.innerHTML = formatDate(this.getAttribute("subTitle"), "YYYY-MM-DD HH:mm");
-        textEl.innerHTML = this.getAttribute("summary");
+        textEl.innerHTML = this.getAttribute("summary") + "...";
         viewEl.href = `/view-article.html?articleId=${aId}`;
         editEl.href = `/edit-article.html?articleId=${aId}`;
     }

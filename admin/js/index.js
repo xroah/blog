@@ -38,7 +38,10 @@ function renderList(res) {
         card.setAttribute("aId", a._id);
         card.setAttribute("subTitle", a.createTime);
         card.setAttribute("summary", a.summary);
-        card.setAttribute("aTitle", a.title);
+        card.setAttribute("aTitle", a.title || "无标题");
+        if (a.draft) {
+            card.setAttribute("draft", "");
+        }
 
         frag.appendChild(card);
     }
