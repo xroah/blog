@@ -68,7 +68,7 @@ function updateProgress(value) {
     const wrapper = document.querySelector(".progress-wrapper");
     const progress = wrapper.querySelector(".progress-bar");
 
-    if (getComputedStyle(wrapper) === "none") {
+    if (getComputedStyle(wrapper).getPropertyValue("display") === "none") {
         wrapper.style.display = "flex";
     }
 
@@ -127,8 +127,8 @@ function upload() {
     xhr.upload.onprogress = evt => {
         const total = evt.total;
         const loaded = evt.loaded;
-        const progress = loaded / total;
-
+        const progress = (loaded / total) * 100;
+        
         updateProgress(progress);
     }
 
