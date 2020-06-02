@@ -149,7 +149,8 @@ class Modal {
 
         //promise
         if (ret && ret.then && ret.catch) {
-            ret.then(this.hide);
+            ret.then(this.hide)
+                .catch(() => { });
         } else if (ret !== false) {
             this.hide();
         }
@@ -209,6 +210,6 @@ export default {
 
         modals.clear();
     },
-    alert: factory({cancel: false}),
+    alert: factory({ cancel: false }),
     confirm: factory()
 }

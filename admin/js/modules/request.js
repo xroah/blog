@@ -7,6 +7,10 @@ function rejectPromise(reject, error = {}, errorPrompt = true) {
         message.destroy();
         message.error(error.message || error.msg || "操作失败");
     }
+
+    if (error.code === 403) {
+        location.href = "/login.html";
+    }
 }
 
 export default function request(url, options = {}) {
