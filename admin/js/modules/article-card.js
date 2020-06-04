@@ -15,8 +15,8 @@ const tpl = `
             <h5 class="card-title ellipsis"></h5>
             <h6 class="card-subtitle mb-2 text-muted"></h6>
             <p class="card-text"></p>
-            <a href="#" class="card-link view">查看全文</a>
-            <a href="#" class="card-link edit">编辑</a>
+            <a href="#" target="_blank" class="card-link view">查看全文</a>
+            <a href="#" target="_blank" class="card-link edit">编辑</a>
         </div>
 `;
 

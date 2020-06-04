@@ -9,7 +9,7 @@ import getSearchParams from "./modules/utils/getSearchParams.js";
 import "./modules/nav.js";
 import "./modules/404.js";
 
-let saved = false;
+let saved = true;
 
 function setLayerVisible(visible) {
     const el = document.querySelector(".upload-image-wrapper");
@@ -173,6 +173,7 @@ function cancelAutoSave() {
 }
 
 function autoSave() {
+    saved = false;
     cancelAutoSave();
 
     const _save = async () => {
