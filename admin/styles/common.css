@@ -25,6 +25,11 @@ loading-mask.transparent {
     background-color: transparent;
 }
 
+bs-pagination {
+    display: block;
+    margin-top: 10px;
+}
+
 .container {
     display: flex;
     min-width: 960px;

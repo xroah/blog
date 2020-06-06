@@ -8,6 +8,7 @@ import loading from "./modules/loading.js";
 import getSearchParams from "./modules/utils/getSearchParams.js";
 import "./modules/nav.js";
 import "./modules/404.js";
+import dialog from "./modules/dialog.js";
 
 let saved = true;
 
@@ -267,9 +268,20 @@ async function save() {
         loading.hide();
     }
 
-    message.success("保存成功");
     saved = true;
-    setTimeout(() => location.assign("./index.html"), 500);
+    
+    dialog.confirm("保存成功，是否要继续写文章？", {
+        onOk() {
+            window.location.href = "/edit-article.html";
+        },
+        onCancel() {
+            if (window.opener) {
+                window.opener.location.href = "/";
+            }
+
+            window.close();
+        }
+    });
 }
 
 function initEvents() {
@@ -322,6 +334,8 @@ function initCategory(res) {
     const frag = document.createDocumentFragment();
 
     select.innerHTML = "";
+
+    frag.appendChild(new Option("请选择分类", ""));
 
     for (let c of res) {
         const option = new Option(c.name, c._id);

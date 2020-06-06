@@ -4,6 +4,10 @@
     padding: 0;
 }
 
+.article-container {
+    margin-bottom: 10px;
+}
+
 .article-container .title {
     font-size: 18px;
 }
