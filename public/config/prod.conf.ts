@@ -1,5 +1,8 @@
 import baseConf from "./base.conf";
 import MiniCSSExtractPlugin from "mini-css-extract-plugin";
+import OptimizeCSS from "optimize-css-assets-webpack-plugin";
+import TerserPlugin from "terser-webpack-plugin";
+import { CleanWebpackPlugin } from "clean-webpack-plugin";
 
 const conf = {
     ...baseConf
@@ -7,9 +10,14 @@ const conf = {
 
 conf.mode = "production";
 conf.optimization = {
+    minimizer: [
+        new TerserPlugin(),
+        new OptimizeCSS()
+    ],
     splitChunks: {
         chunks: "all",
-        minSize: 200 * 1024,
+        minSize: 100 * 1024,
+        maxSize: 256 * 1024,
         minChunks: 1,
         cacheGroups: {
             vendors: {
@@ -29,10 +37,14 @@ conf.module!.rules.push({
     test: /.css$/,
     use: [
         MiniCSSExtractPlugin.loader,
-        "css-loader"
+        "css-loader",
+        "sass-loader"
     ]
 });
 
-conf.plugins!.push(new MiniCSSExtractPlugin());
+conf.plugins!.push(
+    new MiniCSSExtractPlugin(),
+    new CleanWebpackPlugin()
+);
 
 export default conf;

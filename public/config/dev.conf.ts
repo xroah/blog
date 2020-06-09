@@ -11,14 +11,13 @@ conf.entry = [
     "webpack-hot-middleware/client",
     conf.entry as string
 ];
-conf.resolve!.alias = {
-    "react-dom": "@hot-loader/react-dom"
-}
+
 conf.module!.rules.push({
-    test: /\.css$/,
+    test: /\.s?css$/,
     use: [
         "style-loader",
-        "css-loader"
+        "css-loader",
+        "sass-loader"
     ]
 });
 conf.plugins!.push(new webpack.HotModuleReplacementPlugin())

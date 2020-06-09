@@ -12,6 +12,12 @@ const conf: webpack.Configuration = {
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"]
     },
+    stats: "minimal",
+    externals: {
+        "react": "React",
+        "react-dom": "ReactDOM",
+        "react-router-dom": "ReactRouterDOM"
+    },
     plugins: [
         new HTMLWebpackPlugin({
             template: path.resolve(__dirname, "../index.html"),
