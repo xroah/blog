@@ -21,6 +21,7 @@ const conf: webpack.Configuration = {
     plugins: [
         new HTMLWebpackPlugin({
             template: path.resolve(__dirname, "../index.html"),
+            minify: false,
             hash: true
         })
     ],

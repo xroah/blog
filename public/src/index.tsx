@@ -10,4 +10,9 @@ if (process.env.NODE_ENV === "development") {
         <App />,
         root
     )
+} else {
+    hydrate(
+        <App/>,
+        root
+    )
 }
