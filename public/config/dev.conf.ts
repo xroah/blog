@@ -1,16 +1,16 @@
-import baseConf from "./base.conf";
+import getConf from "./base.conf";
 import webpack from "webpack";
 
-const conf = {
-    ...baseConf
+const baseConf = getConf("development");
+const conf: webpack.Configuration = {
+    ...baseConf,
+    devtool: "source-map",
+    entry: [
+        "react-hot-loader/patch",
+        "webpack-hot-middleware/client",
+        baseConf.entry as string
+    ]
 };
-
-conf.mode = "development";
-conf.entry = [
-    "react-hot-loader/patch",
-    "webpack-hot-middleware/client",
-    conf.entry as string
-];
 
 conf.module!.rules.push({
     test: /\.s?css$/,
