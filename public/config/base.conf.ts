@@ -9,7 +9,8 @@ export default function getConf(mode: "development" | "production") {
         output: {
             path: path.resolve(__dirname, "../dist"),
             filename: "index.js",
-            chunkFilename: "[name]-[id].js"
+            chunkFilename: "[name]-[id].js",
+            publicPath: "/"
         },
         resolve: {
             extensions: [".ts", ".tsx", ".js", ".jsx"]
