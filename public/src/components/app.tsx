@@ -4,11 +4,14 @@ import { hot } from "react-hot-loader/root";
 import Header from "./header";
 import Routes from "./routes";
 
+
 export default hot(
     () => (
-        <Container>
-            <Header/>
-            <Routes/>
-        </Container>
+        <>
+            <Header />
+            <Container>
+                <Routes />
+            </Container>
+        </>
     )
 )
