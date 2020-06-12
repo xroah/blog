@@ -63,7 +63,7 @@ export default function ArticleCard(props: ArticleCardProps) {
                     <span className="ml-1">{comments}</span>
                     <Button
                         style={{ marginLeft: "auto" }}
-                        onClick={viewArticle}>查看全文>></Button>
+                        onClick={viewArticle}>查看全文&gt;&gt;</Button>
                 </div>
             }>
             <Card.Title
