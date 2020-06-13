@@ -17,7 +17,7 @@ export class CancelToken {
     }
 
     static add(xhr: XHR) {
-        if (xhr.token) {
+        if (xhr.token !== undefined) {
             this.requests.set(xhr.token, xhr);
         }
     }
@@ -35,6 +35,8 @@ export class CancelToken {
         const xhr = requests.get(token);
 
         if (xhr) {
+            xhr.cancelled = true;
+
             xhr.xhr.abort();
             this.remove(xhr);
         }
@@ -71,6 +73,8 @@ interface XHROptions extends Options {
 
 class XHR {
     private options: XHROptions;
+    private complete = true;
+    public cancelled = false;
     public xhr: XMLHttpRequest = new XMLHttpRequest();
     public token: number | undefined = undefined;
 
@@ -100,13 +104,14 @@ class XHR {
             onTimeout = noop,
             onSuccess = noop
         } = this.options;
-        const {xhr} = this;
+        const { xhr } = this;
 
         xhr.onreadystatechange = evt => {
             if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    onSuccess(xhr.response, xhr);
-                } else {
+                const res = xhr.response;
+                if (xhr.status === 200 && res && res.code === 0) {
+                    onSuccess(res, xhr);
+                } else if (!this.cancelled) {
                     onError(xhr.response, xhr);
                 }
 
@@ -114,15 +119,13 @@ class XHR {
             }
         };
         xhr.onabort = evt => {
-            this.handleComplete();
             onAbort(evt, xhr);
+            this.handleComplete();
         };
         xhr.onerror = evt => {
-            this.handleComplete();
             onError(evt, xhr);
         };
         xhr.ontimeout = evt => {
-            this.handleComplete();
             onTimeout(evt, xhr);
         };
     }
@@ -131,6 +134,10 @@ class XHR {
         const {
             onComplete = noop
         } = this.options;
+
+        if (this.complete) return;
+
+        this.complete = true;
 
         onComplete(this.xhr);
         CancelToken.remove(this);
@@ -152,7 +159,7 @@ class XHR {
         }
 
         if (sendData) {
-            if (isObject(data) ) {
+            if (isObject(data)) {
                 if (headers["Content-Type"].includes("application/json")) {
                     data = JSON.stringify(data);
                 } else {
@@ -166,7 +173,7 @@ class XHR {
         }
 
         this.initEvents();
-        
+
         if (sendData || !data) {
             this.xhr.open(method, url, true);
         } else {
@@ -174,11 +181,12 @@ class XHR {
         }
 
         beforeSend(this.xhr);
-        
+
         for (let key in headers) {
             this.xhr.setRequestHeader(key, headers[key]);
         }
 
+        this.xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         this.xhr.send(sendData ? data : null);
     }
 }
@@ -211,16 +219,15 @@ export default function xhr(url: string | Options, options: Options = {}) {
                 if (evt instanceof Event) {
                     res = handleRes(xhr, evt as any);
                 } else {
-                    res = handleRes(xhr, undefined, evt.data);
+                    res = handleRes(xhr, undefined, evt?.data);
                 }
-
                 reject(res);
             },
             onTimeout(evt, xhr) {
                 reject(handleRes(xhr, evt));
             },
             onSuccess(data) {
-                resolve(data.data);
+                resolve(data?.data);
             }
         });
 
