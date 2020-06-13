@@ -144,13 +144,14 @@ class XHR {
             data,
             url = ""
         } = this.options;
+        const sendData = method === "POST" || method === "PUT";
         method = method.toUpperCase();
 
         if (!isObject(headers)) {
             headers = {};
         }
 
-        if (method === "POST" || method === "PUT") {
+        if (sendData) {
             if (isObject(data) ) {
                 if (headers["Content-Type"].includes("application/json")) {
                     data = JSON.stringify(data);
@@ -165,14 +166,20 @@ class XHR {
         }
 
         this.initEvents();
-        this.xhr.open(method, url, true);
+        
+        if (sendData || !data) {
+            this.xhr.open(method, url, true);
+        } else {
+            this.xhr.open(method, `${url}?${data}`, true);
+        }
+
         beforeSend(this.xhr);
         
         for (let key in headers) {
             this.xhr.setRequestHeader(key, headers[key]);
         }
-        
-        this.xhr.send(data);
+
+        this.xhr.send(sendData ? data : null);
     }
 }
 
@@ -204,7 +211,7 @@ export default function xhr(url: string | Options, options: Options = {}) {
                 if (evt instanceof Event) {
                     res = handleRes(xhr, evt as any);
                 } else {
-                    res = handleRes(xhr, undefined, evt);
+                    res = handleRes(xhr, undefined, evt.data);
                 }
 
                 reject(res);
@@ -213,7 +220,7 @@ export default function xhr(url: string | Options, options: Options = {}) {
                 reject(handleRes(xhr, evt));
             },
             onSuccess(data) {
-                resolve(data);
+                resolve(data.data);
             }
         });
 
