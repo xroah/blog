@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { ConnectedHomePage as Home } from "./home";
 import Category from "./category";
-import ViewArticle from "./view-article";
+import {ConnectedView as ViewArticle} from "./view-article";
 import Page404 from "./404";
 
 export default () => {

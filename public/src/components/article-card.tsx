@@ -4,6 +4,7 @@ import Button from "reap-ui/lib/Button";
 import EyeIcon from "./icons/eye";
 import MessageSquare from "./icons/message-square";
 import { createUseStyles } from "react-jss";
+import { format } from "fecha";
 
 const useStyle = createUseStyles({
     "article-card": {
@@ -16,7 +17,7 @@ const useStyle = createUseStyles({
         }
     },
     "article-title": {
-        
+
         "& .card-title": {
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -49,7 +50,7 @@ export default function ArticleCard(props: ArticleCardProps) {
         time,
         children
     } = props;
-    const viewArticle = () => window.open(`/view/${articleId}`)
+    const viewArticle = () => window.open(`/view/${articleId}`);
 
     return (
         <Card
@@ -68,7 +69,9 @@ export default function ArticleCard(props: ArticleCardProps) {
             }>
             <Card.Title
                 className={classes["article-title"]}
-                subtitle={time}>{title}</Card.Title>
+                subtitle={format(new Date(time), "YYYY-MM-DD HH:mm")}>
+                    {title}
+                    </Card.Title>
             <Card.Text>{children}...</Card.Text>
         </Card>
     )
