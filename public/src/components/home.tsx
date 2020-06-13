@@ -1,19 +1,117 @@
 import React from "react";
 import ArticleCard from "./article-card";
+import { connect } from "react-redux";
+import { WATCH_FETCH_ARTICLE } from "../actions";
+import Spinner from "reap-ui/lib/Spinner";
 
-export default class HomePage extends React.Component {
+interface Props {
+    page: number,
+    list: any[];
+    totalPages: number;
+    error: boolean;
+    loading: boolean;
+    fetchArticles: (page: number, category?: string) => void;
+}
+
+export default class HomePage extends React.Component<Props> {
+
+    componentDidMount() {
+        const {
+            page,
+            fetchArticles,
+            list
+        } = this.props;
+
+        !list.length && fetchArticles(page);
+        window.addEventListener("scroll", this.handleScroll);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("scroll", this.handleScroll);
+    }
+
+    handleScroll = () => {
+        const {
+            page,
+            totalPages,
+            error,
+            fetchArticles
+        } = this.props;
+
+        if (error || page >= totalPages) return;
+
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        const THRESHOLD = 100;
+        const bottom = document.body.scrollHeight - window.innerHeight - scrollTop;
+
+        if (bottom <= THRESHOLD) {
+            fetchArticles(page + 1);
+        }
+    }
+
+    renderArticles() {
+        const { list } = this.props;
+
+        return list.map((article: any) => (
+            <ArticleCard
+                key={article._id}
+                articleId={article._id}
+                title={article.title}
+                time={article.createTime}
+                viewed={article.totalViewed}
+                comments={10}>
+                {article.summary}
+            </ArticleCard>
+        ));
+    }
+
     render() {
+        const {
+            loading,
+            page,
+            totalPages
+        } = this.props;
+        const hasMore = page < totalPages;
+
         return (
-            <div>
-                <ArticleCard
-                articleId="dsfsdf32423234dsf"
-                title="外文外文三段论法角度看斯拉夫"
-                time="2020-06-11 18:23"
-                comments={999}
-                viewed={99999}>
-                    苏联的开发角色的快乐佛教阿隆索的法律今拉萨的弗拉斯地方将斯拉夫阿里的司法局拉斯的佛教萨的了佛教的斯拉夫将了第三咖啡碱阿的苏联军方苏联看到飞机萨拉丁教父的思考辣椒粉啊第三了佛教阿斯顿了开发将阿萨拉丁教父
-                </ArticleCard>
+            <div style={{ paddingBottom: 15 }}>
+                {
+                    loading && (
+                        <div className="d-flex justify-content-center">
+                            <Spinner variant="info" animation="grow" />
+                        </div>
+                    )
+                }
+                {this.renderArticles()}
+                {
+                    !hasMore && (
+                        <div className="text-center text-muted mt-3">
+                            没有更多了
+                        </div>
+                    )
+                }
             </div>
         )
     }
 }
+
+export const ConnectedHomePage = connect(
+    (state: any) => ({
+        page: state.article.page,
+        error: state.article.error,
+        list: state.article.list,
+        totalPages: state.article.totalPages,
+        loading: state.article.loading
+    }),
+    dispatch => ({
+        fetchArticles(page: number, category: string) {
+            dispatch({
+                type: WATCH_FETCH_ARTICLE,
+                payload: {
+                    page,
+                    category
+                }
+            })
+        }
+    })
+)(HomePage as any);
