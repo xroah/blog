@@ -4,7 +4,7 @@ import noop from "./noop";
 
 let token = 0;
 
-export default class CancelToken {
+export class CancelToken {
     public token: number;
     static requests: Map<number, XHR> = new Map();
 
@@ -35,7 +35,7 @@ export default class CancelToken {
         const xhr = requests.get(token);
 
         if (xhr) {
-            xhr.cancel();
+            xhr.xhr.abort();
             this.remove(xhr);
         }
     }
@@ -43,7 +43,7 @@ export default class CancelToken {
     static cancelAll() {
         const { requests } = this;
 
-        requests.forEach(v => v.cancel());
+        requests.forEach(v => v.xhr.abort());
 
         this.requests = new Map();
     }
@@ -51,31 +51,32 @@ export default class CancelToken {
 
 interface Options {
     method?: string;
-    url: string;
-    data: any;
+    url?: string;
+    data?: any;
     responseType?: XMLHttpRequestResponseType;
-    headers: any;
+    headers?: any;
     token?: number;
     withCredentials?: boolean;
     timeout?: number;
     beforeSend?: (xhr: XMLHttpRequest) => any;
+    onComplete?: (xhr: XMLHttpRequest) => any;
+}
+
+interface XHROptions extends Options {
     onAbort?: (evt: ProgressEvent, xhr: XMLHttpRequest) => any;
     onTimeout?: (evt: ProgressEvent, xhr: XMLHttpRequest) => any;
-    onError?: (evt: ProgressEvent, xhr: XMLHttpRequest) => any;
-    onComplete?: (xhr: XMLHttpRequest) => any;
-    onProgress?: (evt: ProgressEvent, xhr: XMLHttpRequest) => any;
+    onError?: (evt: any, xhr: XMLHttpRequest) => any;
     onSuccess?: (data: any, xhr: XMLHttpRequest) => any;
 }
 
 class XHR {
-    private xhr: XMLHttpRequest = new XMLHttpRequest();
-    private options: Options;
+    private options: XHROptions;
+    public xhr: XMLHttpRequest = new XMLHttpRequest();
     public token: number | undefined = undefined;
-    public complete: boolean = false;
 
-    constructor(options: Options) {
+    constructor(options: XHROptions) {
         this.options = options;
-        this.xhr.responseType = options.responseType || "";
+        this.xhr.responseType = options.responseType || "json";
 
         if (options.withCredentials != undefined) {
             this.xhr.withCredentials = !!options.withCredentials;
@@ -95,10 +96,8 @@ class XHR {
     initEvents() {
         const {
             onAbort = noop,
-            onComplete = noop,
             onError = noop,
             onTimeout = noop,
-            onProgress = noop,
             onSuccess = noop
         } = this.options;
         const {xhr} = this;
@@ -110,21 +109,31 @@ class XHR {
                 } else {
                     onError(xhr.response, xhr);
                 }
+
+                this.handleComplete();
             }
         };
         xhr.onabort = evt => {
-            onComplete(xhr);
+            this.handleComplete();
             onAbort(evt, xhr);
         };
         xhr.onerror = evt => {
-            onComplete(xhr);
+            this.handleComplete();
             onError(evt, xhr);
         };
-        xhr.onprogress = evt => onProgress(evt, xhr);
         xhr.ontimeout = evt => {
-            onComplete(xhr);
+            this.handleComplete();
             onTimeout(evt, xhr);
         };
+    }
+
+    handleComplete() {
+        const {
+            onComplete = noop
+        } = this.options;
+
+        onComplete(this.xhr);
+        CancelToken.remove(this);
     }
 
     request() {
@@ -133,7 +142,7 @@ class XHR {
             beforeSend = noop,
             headers,
             data,
-            url
+            url = ""
         } = this.options;
         method = method.toUpperCase();
 
@@ -150,18 +159,64 @@ class XHR {
                 }
             }
         } else {
-            data = serialize(data);
+            if (isObject(data)) {
+                data = serialize(data);
+            }
         }
 
         this.initEvents();
         this.xhr.open(method, url, true);
         beforeSend(this.xhr);
+        
+        for (let key in headers) {
+            this.xhr.setRequestHeader(key, headers[key]);
+        }
+        
         this.xhr.send(data);
     }
+}
 
-    cancel() {
-        if (!this.complete) {
-            this.xhr.abort();
-        }
+export default function xhr(url: string | Options, options: Options = {}) {
+    if (typeof url === "object") {
+        options = url;
+    } else {
+        options.url = url;
     }
+
+    return new Promise((resolve, reject) => {
+        const handleRes = (xhr: XMLHttpRequest, evt?: ProgressEvent, data?: any) => {
+            return {
+                data,
+                error: evt ? evt.type : null,
+                status: xhr.status,
+                readyState: xhr.readyState,
+                statusText: xhr.statusText
+            };
+        }
+        const req = new XHR({
+            ...options,
+            onAbort(evt, xhr) {
+                reject(handleRes(xhr, evt));
+            },
+            onError(evt, xhr) {
+                let res;
+
+                if (evt instanceof Event) {
+                    res = handleRes(xhr, evt as any);
+                } else {
+                    res = handleRes(xhr, undefined, evt);
+                }
+
+                reject(res);
+            },
+            onTimeout(evt, xhr) {
+                reject(handleRes(xhr, evt));
+            },
+            onSuccess(data) {
+                resolve(data);
+            }
+        });
+
+        req.request();
+    });
 }
