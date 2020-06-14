@@ -4,9 +4,9 @@ import {
     Route,
     Redirect
 } from "react-router-dom";
-import { ConnectedHomePage as Home } from "./home";
+import Home from "../containers/home";
 import Category from "./category";
-import {ConnectedView as ViewArticle} from "./view-article";
+import ViewArticle from "../containers/view-articles";
 import Page404 from "./404";
 
 export default () => {

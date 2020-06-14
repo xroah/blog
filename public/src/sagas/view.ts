@@ -43,7 +43,7 @@ function* fetchPrevNext(action: any) {
                 articleId
             }
         });
-
+        
         yield put(updatePrevNext({
             ...data
         }));

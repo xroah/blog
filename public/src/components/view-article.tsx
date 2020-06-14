@@ -1,57 +1,113 @@
 import React from "react";
 import NoArticle from "./no-article";
 import { RouteComponentProps } from "react-router-dom";
-import { connect } from "react-redux";
-import { WATCH_FETCH_ARTICLE_BY_ID, WATCH_FETCH_PREV_AND_NEXT } from "../actions";
 import { createUseStyles } from "react-jss";
 import { format } from "fecha";
 import hljs from "highlight.js";
+import ChevronLeft from "./icons/chevron-left";
+import ChevronRight from "./icons/chevron-right";
+import Spinner from "reap-ui/lib/Spinner";
 
 interface Props extends RouteComponentProps {
     article: any;
-    prev: any;
-    next: any;
+    prev?: any;
+    next?: any;
     fetchArticle: (id: string) => any;
     fetchPrevNext: (id: string) => any;
+    updateArticle: (article: any) => any;
 }
 
 const useStyles = createUseStyles({
     "article-container": {
+        lineHeight: 1.5
+    },
+    "chevrons": {
+        position: "fixed",
+        top: "50%",
+        padding: 0,
+        color: "#999",
+        boxShadow: "none",
+        cursor: "pointer",
+        "&:focus": {
+            boxShadow: "none"
+        },
 
+        "&.left": {
+            left: -5
+        },
+
+        "&.right": {
+            right: -5
+        },
+
+        "&:hover": {
+            color: "#666"
+        }
     }
 });
 
-function ArticleContainer(props: { article: any }) {
+interface ContainerProps {
+    article: any;
+    next: any;
+    prev: any;
+    toPrev: (evt: React.MouseEvent) => void;
+    toNext: (evt: React.MouseEvent) => void;
+}
+
+function ArticleContainer(props: ContainerProps) {
     const classes = useStyles();
-    const { article } = props;
+    const {
+        article,
+        next,
+        prev,
+        toPrev,
+        toNext
+    } = props;
 
     if (!article) {
         return null;
     }
 
     return (
-        <div className="ql-snow">
-            <h3 className="text-center">{article.title}</h3>
-            <h5 className="text-muted text-center">
-                <span className="mr-2">
-                    {format(new Date(article.createTime), "YYYY-MM-DD hh:mm")}
-                </span>
-                <span className="mr-2">今日浏览{article.todayViewed}次</span>
-                <span className="mr-2">总共浏览{article.totalViwed}次</span>
-            </h5>
-            <div
-                className="ql-editor"
-                dangerouslySetInnerHTML={{ __html: article.content }} />
-        </div>
+        <>
+            <div>
+                <a href="#"
+                    className={`${classes.chevrons} btn right${next ? "" : " disabled"}`}
+                    title="下一篇"
+                    onClick={toNext}>
+                    <ChevronRight size={36} />
+                </a>
+                <a href="#"
+                    className={`${classes.chevrons} btn left${prev ? "" : " disabled"}`}
+                    title="上一篇"
+                    onClick={toPrev}>
+                    <ChevronLeft size={36} />
+                </a>
+            </div>
+            <div className="ql-snow">
+                <h3 className="text-center">{article.title}</h3>
+                <h5 className="text-muted text-center">
+                    <span className="mr-2">
+                        发表于：{format(new Date(article.createTime), "YYYY-MM-DD hh:mm")}
+                    </span>
+                    <span className="mr-2">
+                        归类于： {article.categoryName}
+                    </span>
+                    <span className="mr-2">今日浏览{article.todayViewed}次</span>
+                    <span className="mr-2">总共浏览{article.totalViewed}次</span>
+                </h5>
+                <div
+                    className={`ql-editor  ${classes["article-container"]}`}
+                    dangerouslySetInnerHTML={{ __html: article.content }} />
+            </div>
+        </>
     )
-}
+};
 
 export default class ViewArticle extends React.Component<Props> {
     componentDidMount() {
         const {
             article,
-            next,
-            prev,
             fetchArticle,
             fetchPrevNext
         } = this.props;
@@ -63,18 +119,39 @@ export default class ViewArticle extends React.Component<Props> {
 
         if (!article) {
             fetchArticle(id);
+        } else {
+            this.highlight();
+        }
+
+        fetchPrevNext(id);
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        const { 
+            article,
+            updateArticle,
+            fetchArticle,
+            fetchPrevNext
+         } = this.props;
+        const id = this.getId();
+
+        if (id && id !== (prevProps.match.params as any).id) { {
+            updateArticle(null);
+            fetchArticle(id);
             fetchPrevNext(id);
+        }
+
+        }
+
+        if (article && article !== prevProps.article) {
+            this.highlight();
         }
     }
 
-    componentDidUpdate(nextProps: Props) {
-        const { article } = this.props;
-
-        if (article !== nextProps.article) {
-            document.querySelectorAll(".ql-editor pre").forEach((block) => {
-                hljs.highlightBlock(block);
-            });
-        }
+    highlight() {
+        document.querySelectorAll(".ql-editor pre").forEach((block) => {
+            hljs.highlightBlock(block);
+        });
     }
 
     getId() {
@@ -91,44 +168,55 @@ export default class ViewArticle extends React.Component<Props> {
         return id;
     }
 
+    to = (evt: React.MouseEvent, dir?: "next") => {
+        const {
+            history,
+            prev,
+            next
+        } = this.props;
+        let article: any = dir ? next : prev;
+
+        evt.preventDefault();
+
+        if (article) {
+            history.push(`/view/${article._id}`);
+        }
+    }
+
+    toPrev = (evt: React.MouseEvent) => {
+        this.to(evt);
+    }
+
+    toNext = (evt: React.MouseEvent) => {
+        this.to(evt, "next");
+    }
+
     render() {
         const {
-            article
+            article,
+            next,
+            prev
         } = this.props;
 
         return (
-            <div>
+            <>
+                <div className="d-flex justify-content-center">
+                    {!article && this.getId() && <Spinner variant="primary" animation="grow" />}
+                </div>
                 {
                     (article === -1 || !this.getId()) && (<NoArticle />)
                 }
                 {
                     (article && article !== -1) && (
-                        <ArticleContainer article={article} />
+                        <ArticleContainer
+                            prev={prev}
+                            next={next}
+                            toPrev={this.toPrev}
+                            toNext={this.toNext}
+                            article={article} />
                     )
                 }
-            </div>
+            </>
         );
     }
 }
-
-export const ConnectedView = connect(
-    (state: any) => ({
-        article: state.view.article,
-        next: state.view.next,
-        prev: state.view.next
-    }),
-    dispatch => ({
-        fetchArticle(id: string) {
-            dispatch({
-                type: WATCH_FETCH_ARTICLE_BY_ID,
-                articleId: id
-            })
-        },
-        fetchPrevNext(id: string) {
-            dispatch({
-                type: WATCH_FETCH_PREV_AND_NEXT,
-                articleId: id
-            });
-        }
-    })
-)(ViewArticle);

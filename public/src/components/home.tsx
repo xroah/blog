@@ -1,7 +1,5 @@
 import React from "react";
 import ArticleCard from "./article-card";
-import { connect } from "react-redux";
-import { WATCH_FETCH_ARTICLE } from "../actions";
 import Spinner from "reap-ui/lib/Spinner";
 
 interface Props {
@@ -59,6 +57,7 @@ export default class HomePage extends React.Component<Props> {
                 title={article.title}
                 time={article.createTime}
                 viewed={article.totalViewed}
+                tag={article.tag}
                 comments={10}>
                 {article.summary}
             </ArticleCard>
@@ -94,24 +93,3 @@ export default class HomePage extends React.Component<Props> {
         )
     }
 }
-
-export const ConnectedHomePage = connect(
-    (state: any) => ({
-        page: state.article.page,
-        error: state.article.error,
-        list: state.article.list,
-        totalPages: state.article.totalPages,
-        loading: state.article.loading
-    }),
-    dispatch => ({
-        fetchArticles(page: number, category: string) {
-            dispatch({
-                type: WATCH_FETCH_ARTICLE,
-                payload: {
-                    page,
-                    category
-                }
-            })
-        }
-    })
-)(HomePage as any);

@@ -15,7 +15,7 @@ import { ARTICLE_LIST } from "../components/api";
 
 function* fetchArticles(action: any) {
     const { page } = action.payload;
-console.log(page)
+    
     yield put(updateLoading(true));
 
     try {

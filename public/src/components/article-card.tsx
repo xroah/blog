@@ -5,6 +5,7 @@ import EyeIcon from "./icons/eye";
 import MessageSquare from "./icons/message-square";
 import { createUseStyles } from "react-jss";
 import { format } from "fecha";
+import Tag from "./icons/tag";
 
 const useStyle = createUseStyles({
     "article-card": {
@@ -16,8 +17,15 @@ const useStyle = createUseStyles({
             boxShadow: "1px 1px 5px 0 rgba(0, 0, 0, .3)"
         }
     },
+    "article-tag": {
+        borderRadius: 3,
+        padding: 3,
+        marginLeft: 5,
+        fontSize: 12,
+        backgroundColor: "#eee",
+        color: "#666"
+    },
     "article-title": {
-
         "& .card-title": {
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -38,6 +46,7 @@ interface ArticleCardProps {
     articleId: string;
     title: string;
     time: string;
+    tag: string[];
 }
 
 export default function ArticleCard(props: ArticleCardProps) {
@@ -48,9 +57,14 @@ export default function ArticleCard(props: ArticleCardProps) {
         articleId,
         title,
         time,
-        children
+        children,
+        tag = []
     } = props;
     const viewArticle = () => window.open(`/view/${articleId}`);
+    const tags = tag.filter(t => t)
+        .map(
+            t => !!t && <span key={t} className={classes["article-tag"]}>{t}</span>
+        );
 
     return (
         <Card
@@ -70,9 +84,19 @@ export default function ArticleCard(props: ArticleCardProps) {
             <Card.Title
                 className={classes["article-title"]}
                 subtitle={format(new Date(time), "YYYY-MM-DD HH:mm")}>
-                    {title}
-                    </Card.Title>
+                {title}
+            </Card.Title>
             <Card.Text>{children}...</Card.Text>
+            <div className="d-flex flex-wrap align-items-center">
+                {
+                    !!tags.length && (
+                        <>
+                            <Tag size={16} />
+                            {tags}
+                        </>
+                    )
+                }
+            </div>
         </Card>
     )
 }

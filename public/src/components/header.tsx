@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import { createUseStyles } from "react-jss";
 import HomeIcon from "./icons/home";
 import GridIcon from "./icons/grid";
+import GithubIcon from "./icons/github";
 
 const useStyles = createUseStyles({
     "vertical-text-bottom": {
@@ -54,8 +55,14 @@ export default function Header() {
 
     return (
         <header className="bg-primary mb-3">
-            <Container className="d-flex">
+            <Container className="d-flex align-items-center">
                 {links}
+                <a 
+                href="https://github.com/xroah"
+                target="blank" 
+                className="ml-auto">
+                    <GithubIcon color="#fff" />
+                </a>
             </Container>
         </header>
     );
