@@ -151,8 +151,8 @@ class XHR {
             data,
             url = ""
         } = this.options;
-        const sendData = method === "POST" || method === "PUT";
         method = method.toUpperCase();
+        const sendData = method === "POST" || method === "PUT";
 
         if (!isObject(headers)) {
             headers = {};
@@ -160,7 +160,7 @@ class XHR {
 
         if (sendData) {
             if (isObject(data)) {
-                if (headers["Content-Type"].includes("application/json")) {
+                if ((headers["Content-Type"] || "").includes("application/json")) {
                     data = JSON.stringify(data);
                 } else {
                     data = serialize(data);

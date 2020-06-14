@@ -19,12 +19,12 @@ const conf: Configuration = {
             new OptimizeCSS()
         ],
         splitChunks: {
-            chunks: "all",
-            minSize: 100 * 1024,
+            minSize: 200 * 1024,
             maxSize: 256 * 1024,
             minChunks: 1,
             cacheGroups: {
                 vendors: {
+                    chunks: "initial",
                     test: /[\\/]node_modules[\\/]/,
                     priority: -10
                 },
