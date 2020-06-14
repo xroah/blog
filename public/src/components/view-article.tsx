@@ -8,6 +8,7 @@ import ChevronRight from "./icons/chevron-right";
 import Spinner from "reap-ui/lib/Spinner";
 import xhr from "../utils/xhr";
 import { UPDATE_VIEWED_COUNTS } from "./api";
+import Comment from "./comment";
 
 const hljs = require("highlight.js/lib/core");
 
@@ -68,10 +69,6 @@ function ArticleContainer(props: ContainerProps) {
         toPrev,
         toNext
     } = props;
-
-    if (!article) {
-        return null;
-    }
 
     return (
         <>
@@ -156,15 +153,15 @@ export default class ViewArticle extends React.Component<Props> {
 
     async updateCount() {
         try {
-           await xhr(UPDATE_VIEWED_COUNTS, {
-               method: "post",
-               headers: {
-                   "Content-Type": "application/json; charset=utf-8"
-               },
-               data: {
-                   articleId: this.props.article._id
-               }
-           });
+            await xhr(UPDATE_VIEWED_COUNTS, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                data: {
+                    articleId: this.props.article._id
+                }
+            });
         } catch (error) {
         }
     }
@@ -212,12 +209,30 @@ export default class ViewArticle extends React.Component<Props> {
         this.to(evt, "next");
     }
 
-    render() {
+    renderArticle() {
         const {
             article,
             next,
             prev
         } = this.props;
+
+        if (!article || article === -1) return null;
+
+        return (
+            <>
+                <ArticleContainer
+                    prev={prev}
+                    next={next}
+                    toPrev={this.toPrev}
+                    toNext={this.toNext}
+                    article={article} />
+                <Comment />
+            </>
+        );
+    }
+
+    render() {
+        const { article } = this.props;
 
         return (
             <>
@@ -227,16 +242,7 @@ export default class ViewArticle extends React.Component<Props> {
                 {
                     (article === -1 || !this.getId()) && (<NoArticle />)
                 }
-                {
-                    (article && article !== -1) && (
-                        <ArticleContainer
-                            prev={prev}
-                            next={next}
-                            toPrev={this.toPrev}
-                            toNext={this.toNext}
-                            article={article} />
-                    )
-                }
+                {this.renderArticle()}
             </>
         );
     }
