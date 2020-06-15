@@ -4,7 +4,10 @@ import { createUseStyles } from "react-jss";
 import noop from "../utils/noop";
 
 interface Props {
+    showCancel?: boolean;
     onOk?: (value: string) => void;
+    onCancel?: () => void;
+    visible?: boolean;
 }
 
 const useStyles = createUseStyles({
@@ -15,14 +18,17 @@ const useStyles = createUseStyles({
 
 export default function Comment(props: Props) {
     const {
-        onOk = noop
+        onOk = noop,
+        onCancel = noop,
+        showCancel = false,
+        visible = true
     } = props;
     const [value, updateValue] = React.useState("");
     const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
         updateValue(evt.target.value);
     };
     const ref = React.createRef<HTMLTextAreaElement>();
-    const handleClick = () => {
+    const handleOk = () => {
         if (!value.trim()) {
             return ref.current?.focus();
         }
@@ -30,6 +36,8 @@ export default function Comment(props: Props) {
         onOk(value);
     };
     const classes = useStyles();
+
+    if (!visible) return null;
 
     return (
         <div className="mb-3">
@@ -42,7 +50,15 @@ export default function Comment(props: Props) {
             <div className="mt-3 d-flex justify-content-end">
                 <Button
                     disabled={!value.trim()}
-                    onClick={handleClick}>确定</Button>
+                    onClick={handleOk}>确定</Button>
+                {
+                    showCancel && (
+                        <Button
+                        variant="light"
+                        onClick={onCancel}
+                        className="ml-2">取消</Button>
+                    )
+                }
             </div>
         </div>
     )

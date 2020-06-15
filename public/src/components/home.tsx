@@ -83,7 +83,7 @@ export default class HomePage extends React.Component<Props> {
                 }
                 {this.renderArticles()}
                 {
-                    !hasMore && (
+                    !hasMore && !loading && (
                         <div className="text-center text-muted mt-3">
                             没有更多了
                         </div>
