@@ -216,7 +216,7 @@ async function saveRequest(draft, signal) {
             title,
             tag,
             content: editor.scrollingContainer.innerHTML,
-            summary: editor.getText().substring(0, 101),
+            summary: editor.getText().substring(0, 151),
             categoryId: category,
             images: getImages(),
             draft,
