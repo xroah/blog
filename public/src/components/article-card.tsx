@@ -65,6 +65,15 @@ export default function ArticleCard(props: ArticleCardProps) {
         .map(
             t => !!t && <span key={t} className={classes["article-tag"]}>{t}</span>
         );
+    const formatStr = "YYYY-MM-DD HH:mm";
+    let timeStr = "";
+
+    try {
+        //if time is undefined, date will be invalid
+        //and format will throw an error
+        timeStr = format(new Date(time), formatStr);
+    } catch (error) {
+    }
 
     return (
         <Card
@@ -83,7 +92,7 @@ export default function ArticleCard(props: ArticleCardProps) {
             }>
             <Card.Title
                 className={classes["article-title"]}
-                subtitle={format(new Date(time), "YYYY-MM-DD HH:mm")}>
+                subtitle={timeStr}>
                 {title}
             </Card.Title>
             <Card.Text>{children}...</Card.Text>

@@ -33,10 +33,11 @@ export default class HomePage extends React.Component<Props> {
             page,
             totalPages,
             error,
+            loading,
             fetchArticles
         } = this.props;
 
-        if (error || page >= totalPages) return;
+        if (error || page >= totalPages || loading) return;
 
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
         const THRESHOLD = 100;
