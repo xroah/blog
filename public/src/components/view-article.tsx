@@ -8,7 +8,8 @@ import ChevronRight from "./icons/chevron-right";
 import Spinner from "reap-ui/lib/Spinner";
 import xhr from "../utils/xhr";
 import { UPDATE_VIEWED_COUNTS } from "./api";
-import Comment from "./comment";
+import Comment from "./publish-comment";
+import CommentList from "../containers/comment-list";
 
 const hljs = require("highlight.js/lib/core");
 
@@ -226,7 +227,8 @@ export default class ViewArticle extends React.Component<Props> {
                     toPrev={this.toPrev}
                     toNext={this.toNext}
                     article={article} />
-                <Comment />
+                <Comment articleId={article._id} />
+                <CommentList articleId={article._id} />
             </>
         );
     }

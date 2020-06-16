@@ -8,6 +8,9 @@ interface Props {
     onOk?: (value: string) => void;
     onCancel?: () => void;
     visible?: boolean;
+    replyTo?: string;
+    root?: string;
+    articleId: string;
 }
 
 const useStyles = createUseStyles({
