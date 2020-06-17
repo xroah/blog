@@ -8,7 +8,7 @@ import ChevronRight from "./icons/chevron-right";
 import Spinner from "reap-ui/lib/Spinner";
 import xhr from "../utils/xhr";
 import { UPDATE_VIEWED_COUNTS } from "./api";
-import Comment from "./publish-comment";
+import Comment from "../containers/publish-comment";
 import CommentList from "../containers/comment-list";
 
 const hljs = require("highlight.js/lib/core");

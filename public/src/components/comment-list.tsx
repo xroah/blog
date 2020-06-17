@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
-import Comment from "../components/publish-comment";
+import Comment from "../containers/publish-comment";
 import Spinner from "reap-ui/lib/Spinner";
 import { Collapse } from "reap-ui/lib/Collapse";
 import { format } from "fecha";
@@ -41,7 +41,10 @@ const useItemStyles = createUseStyles({
 
         "& .home-link": {
             display: "inline-block",
-            maxWidth: 100,
+            maxWidth: 100
+        },
+
+        "& a": {
             textDecoration: "none"
         }
     }
@@ -57,6 +60,10 @@ function CommentItem(props: ItemProps) {
     const classes = useItemStyles();
     const [visible, updateVisible] = useState(false);
     const handleCancel = () => updateVisible(false);
+    const handleReply = (evt: React.MouseEvent) => {
+        updateVisible(true);
+        evt.preventDefault();
+    };
     const handleUrl = (url?: string) => {
         if (!url) return;
 
@@ -76,15 +83,15 @@ function CommentItem(props: ItemProps) {
                     <a
                         href={handleUrl(comment.homePage)}
                         target="blank"
-                        className="mr-1 home-link text-truncate">
-                        {comment.userName || DEFAULT_NAME}
+                        className="mr-2 home-link text-truncate align-middle">
+                        {comment.username || DEFAULT_NAME}
                     </a>
-                    <span className="mr-1 text-secondary">回复</span>
+                    <span className="mr-2 text-secondary align-middle">回复</span>
                     <a
                         href={handleUrl(replyTo.homePage)}
-                        className="home-link text-truncate"
+                        className="home-link text-truncate align-middle"
                         target="blank">
-                        {replyTo.userName || DEFAULT_NAME}
+                        {replyTo.username || DEFAULT_NAME}
                     </a>
                 </>
             );
@@ -92,9 +99,9 @@ function CommentItem(props: ItemProps) {
             el = (
                 <a
                     href={handleUrl(comment.homePage)}
-                    className="home-link text-truncate"
+                    className="home-link text-truncate align-middle"
                     target="blank">
-                    {comment.userName || DEFAULT_NAME}
+                    {comment.username || DEFAULT_NAME}
                 </a>
             );
         }
@@ -106,7 +113,7 @@ function CommentItem(props: ItemProps) {
     try {
         dateStr = format(new Date(comment.createTime), "YYYY-MM-DD HH:mm");
     } catch (error) {
-        console.log(comment)
+        console.log(error);
     }
 
     return (
@@ -119,6 +126,9 @@ function CommentItem(props: ItemProps) {
                     </div>
                 </div>
                 <p className="mt-2">{comment.content}</p>
+                <p className="mt-2">
+                    <a href="#" onClick={handleReply}>回复</a>
+                </p>
                 <Collapse isOpen={visible}>
                     <Comment
                         articleId={articleId}
@@ -196,7 +206,9 @@ class CommentList extends React.Component<Props & { classes: any }> {
                 {this.renderList(list)}
                 {
                     loading && (
-                        <Spinner animation="border" variant="info" />
+                        <div className="d-flex justify-content-center">
+                            <Spinner animation="border" variant="info" />
+                        </div>
                     )
                 }
             </div>
