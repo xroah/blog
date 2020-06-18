@@ -10,7 +10,6 @@ import {
     concatCommentList,
     WATCH_FETCH_COMMENT_LIST,
     PUBLISH_COMMENT,
-    updatePublishStatus,
     insertComment
 } from "../actions";
 import xhr from "../utils/xhr";
@@ -55,8 +54,6 @@ function* publishComment(action: any) {
         onFail
     } = action.payload;
 
-    yield put(updatePublishStatus(true));
-
     try {
         const ret = yield call(xhr, COMMENT, {
             data,
@@ -70,8 +67,6 @@ function* publishComment(action: any) {
         onSuccess();
     } catch (error) {
         onFail(error);
-    } finally {
-        yield put(updatePublishStatus(false));
     }
 }
 

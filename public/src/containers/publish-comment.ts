@@ -3,9 +3,7 @@ import PublishComment from "../components/publish-comment";
 import { PUBLISH_COMMENT } from "../actions";
 
 export default connect(
-    (state: any) => ({
-        publishing: state.comment.publishing
-    }),
+    null,
     dispatch => ({
         publish(
             data: any,

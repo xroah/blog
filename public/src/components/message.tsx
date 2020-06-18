@@ -8,7 +8,6 @@ import noop from "../utils/noop";
 const useStyles = createUseStyles({
     "message-item": {
         transition: "all .3s",
-        maxWidth: 200,
         marginTop: -30,
         opacity: 0,
 

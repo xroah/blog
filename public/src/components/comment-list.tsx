@@ -135,6 +135,7 @@ function CommentItem(props: ItemProps) {
                         replyTo={comment._id}
                         root={comment.root || comment._id}
                         showCancel
+                        onSuccess={handleCancel}
                         onCancel={handleCancel} />
                 </Collapse>
             </div>
