@@ -219,7 +219,7 @@ export default function xhr(url: string | Options, options: Options = {}) {
                 if (evt instanceof Event) {
                     res = handleRes(xhr, evt as any);
                 } else {
-                    res = handleRes(xhr, undefined, evt?.data);
+                    res = handleRes(xhr, undefined, evt);
                 }
                 reject(res);
             },
