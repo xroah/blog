@@ -92,7 +92,7 @@ export default function Comment(props: Props) {
     if (!visible) return null;
 
     return (
-        <div className="mb-3" style={{padding: "0 20px"}}>
+        <div className="mb-3">
             <textarea
                 style={{ height: 100}}
                 ref={ref}

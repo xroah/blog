@@ -30,7 +30,7 @@ const useStyles = createUseStyles({
     },
     "chevrons": {
         position: "fixed",
-        top: "50%",
+        top: "36%",
         padding: 0,
         color: "#999",
         boxShadow: "none",
@@ -87,7 +87,7 @@ function ArticleContainer(props: ContainerProps) {
                     <ChevronLeft size={36} />
                 </a>
             </div>
-            <div className="ql-snow">
+            <div className="ql-snow bg-white">
                 <h3 className="text-center">{article.title}</h3>
                 <h5 className="text-muted text-center">
                     <span className="mr-2">
@@ -102,6 +102,10 @@ function ArticleContainer(props: ContainerProps) {
                 <div
                     className={`ql-editor  ${classes["article-container"]}`}
                     dangerouslySetInnerHTML={{ __html: article.content }} />
+            </div>
+            <div className="mt-3 mb-5 bg-white p-4 border-rounded">
+                <Comment articleId={article._id} />
+                <CommentList articleId={article._id} />
             </div>
         </>
     )
@@ -227,8 +231,6 @@ export default class ViewArticle extends React.Component<Props> {
                     toPrev={this.toPrev}
                     toNext={this.toNext}
                     article={article} />
-                <Comment articleId={article._id} />
-                <CommentList articleId={article._id} />
             </>
         );
     }

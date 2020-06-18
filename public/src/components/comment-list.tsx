@@ -16,7 +16,7 @@ interface Props {
 const useStyles = createUseStyles({
     "comment-wrapper": {
         borderTop: "1px solid #eee",
-        margin: "20px 0"
+        marginTop: 20
     },
     "sub-comment-wrapper": {
         paddingLeft: 20
@@ -32,7 +32,6 @@ interface ItemProps {
 
 const useItemStyles = createUseStyles({
     "comment-item": {
-        marginBottom: 15,
         borderBottom: "1px solid #eee",
 
         "& .publish-time": {
