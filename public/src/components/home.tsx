@@ -59,7 +59,7 @@ export default class HomePage extends React.Component<Props> {
                 time={article.createTime}
                 viewed={article.totalViewed}
                 tag={article.tag}
-                comments={10}>
+                comments={article.commentCount || 0}>
                 {article.summary}
             </ArticleCard>
         ));
@@ -72,7 +72,7 @@ export default class HomePage extends React.Component<Props> {
             totalPages
         } = this.props;
         const hasMore = page < totalPages;
-
+        
         return (
             <div style={{ paddingBottom: 15 }}>
                 {
