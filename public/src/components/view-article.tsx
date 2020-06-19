@@ -87,7 +87,7 @@ function ArticleContainer(props: ContainerProps) {
                     <ChevronLeft size={36} />
                 </a>
             </div>
-            <div className="ql-snow bg-white">
+            <div className="ql-snow bg-white py-2">
                 <h3 className="text-center">{article.title}</h3>
                 <h5 className="text-muted text-center">
                     <span className="mr-2">

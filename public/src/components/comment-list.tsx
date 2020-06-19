@@ -33,6 +33,7 @@ interface ItemProps {
 const useItemStyles = createUseStyles({
     "comment-item": {
         borderBottom: "1px solid #eee",
+        marginTop: 15,
 
         "& .publish-time": {
             fontSize: 12
@@ -202,7 +203,7 @@ class CommentList extends React.Component<Props & { classes: any }> {
 
         return (
             <div className={classes["comment-wrapper"]}>
-                <h4 className="my-3">全部评论</h4>
+                <h4 className="mt-3">全部评论</h4>
                 {this.renderList(list)}
                 {
                     loading && (

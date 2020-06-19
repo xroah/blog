@@ -1,6 +1,7 @@
 import React from "react";
 import ArticleCard from "./article-card";
 import Spinner from "reap-ui/lib/Spinner";
+import throttle from "reap-ui/lib/utils/throttle";
 
 interface Props {
     page: number,
@@ -12,6 +13,12 @@ interface Props {
 }
 
 export default class HomePage extends React.Component<Props> {
+
+    constructor(props: Props) {
+        super(props);
+
+        this.handleScroll = throttle(this.handleScroll.bind(this));
+    }
 
     componentDidMount() {
         const {
@@ -28,7 +35,7 @@ export default class HomePage extends React.Component<Props> {
         window.removeEventListener("scroll", this.handleScroll);
     }
 
-    handleScroll = () => {
+    handleScroll() {
         const {
             page,
             totalPages,

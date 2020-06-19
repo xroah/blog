@@ -6,14 +6,14 @@ import {
     INSERT_COMMENT
 } from "../actions";
 
-export default function comment(
+export default (
     state = {
         list: [],
         error: false,
         loading: false
     },
     action: any
-) {
+) => {
     switch (action.type) {
         case FETCH_COMMENT_LIST:
             return {

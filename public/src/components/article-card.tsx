@@ -30,12 +30,16 @@ const useStyle = createUseStyles({
             overflow: "hidden",
             textOverflow: "ellipsis",
             fontSize: 14,
-            whiteSpace: "nowrap"
+            whiteSpace: "nowrap",
+            marginBottom: 5
         },
 
         "& .card-subtitle": {
             fontSize: 12
         }
+    },
+    "footer-icon": {
+        color: "#666"
     }
 });
 
@@ -81,10 +85,12 @@ export default function ArticleCard(props: ArticleCardProps) {
             className={classes["article-card"]}
             footer={
                 <div className="d-flex align-items-center">
-                    <EyeIcon />
-                    <span className="ml-1">{viewed}</span>
-                    <MessageSquare className="ml-3" />
-                    <span className="ml-1">{comments}</span>
+                    <div className={classes["footer-icon"]}>
+                        <EyeIcon />
+                        <span className="ml-1">{viewed}</span>
+                        <MessageSquare className="ml-3" />
+                        <span className="ml-1">{comments}</span>
+                    </div>
                     <Button
                         style={{ marginLeft: "auto" }}
                         onClick={viewArticle}>查看全文&gt;&gt;</Button>
