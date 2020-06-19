@@ -18,7 +18,20 @@ const useStyle = createUseStyles({
         flexDirection: "column",
         position: "fixed",
         right: 15,
-        bottom: 15
+        bottom: 15,
+
+        "& .back-to-top": {
+            transform: "scale(0)",
+            marginBottom: 15,
+
+            "&.visible": {
+                transform: "scale(1)"
+            }
+        },
+
+        "& a": {
+            transition: "all .3s"
+        }
     }
 });
 
@@ -63,15 +76,13 @@ class RightBottom extends React.Component<Props & { classes: any }> {
         return (
             <div className={classes["right-bottom-icons"]}>
                 {
-                    toTopVisible && (
-                        <a
-                            href="#"
-                            title="回到顶部"
-                            onClick={this.handleClickToTop}
-                            className="mb-2">
-                            <ToTopIcon size={32} />
-                        </a>
-                    )
+                    <a
+                        href="#"
+                        title="回到顶部"
+                        onClick={this.handleClickToTop}
+                        className={`back-to-top ${toTopVisible ? " visible" : ""}`}>
+                        <ToTopIcon size={32} />
+                    </a>
                 }
                 <a
                     href="#"

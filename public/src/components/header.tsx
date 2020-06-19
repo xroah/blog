@@ -59,7 +59,7 @@ export default function Header() {
                 {links}
                 <a 
                 href="https://github.com/xroah"
-                target="blank" 
+                target="_blank" 
                 className="ml-auto">
                     <GithubIcon color="#fff" />
                 </a>

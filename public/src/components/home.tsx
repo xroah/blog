@@ -2,6 +2,7 @@ import React from "react";
 import ArticleCard from "./article-card";
 import Spinner from "reap-ui/lib/Spinner";
 import throttle from "reap-ui/lib/utils/throttle";
+import getScrollTop from "../utils/getScrollTop";
 
 interface Props {
     page: number,
@@ -9,7 +10,11 @@ interface Props {
     totalPages: number;
     error: boolean;
     loading: boolean;
-    fetchArticles: (page: number, category?: string) => void;
+    fetchArticles: (
+        page: number,
+        category?: string,
+        onSuccess?: () => void
+    ) => void;
 }
 
 export default class HomePage extends React.Component<Props> {
@@ -27,7 +32,12 @@ export default class HomePage extends React.Component<Props> {
             list
         } = this.props;
 
-        !list.length && fetchArticles(page);
+        if (list.length) {
+            this.handleScroll();
+        } else {
+            fetchArticles(page, "", this.handleScroll);
+        }
+        
         window.addEventListener("scroll", this.handleScroll);
     }
 
@@ -46,9 +56,9 @@ export default class HomePage extends React.Component<Props> {
 
         if (error || page >= totalPages || loading) return;
 
-        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        const sTop = getScrollTop();
         const THRESHOLD = 100;
-        const bottom = document.body.scrollHeight - window.innerHeight - scrollTop;
+        const bottom = document.body.scrollHeight - window.innerHeight - sTop;
 
         if (bottom <= THRESHOLD) {
             fetchArticles(page + 1);
@@ -79,7 +89,7 @@ export default class HomePage extends React.Component<Props> {
             totalPages
         } = this.props;
         const hasMore = page < totalPages;
-        
+
         return (
             <div style={{ paddingBottom: 15 }}>
                 {

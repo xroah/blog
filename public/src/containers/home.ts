@@ -11,12 +11,16 @@ export default connect(
         loading: state.article.loading
     }),
     dispatch => ({
-        fetchArticles(page: number, category: string) {
+        fetchArticles(
+            page: number,
+            category: string,
+            onSuccess?: () => void) {
             dispatch({
                 type: WATCH_FETCH_ARTICLE,
                 payload: {
                     page,
-                    category
+                    category,
+                    onSuccess
                 }
             })
         }

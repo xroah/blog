@@ -14,8 +14,11 @@ import xhr from "../utils/xhr";
 import { ARTICLE_LIST } from "../components/api";
 
 function* fetchArticles(action: any) {
-    const { page } = action.payload;
-    
+    const {
+        page,
+        onSuccess
+    } = action.payload;
+
     yield put(updateLoading(true));
 
     try {
@@ -27,6 +30,10 @@ function* fetchArticles(action: any) {
         yield put(updateArticles(data));
         yield put(updateError(false));
         yield put((updatePage(page)));
+
+        if (typeof onSuccess === "function") {
+            onSuccess();
+        }
     } catch (error) {
         yield put(updateError(true));
     }

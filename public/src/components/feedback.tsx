@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, createRef } from "react";
 import XIcon from "./icons/x";
 import { createUseStyles } from "react-jss";
 import CSSTransition from "reap-ui/lib/Common/CSSTransition";
@@ -24,7 +24,7 @@ const useStyles = createUseStyles({
         maxWidth: "90%",
         zIndex: 999999,
         transition: "all .3s",
-        transform: "translateX(100%)",
+        transform: "translateX(120%)",
 
         "&.visible": {
             transform: "translateX(0)"
@@ -58,30 +58,26 @@ const useStyles = createUseStyles({
     }
 });
 
-async function saveFeedback(
+function saveFeedback(
     data: any,
     onSuccess: () => void,
     onFail: () => void
 ) {
-    if (!data.content) {
-        return message.error("请输入内容");
-    }
+    if (!data.content) return false;
 
-    try {
-        await xhr(FEEDBACK, {
-            method: "post",
-            data,
-            headers: {
-                "Content-Type": "application/json; charset=utf-8"
-            }
-        });
-    } catch (error) {
+    return xhr(FEEDBACK, {
+        method: "post",
+        data,
+        headers: {
+            "Content-Type": "application/json; charset=utf-8"
+        }
+    }).then(() => {
+        message.success("保存成功");
+        onSuccess();
+    }).catch(err => {
         onFail();
-        return message.error(error.data ? error.data.msg : error.statusText || error.message);
-    }
-
-    message.success("保存成功");
-    onSuccess();
+        return message.error(err.data ? err.data.msg : err.statusText || err.message);
+    });
 }
 
 export default function Feedback(props: Props) {
@@ -94,6 +90,7 @@ export default function Feedback(props: Props) {
     } = props;
     const [email, updateEmail] = useState("");
     const [content, updateContent] = useState("");
+    const ref = createRef<HTMLTextAreaElement>();
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
         const target = evt.target;
         const value = target.value;
@@ -105,8 +102,7 @@ export default function Feedback(props: Props) {
         }
     };
     const handleOk = () => {
-        updateLoading(true);
-        saveFeedback(
+        const ret = saveFeedback(
             {
                 email,
                 content
@@ -120,7 +116,13 @@ export default function Feedback(props: Props) {
             () => {
                 updateLoading(false);
             }
-        )
+        );
+
+        if (ret !== false) {
+            updateLoading(true);
+        } else {
+            ref.current?.focus();
+        }
     }
 
     return (
@@ -168,10 +170,14 @@ export default function Feedback(props: Props) {
                                             id="feedbackEmail" />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="feedbackContent">内容</label>
+                                        <label htmlFor="feedbackContent">
+                                            <span className="text-danger">*</span>
+                                            <span>内容</span>
+                                        </label>
                                         <textarea
                                             style={{ height: 100 }}
                                             className="form-control"
+                                            ref={ref}
                                             value={content}
                                             maxLength={500}
                                             onChange={handleChange}
