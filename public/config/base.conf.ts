@@ -23,7 +23,8 @@ export default function getConf(mode: "development" | "production") {
                     mode === "development" ? "../index.dev.html" : "../index.html"
                 ),
                 minify: false,
-                hash: true
+                hash: true,
+                favicon: path.resolve(__dirname, "../logo.png")
             })
         ],
         module: {
