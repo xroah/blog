@@ -38,7 +38,7 @@ class LayerComp extends HTMLElement {
     setVisible(visible, onShown, onHidden) {
         if (!this.initiated) {
             message.destroy();
-            
+
             return message.error("组件还为加载完成，请稍候");
         }
 
@@ -49,7 +49,7 @@ class LayerComp extends HTMLElement {
         this.visible = visible;
 
         if (visible) {
-            el.classList.remove("hide");
+            el.style.display = "flex";
 
             reflow(el);
             el.classList.add("show");
@@ -61,7 +61,7 @@ class LayerComp extends HTMLElement {
             if (visible) {
                 if (typeof onShown === "function") onShown();
             } else {
-                el.classList.add("hide");
+                el.style.display = "none";
 
                 if (typeof onHidden === "function") onHidden();
             }

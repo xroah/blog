@@ -1,4 +1,4 @@
-<div class="layer hide">
+<div class="layer">
     <button class="close-layer">&times;</button>
     <slot></slot>
 </div>
@@ -25,7 +25,6 @@
         font-weight: normal;
         background-color: #dc3545;
         transform: translate(50%, -50%);
-        transition: all .3s;
         cursor: pointer;
     }
 
@@ -38,7 +37,7 @@
     }
 
     .layer {
-        display: flex;
+        display: none;
         flex-direction: column;
         align-items: center;
         justify-content: center;
@@ -50,25 +49,12 @@
         background-color: rgba(0, 0, 0, .3);
         opacity: 0;
         transition: all .3s;
+        transform: scale(0) rotate(360deg);
         z-index: 99999;
-    }
-
-    .layer ::slotted(:first-child) {
-        opacity: 0;
-        transform: translateY(-50px);
-        transition: all .3s;
-    }
-
-    .layer.hide {
-        display: none;
     }
 
     .layer.show {
         opacity: 1;
-    }
-
-    .layer.show ::slotted(:first-child) {
-        transform: translateY(0);
-        opacity: 1;
+        transform: scale(1) rotate(0);
     }
 </style>

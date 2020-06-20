@@ -1,13 +1,13 @@
 export default function emulateTransitionEnd(el, fn, delay = 300) {
     let called = false;
-    let timer;
+    let timer = null;
 
     if (typeof fn !== "function") {
         fn = a => a;
     }
 
     const cancel = () => {
-        if (timer !== undefined) {
+        if (timer !== null) {
             clearTimeout(timer);
 
             timer = null;
@@ -19,13 +19,13 @@ export default function emulateTransitionEnd(el, fn, delay = 300) {
         if (called) return;
 
         called = true;
-
+        
         fn();
         cancel();
     }
 
     el.addEventListener("transitionend", callback);
-    timer = setTimeout(fn, delay + 50);
-
+    timer = setTimeout(callback, delay + 50);
+    
     return cancel;
 }
