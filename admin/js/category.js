@@ -6,18 +6,19 @@ import message from "./modules/message.js";
 import formatDate from "./modules/utils/formatDate.js";
 import "./modules/inline-loading.js";
 import loading from "./modules/loading.js";
+import upload from "./modules/utils/upload.js";
+import viewImage from "./modules/utils/viewImage.js";
+
+const DEFAULT_COVER = "./images/category_cover.png";
+const DEFAULT_LABEL = "选择封面";
 
 function showEditDialog(data = {}) {
-    const html = `
-            <div class="form-group">
-                <label for="categoryName">分类名称：</label>
-                <input type="text" maxlength="10" value="${data.name || ""}" class="form-control" id="categoryName">
-            </div>
-            <div class="form-group">
-                <label for="categoryDesc">描述：</label>
-                <textarea maxlength="50" class="form-control" id="categoryDesc">${data.desc || ""}</textarea>
-            </div>
-    `;
+    let html = document.getElementById("dialogTpl").innerHTML;
+
+    html = html.replace(/\${name}/, data.name || "")
+        .replace(/\${desc}/, data.desc || "")
+        .replace(/\${cover}/, data.cover || DEFAULT_COVER)
+        .replace(/\${coverUrl}/, data.cover || "");
 
     dialog.confirm(
         html,
@@ -27,6 +28,7 @@ function showEditDialog(data = {}) {
                 const nameEl = document.getElementById("categoryName");
                 const categoryName = nameEl.value.trim();
                 const categoryDesc = document.getElementById("categoryDesc").value;
+                const cover = document.getElementById("coverUrl").value;
 
                 if (!categoryName) {
                     nameEl.focus();
@@ -43,7 +45,8 @@ function showEditDialog(data = {}) {
                         body: JSON.stringify({
                             categoryId: data.id,
                             categoryName,
-                            categoryDesc
+                            categoryDesc,
+                            cover
                         })
                     });
                 } catch (error) {
@@ -64,7 +67,7 @@ async function fetchCategories() {
     const tbody = document.querySelector(".category-table tbody");
     let res;
 
-    tbody.innerHTML = `<tr><td colspan="5"><inline-loading></inline-loading></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6"><inline-loading></inline-loading></td></tr>`;
 
     try {
         res = await request(`${CATEGORY}?queryArticle=true`);
@@ -85,18 +88,7 @@ function noResult() {
 
 function renderList(res) {
     const tbody = document.querySelector(".category-table tbody");
-    const tpl = `
-        <tr>
-            <td class="name">{{name}}</td>
-            <td>{{createTime}}</td>
-            <td class="desc">{{desc}}</td>
-            <td>{{articleCount}}</td>
-            <td>
-                <a href="#" class="text-primary edit mr-2" data-id="{{_id}}">编辑</a>
-                <a href="#" class="text-danger delete" data-id={{_id}}>删除</a>
-            </td>
-        </tr>
-    `;
+    const tpl = document.getElementById("tableTpl").innerHTML;
     let html = "";
 
     if (!res || !res.length) {
@@ -108,9 +100,12 @@ function renderList(res) {
             const val = c[s2];
             if (s2 === "createTime") {
                 return formatDate(val, "YYYY-MM-DD HH:mm");
+            } else if (s2 === "coverUrl") {
+                return c.cover ?
+                    `<a href="${c.cover}" class="view-cover">查看</a>` : "";
             }
 
-            return val === undefined ? "" : val;
+            return val === undefined ? (s2 === "articleCount" ? 0 : "") : val;
         });
 
         html += tr;
@@ -132,14 +127,16 @@ function handleClick(evt) {
 function edit(evt) {
     const target = evt.target;
     const tr = target.parentNode.parentNode;
-    const name = tr.querySelector(".name").innerHTML.trim();
-    const desc = tr.querySelector(".desc").innerHTML.trim();
+    const name = tr.querySelector(".name").dataset.text;
+    const desc = tr.querySelector(".desc").dataset.text;
+    const cover = tr.querySelector(".cover").dataset.text;
     const id = target.dataset.id;
 
     showEditDialog({
         name,
         desc,
-        id
+        id,
+        cover
     });
 }
 
@@ -178,12 +175,87 @@ function del(evt) {
     });
 }
 
+function handleFileChange() {
+    const fileEl = document.getElementById("pickCover");
+    const file = fileEl.files[0];
+    const preview = document.getElementById("coverPreview");
+    const label = document.getElementById("pickLabel");
+
+    message.destroy();
+
+    if (file) {
+        if (file.size / (1024 * 1024) > 1) {
+            //delete selected file
+            fileEl.value = "";
+            label.innerHTML = DEFAULT_LABEL;
+
+            return message.error("文件最大1MB");
+        }
+
+        label.innerHTML = file.name;
+        const fr = new FileReader();
+
+        fr.onload = () => {
+            preview.src = fr.result;
+        };
+        fr.readAsDataURL(file);
+    } else {
+        preview.src = DEFAULT_COVER;
+        label.innerHTML = DEFAULT_LABEL;
+    }
+}
+
+async function handleUpload() {
+    const fileEl = document.getElementById("pickCover");
+    const file = fileEl.files[0];
+    const progressEl = document.getElementById("progress");
+    const bar = progressEl.firstElementChild;
+    let ret;
+
+    message.destroy();
+
+    if (!file) return message.error("请选择封面图片");
+
+    bar.style.width = "0%";
+
+    progressEl.classList.remove("d-none");
+    try {
+        ret = await upload(file, progress => {
+            bar.style.width = `${progress}%`;
+        });
+    } catch (error) {
+        return message.error(error);
+    } finally {
+        progressEl.classList.add("d-none");
+    }
+
+    fileEl.value = "";
+    document.getElementById("coverUrl").value = ret;
+    document.getElementById("pickLabel").innerHTML = DEFAULT_LABEL;
+    document.getElementById("uploadedCover").src = ret;
+}
+
 function initEvents() {
     const add = document.querySelector(".add-btn");
     const table = document.querySelector(".category-table");
 
     add.addEventListener("click", showEditDialog);
     table.addEventListener("click", handleClick);
+    document.body.addEventListener("click", evt => {
+        const target = evt.target;
+
+        if (target.id === "upload") {
+            handleUpload();
+        } else if (target.classList.contains("view-cover")) {
+            viewImage(target.href);
+            evt.preventDefault();
+        }
+    });
+    document.body.addEventListener("change", evt => {
+        if (evt.target.id === "pickCover") {
+            handleFileChange();
+        }
+    })
 }
 
 function init() {

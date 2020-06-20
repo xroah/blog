@@ -49,24 +49,24 @@
                     <a href="javascript: window.close();" class="btn btn-light">取消</a>
                 </div>
             </form>
-            </div>
-            <div class="upload-image-wrapper justify-content-center align-items-center">
-                <div class="preview-wrapper">
-                    <button class="close-preview btn btn-danger">&times;</button>
-                    <div class="preview">
-                        <input type="file" id="pickImage" accept="image/jpeg,image/png">
-                        <img id="imgViewer">
-                    </div>
-                    <div class="bg-white text-right p-2">
-                        <button class="btn btn-primary" id="upload">确定</button>
-                    </div>
-                    <div class="progress-wrapper">
-                        <div class="progress w-100">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated"></div>
+            <layer-comp>
+                <div class="upload-image-wrapper">
+                    <div class="preview-wrapper">
+                        <div class="preview">
+                            <input type="file" class="file-input" id="pickImage" accept="image/jpeg,image/png">
+                            <img id="imgViewer">
+                        </div>
+                        <div class="bg-white text-right p-2">
+                            <button class="btn btn-primary" id="upload">确定</button>
+                        </div>
+                        <div class="progress-wrapper">
+                            <div class="progress w-100">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </layer-comp>
         </main>
     </section>
     <script src="./vendors/js/quill.min.js"></script>

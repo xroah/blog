@@ -1,33 +1,21 @@
 import editor from "./modules/quill-editor.js";
-import emulateTransitionEnd from "./modules/utils/emulateTransitionEnd.js";
-import reflow from "./modules/utils/reflow.js";
 import message from "./modules/message.js";
-import { UPLOAD_IMAGE, ARTICLE, CATEGORY } from "./modules/api.js";
+import { ARTICLE, CATEGORY } from "./modules/api.js";
 import request from "./modules/request.js";
 import loading from "./modules/loading.js";
 import getSearchParams from "./modules/utils/getSearchParams.js";
 import "./modules/nav.js";
 import "./modules/404.js";
 import dialog from "./modules/dialog.js";
+import upload from "./modules/utils/upload.js";
+import "./modules/layer.js";
 
 let saved = true;
 
 function setLayerVisible(visible) {
-    const el = document.querySelector(".upload-image-wrapper");
-
-    if (visible) {
-        el.style.display = "flex";
-
-        reflow(el);
-        el.classList.add("show");
-    } else {
-        el.classList.remove("show");
-        emulateTransitionEnd(el, () => {
-            el.style.display = "none";
-
-            resetUpload();
-        });
-    }
+    const layer = document.querySelector("layer-comp");
+    
+    layer.setVisible(visible, null, resetUpload);
 }
 
 function resetUpload() {
@@ -35,7 +23,6 @@ function resetUpload() {
 
     document.getElementById("pickImage").value = "";
     wrapper.classList.remove("view");;
-
 }
 
 function handleFileChange(evt) {
@@ -49,6 +36,7 @@ function handleFileChange(evt) {
 
         if (size > 5) {
             message.destroy();
+            target.value = "";
 
             return message.error("图片最大5MB");
         }
@@ -91,54 +79,25 @@ function error(msg) {
     message.error(msg);
 }
 
-function upload() {
+async function uploadImage() {
     const fileEl = document.getElementById("pickImage");
     const file = fileEl.files[0];
-    const token = localStorage.getItem("token");
+    let ret;
 
     if (!file) {
         return error("请选择文件");
     }
 
-    const xhr = new XMLHttpRequest();
-    const fd = new FormData();
-
-    xhr.responseType = "json";
-    xhr.onreadystatechange = () => {
-        const res = xhr.response || {};
-
-        message.destroy();
-
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200 && res.code === 0) {
-                message.success("上传成功");
-                setLayerVisible(false);
-                insertImage(res.data.url);
-            } else {
-                error(res.msg || xhr.statusText || "上传失败");
-            }
-
-            hideProgress();
-        }
-    }
-    xhr.onerror = xhr.ontimeout = () => {
-        error("上传失败");
+    try {
+        ret = await upload(file, updateProgress);
+    } catch (e) {
+        return error(e || "上传失败");
+    } finally {
         hideProgress();
     }
-    xhr.upload.onprogress = evt => {
-        const total = evt.total;
-        const loaded = evt.loaded;
-        const progress = (loaded / total) * 100;
-        
-        updateProgress(progress);
-    }
 
-    fd.append("articleImage", file);
-
-    xhr.open("POST", UPLOAD_IMAGE, true);
-    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    xhr.setRequestHeader("Authorization", `token ${token}`);
-    xhr.send(fd);
+    setLayerVisible(false);
+    insertImage(ret);
 }
 
 function getImages() {
@@ -269,7 +228,7 @@ async function save() {
     }
 
     saved = true;
-    
+
     dialog.confirm("保存成功，是否要继续写文章？", {
         onOk() {
             window.location.href = "/edit-article.html";
@@ -286,7 +245,6 @@ async function save() {
 
 function initEvents() {
     const toolbar = editor.getModule("toolbar");
-    const closeBtn = document.querySelector(".upload-image-wrapper .close-preview");
     const fileInput = document.getElementById("pickImage");
     const uploadBtn = document.getElementById("upload");
     const saveBtn = document.getElementById("save");
@@ -296,9 +254,8 @@ function initEvents() {
     const category = document.getElementById("category");
 
     toolbar.addHandler("image", () => setLayerVisible(true));
-    closeBtn.addEventListener("click", () => setLayerVisible(false));
     fileInput.addEventListener("change", handleFileChange);
-    uploadBtn.addEventListener("click", upload);
+    uploadBtn.addEventListener("click", uploadImage);
     saveBtn.addEventListener("click", save);
     editor.on("text-change", autoSave);
     [
@@ -316,7 +273,7 @@ function initEvents() {
 }
 
 function initEdit(data) {
-    document.getElementById("category").value = data.categoryId;
+    document.getElementById("category").value = data.categoryId || "";
     editor.scrollingContainer.innerHTML = data.content;
     document.getElementById("title").value = data.title;
     document.getElementById("tag").value = (data.tag || []).join(";");
