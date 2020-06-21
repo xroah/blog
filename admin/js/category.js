@@ -82,7 +82,7 @@ function noResult() {
     const tbody = document.querySelector(".category-table tbody");
 
     tbody.innerHTML = `
-            <tr><td colspan="5" class="text-center text-muted h5">无记录</td></tr>
+            <tr><td colspan="6" class="text-center text-muted h5">无记录</td></tr>
         `;
 }
 

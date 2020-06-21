@@ -54,7 +54,11 @@ export default function Comment(props: Props) {
             handleInfo(userInfo.username, userInfo.homepage);
         }
     };
-    const handleInfo = (username: string, homepage: string) => {
+    const handleInfo = (
+        username: string,
+        homepage: string,
+        remember?: boolean
+    ) => {
         const data = {
             username,
             homepage,
@@ -66,10 +70,13 @@ export default function Comment(props: Props) {
 
         updateStatus(true);
         _publish(data);
-        localStorage.setItem(
-            LOCAL_USER_INFO_KEY,
-            JSON.stringify({ username, homepage })
-        );
+
+        if (remember) {
+            localStorage.setItem(
+                LOCAL_USER_INFO_KEY,
+                JSON.stringify({ username, homepage })
+            );
+        }
     };
     const _publish = (data: any) => {
         publish(
@@ -94,7 +101,7 @@ export default function Comment(props: Props) {
     return (
         <div className="mb-3">
             <textarea
-                style={{ height: 100}}
+                style={{ height: 100 }}
                 ref={ref}
                 onChange={handleChange}
                 disabled={loading}
