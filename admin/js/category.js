@@ -8,6 +8,7 @@ import "./modules/inline-loading.js";
 import loading from "./modules/loading.js";
 import upload from "./modules/utils/upload.js";
 import viewImage from "./modules/utils/viewImage.js";
+import renderList from "./modules/utils/renderList.js";
 
 const DEFAULT_COVER = "./images/category_cover.png";
 const DEFAULT_LABEL = "选择封面";
@@ -75,7 +76,7 @@ async function fetchCategories() {
         return;
     }
 
-    renderList(res);
+    render(res);
 }
 
 function noResult() {
@@ -86,32 +87,29 @@ function noResult() {
         `;
 }
 
-function renderList(res) {
+function render(res) {
     const tbody = document.querySelector(".category-table tbody");
     const tpl = document.getElementById("tableTpl").innerHTML;
-    let html = "";
 
-    if (!res || !res.length) {
+    if (!data || !data.length) {
         return noResult();
     }
 
-    res.forEach(c => {
-        const tr = tpl.replace(/({{(.*?)}})/g, (match, s1, s2) => {
-            const val = c[s2];
-            if (s2 === "createTime") {
+    renderList(
+        tbody,
+        tpl,
+        res,
+        (match, val, item) => {
+            if (match === "createTime") {
                 return formatDate(val, "YYYY-MM-DD HH:mm");
-            } else if (s2 === "coverUrl") {
-                return c.cover ?
-                    `<a href="${c.cover}" class="view-cover">查看</a>` : "";
+            } else if (match === "coverUrl") {
+                return item.cover ?
+                    `<a href="${item.cover}" class="view-cover">查看</a>` : "";
             }
 
-            return val === undefined ? (s2 === "articleCount" ? 0 : "") : val;
-        });
-
-        html += tr;
-    });
-
-    tbody.innerHTML = html;
+            return val === undefined ? (match === "articleCount" ? 0 : "") : val;
+        }
+    );
 }
 
 function handleClick(evt) {

@@ -6,3 +6,4 @@ export const UPLOAD_IMAGE = "/api/admin/upload";
 export const ARTICLE = "/api/admin/article";
 export const CATEGORY = "/api/admin/category";
 export const CHANGE_PASSWORD = "/api/admin/password"
+export const COMMENT = "/api/admin/comment";

@@ -4,15 +4,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>首页</title>
+    <title>评论管理</title>
     <link rel="stylesheet" href="./vendors/styles/bootstrap.min.css">
     <link rel="stylesheet" href="./styles/common.css">
+    <link rel="stylesheet" href="./styles/comment.css">
 </head>
 
 <body>
     <section class="container">
         <sys-nav></sys-nav>
+        <div class="main-content">
+            <div class="top-title">评论管理</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>原文章</th>
+                        <th>评论内容</th>
+                        <th>评论人</th>
+                        <th>评论时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <ul id="pagination" class="d-none pagination justify-content-center">
+                <li class="page-item prev">
+                    <a class="page-link" href="#">上一样</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link next" href="#">下一页</a>
+                </li>
+            </ul>
+        </div>
     </section>
+    <template id="listTpl">
+        <tr>
+            <td>
+                <a target="_blank" href="view-article.html?articleId={{articleId}}" class="text-primary">
+                    {{articleName}}
+                </a>
+            </td>
+            <td>{{content}}</td>
+            <td>{{username}} </td>
+            <td>{{createTime}}</td>
+            <td>
+                <a data-id="{{_id}}" href="#" class="text-danger delete">删除</a>
+            </td>
+        </tr>
+    </template>
     <script type="module" src="./js/comment.js"></script>
 </body>
 
