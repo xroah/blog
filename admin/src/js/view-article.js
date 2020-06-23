@@ -1,7 +1,7 @@
 import "./modules/nav.js";
 import request from "./modules/request.js";
-import { ARTICLE, FETCH_PREV_AND_NEXT } from "./modules/api.js";
-import getSearchParams from "./modules/utils/getSearchParams.js";
+import { ARTICLE } from "./modules/api.js";
+import getSearchParams from "./modules/utils/getUrlParams.js";
 import loading from "./modules/loading.js";
 import formatDate from "./modules/utils/formatDate.js";
 

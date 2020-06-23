@@ -15,7 +15,7 @@
         <sys-nav></sys-nav>
         <div class="main-content">
             <div class="top-title">评论管理</div>
-            <table class="table table-striped">
+            <table class="comment-table table table-striped">
                 <thead>
                     <tr>
                         <th>原文章</th>
@@ -31,10 +31,10 @@
             </table>
             <ul id="pagination" class="d-none pagination justify-content-center">
                 <li class="page-item prev">
-                    <a class="page-link" href="#">上一样</a>
+                    <a class="page-link to-prev" href="javascript: void 0;">上一页</a>
                 </li>
-                <li class="page-item">
-                    <a class="page-link next" href="#">下一页</a>
+                <li class="page-item next">
+                    <a class="page-link to-next" href="javascript: void 0;">下一页</a>
                 </li>
             </ul>
         </div>
@@ -46,11 +46,11 @@
                     {{articleName}}
                 </a>
             </td>
-            <td>{{content}}</td>
+            <td class="content">{{content}}</td>
             <td>{{username}} </td>
             <td>{{createTime}}</td>
             <td>
-                <a data-id="{{_id}}" href="#" class="text-danger delete">删除</a>
+                <a data-id="{{_id}}" href="javascript: void 0;" class="text-danger delete">删除</a>
             </td>
         </tr>
     </template>

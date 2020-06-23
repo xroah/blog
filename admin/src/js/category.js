@@ -91,7 +91,7 @@ function render(res) {
     const tbody = document.querySelector(".category-table tbody");
     const tpl = document.getElementById("tableTpl").innerHTML;
 
-    if (!data || !data.length) {
+    if (!res || !res.length) {
         return noResult();
     }
 

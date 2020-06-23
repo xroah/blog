@@ -4,6 +4,7 @@ import { ARTICLE } from "./modules/api.js";
 import { PAGE_CHANGE } from "./modules/pagination.js";
 import "./modules/inline-loading.js";
 import { DELETE_ARTICLE } from "./modules/article-card.js";
+import getUrlParams from "./modules/utils/getUrlParams.js";
 
 async function fetchArticleList(param) {
     const query = [];
@@ -71,27 +72,8 @@ function handlePageChange(evt) {
     updateHash({ page });
 }
 
-function getHashParams() {
-    const hash = location.hash.substring(1).split("&");
-    let params = {};
-
-    for (let p of hash) {
-        const tmp = p.split("=");
-
-        if (!tmp[0]) continue;
-
-        if (tmp[0] === "page") {
-            params.page = +tmp[1];
-        } else {
-            params[tmp[0]] = tmp[1];
-        }
-    }
-
-    return params;
-}
-
 function handleHashChange() {
-    fetchArticleList(getHashParams());
+    fetchArticleList(getUrlParams(null, true));
 }
 
 function handleDelete() {
@@ -99,7 +81,7 @@ function handleDelete() {
 
     //no any article on this page
     if (!card) {
-        let page = getHashParams().page || 1;
+        let page = getUrlParams("page", true) || 1;
 
         if (page > 1) {
             page--;
@@ -112,7 +94,7 @@ function handleDelete() {
 }
 
 function updateHash(obj) {
-    const params = getHashParams();
+    const params = getUrlParams();
     const pathname = location.pathname;
     const pagination = document.querySelector("bs-pagination");
     let hash = [];
@@ -159,7 +141,7 @@ function init() {
     const pagination = document.querySelector("bs-pagination");
     const secretEl = document.getElementById("secret");
     const draftEl = document.getElementById("draft");
-    const params = getHashParams();
+    const params = getUrlParams(null, true);
 
     pagination.current = params.page || 1;
     
