@@ -9,9 +9,9 @@ import dialog from "./modules/dialog.js";
 import message from "./modules/message.js";
 import loading from "./modules/loading.js";
 
-let dir; //previous or next page
-let before;
-let after;
+let dir = ""; //previous or next page
+let before = "";
+let after = "";
 
 async function fetchComments() {
     const tbody = document.querySelector(".comment-table tbody");
