@@ -6,7 +6,7 @@ import {
     ADMIN_LOGIN,
     FETCH_BG
  } from "./modules/api.js";
- import md5 from "../vendors/js/md5.js";
+ import md5 from "./modules/md5.js";
 
 const form = document.forms["loginForm"];
 const elements = form.elements;

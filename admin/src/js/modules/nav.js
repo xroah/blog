@@ -2,7 +2,7 @@ import defineEl from "./utils/defineEl.js";
 import request from "./request.js";
 import { ADMIN_LOGOUT, CHANGE_PASSWORD } from "./api.js";
 import message from "./message.js";
-import md5 from "../../vendors/js/md5.js";
+import md5 from "./md5.js";
 import dialog from "./dialog.js";
 
 class SysNav extends HTMLElement {

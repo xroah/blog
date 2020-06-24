@@ -1,9 +1,10 @@
+import "../vendors/js/quill.min.js";
 import editor from "./modules/quill-editor.js";
 import message from "./modules/message.js";
 import { ARTICLE, CATEGORY } from "./modules/api.js";
 import request from "./modules/request.js";
 import loading from "./modules/loading.js";
-import getSearchParams from "./modules/utils/getSearchParams.js";
+import getSearchParams from "./modules/utils/getUrlParams.js";
 import "./modules/nav.js";
 import "./modules/404.js";
 import dialog from "./modules/dialog.js";
