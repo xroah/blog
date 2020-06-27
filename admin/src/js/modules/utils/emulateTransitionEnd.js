@@ -15,17 +15,17 @@ export default function emulateTransitionEnd(el, fn, delay = 300) {
 
         el.removeEventListener("transitionend", callback);
     };
-    const callback = () => {
-        if (called) return;
+    const callback = evt => {
+        if (called || (evt && evt.target !== el)) return;
 
         called = true;
-        
+
         fn();
         cancel();
     }
 
     el.addEventListener("transitionend", callback);
     timer = setTimeout(callback, delay + 50);
-    
+
     return cancel;
 }
