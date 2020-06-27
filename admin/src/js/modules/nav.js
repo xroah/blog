@@ -4,6 +4,7 @@ import { ADMIN_LOGOUT, CHANGE_PASSWORD } from "./api.js";
 import message from "./message.js";
 import md5 from "./md5.js";
 import dialog from "./dialog.js";
+import "./nav-link.js";
 
 class SysNav extends HTMLElement {
 
@@ -18,24 +19,6 @@ class SysNav extends HTMLElement {
         let shadowRoot = this.attachShadow({ mode: "open" });
 
         shadowRoot.innerHTML = html;
-
-        const links = shadowRoot.querySelectorAll(".item-list a");
-        const pathname = location.pathname;
-
-        for (let a of links) {
-            if (
-                (
-                    a.classList.contains("home") &&
-                    (
-                        pathname === "/" ||
-                        pathname === "/index.html"
-                    )
-                ) ||
-                a.pathname === pathname
-            ) {
-                a.classList.add("active")
-            }
-        }
 
         this.initEvents();
     }

@@ -1,4 +1,3 @@
-import "./modules/nav.js";
 import dialog from "./modules/dialog.js";
 import request from "./modules/request.js";
 import { CATEGORY } from "./modules/api.js";
@@ -9,6 +8,7 @@ import loading from "./modules/loading.js";
 import upload from "./modules/utils/upload.js";
 import viewImage from "./modules/utils/viewImage.js";
 import renderList from "./modules/utils/renderList.js";
+import defineEl from "./modules/utils/defineEl.js";
 
 const DEFAULT_COVER = "./images/category_cover.png";
 const DEFAULT_LABEL = "选择封面";
@@ -233,32 +233,48 @@ async function handleUpload() {
     document.getElementById("uploadedCover").src = ret;
 }
 
+function handleClickLink(evt) {
+    const target = evt.target;
+
+    if (target.id === "upload") {
+        handleUpload();
+    } else if (target.classList.contains("view-cover")) {
+        viewImage(target.href);
+        evt.preventDefault();
+    }
+}
+
+function handleChange(evt) {
+    if (evt.target.id === "pickCover") {
+        handleFileChange();
+    }
+}
+
 function initEvents() {
     const add = document.querySelector(".add-btn");
     const table = document.querySelector(".category-table");
+    const body = document.body;
 
     add.addEventListener("click", showEditDialog);
     table.addEventListener("click", handleClick);
-    document.body.addEventListener("click", evt => {
-        const target = evt.target;
-
-        if (target.id === "upload") {
-            handleUpload();
-        } else if (target.classList.contains("view-cover")) {
-            viewImage(target.href);
-            evt.preventDefault();
-        }
-    });
-    document.body.addEventListener("change", evt => {
-        if (evt.target.id === "pickCover") {
-            handleFileChange();
-        }
-    })
+    body.addEventListener("click", handleClickLink);
+    body.addEventListener("change", handleChange);
 }
 
-function init() {
-    initEvents();
-    fetchCategories();
+export default class CategoryPage extends HTMLElement {
+    connectedCallback() {
+        document.title = "分类管理";
+
+        initEvents();
+        fetchCategories();
+    }
+
+    disconnectedCallback() {
+        const body = document.body;
+
+        body.removeEventListener("click", handleClickLink);
+        body.removeEventListener("change", handleChange);
+    }
 }
 
-init();
+defineEl("category-page", CategoryPage);

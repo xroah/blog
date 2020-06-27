@@ -7,33 +7,14 @@
     <title>首页</title>
     <link rel="stylesheet" href="./vendors/styles/bootstrap.min.css">
     <link rel="stylesheet" href="./styles/common.css">
-    <link rel="stylesheet" href="./styles/index.css">
 </head>
 
 <body>
     <section class="container">
         <sys-nav></sys-nav>
         <main class="main-content">
-            <div class="top-title">文章列表</div>
-            <form class="form-inline mt-3">
-                <label for="secret">可见性：</label>
-                <select name="secret" class="form-control" id="secret">
-                    <option value="">全部</option>
-                    <option value="false">公开</option>
-                    <option value="true">仅自己可见</option>
-                </select>
-                <label class="ml-3" for="draft">状态：</label>
-                <select name="draft" class="form-control" id="draft">
-                    <option value="">全部</option>
-                    <option value="false">已发布</option>
-                    <option value="true">草稿</option>
-                </select>
-            </form>
-            <div class="article-list">
-            </div>
-            <bs-pagination style="display: none;"></bs-pagination>
+            <router-view></router-view>
         </main>
-        <a href="/edit-article.html" target="_blank" class="btn btn-primary add-btn">+</a>
     </section>
     <script type="module" src="./js/index.js"></script>
 </body>

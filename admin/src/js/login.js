@@ -122,7 +122,7 @@ async function login (){
     }
 
     localStorage.setItem("token", res.token);
-    location.assign("index.html");
+    location.assign("/");
 }
 
 fetchBg();

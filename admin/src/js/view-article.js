@@ -1,9 +1,10 @@
-import "./modules/nav.js";
 import request from "./modules/request.js";
 import { ARTICLE } from "./modules/api.js";
 import getSearchParams from "./modules/utils/getUrlParams.js";
 import loading from "./modules/loading.js";
 import formatDate from "./modules/utils/formatDate.js";
+import defineEl from "./modules/utils/defineEl.js";
+import hljs from "../vendors/js/highlight.pack.js";
 
 async function fetchArticle() {
     const articleId = getSearchParams("articleId");
@@ -38,16 +39,18 @@ function renderArticle(res) {
     document.title = `查看--${res.title}`;
 }
 
-async function init() {
-    try {
-        await fetchArticle();
-    } catch (error) {
+export default class ViewArticle extends HTMLElement {
+    async connectedCallback() {
+        try {
+            await fetchArticle();
+        } catch (error) {
 
+        }
+
+        document.querySelectorAll("pre").forEach((block) => {
+            hljs.highlightBlock(block);
+        });
     }
-
-    document.querySelectorAll("pre").forEach((block) => {
-        hljs.highlightBlock(block);
-    });
 }
 
-init();
+defineEl("view-article", ViewArticle);

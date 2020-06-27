@@ -30,6 +30,7 @@ exports.serve = () => {
         server: "./src",
         port: 8828,
         open: true,
+        single: true,
         middleware: [
             createProxyMiddleware("/api", {
                 target: "http://localhost:8000/"

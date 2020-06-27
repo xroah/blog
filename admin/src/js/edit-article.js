@@ -1,21 +1,21 @@
 import "../vendors/js/quill.min.js";
-import editor from "./modules/quill-editor.js";
 import message from "./modules/message.js";
 import { ARTICLE, CATEGORY } from "./modules/api.js";
 import request from "./modules/request.js";
 import loading from "./modules/loading.js";
-import getSearchParams from "./modules/utils/getUrlParams.js";
-import "./modules/nav.js";
 import "./modules/404.js";
 import dialog from "./modules/dialog.js";
 import upload from "./modules/utils/upload.js";
 import "./modules/layer.js";
+import defineEl from "./modules/utils/defineEl.js";
+import createEditor from "./modules/quill-editor.js";
 
 let saved = true;
+let editor = null;
 
 function setLayerVisible(visible) {
     const layer = document.querySelector("layer-comp");
-    
+
     layer.setVisible(visible, null, resetUpload);
 }
 
@@ -279,6 +279,7 @@ function initEdit(data) {
     document.getElementById("title").value = data.title;
     document.getElementById("tag").value = (data.tag || []).join(";");
     document.getElementById("secret").checked = !!data.secret;
+    document.title = `编辑--${data.title}`
 }
 
 function set404() {
@@ -333,10 +334,18 @@ async function fetchArticle(id) {
     ret && initEdit(ret);
 }
 
-async function init() {
-    const articleId = getSearchParams("articleId") || "";
-    await fetchArticle(document.getElementById("articleId").value = articleId);
-    initEvents();
+export default class EditArticle extends HTMLElement {
+    async connectedCallback() {
+        const articleId = window.__router__.query.articleId || "";
+        editor = createEditor();
+
+        await fetchArticle(document.getElementById("articleId").value = articleId);
+        initEvents();
+    }
+
+    disconnectedCallback() {
+
+    }
 }
 
-init();
+defineEl("edit-article", EditArticle);

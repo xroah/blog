@@ -1,13 +1,12 @@
-import "./modules/nav.js";
 import request from "./modules/request.js";
 import { COMMENT } from "./modules/api.js";
 import renderList from "./modules/utils/renderList.js";
 import formatDate from "./modules/utils/formatDate.js";
 import "./modules/inline-loading.js";
-import getUrlParams from "./modules/utils/getUrlParams.js";
 import dialog from "./modules/dialog.js";
 import message from "./modules/message.js";
 import loading from "./modules/loading.js";
+import defineEl from "./modules/utils/defineEl.js";
 
 let dir = ""; //previous or next page
 let before = "";
@@ -136,44 +135,50 @@ async function del(target) {
     );
 }
 
-async function handleHashChange() {
-    ({ before, after } = getUrlParams(null, true));
+async function onUpdate() {
+    ({ before, after } = window.__router__);
 
     dir = before ? "before" : after ? "after" : "";
     await fetchComments();
 }
 
-function initEvents() {
-    document.addEventListener("click", evt => {
-        const target = evt.target;
-        const classes = target.classList;
-        const parent = target.parentNode;
-        let hash = "";
+function handleClick(evt) {
+    const target = evt.target;
+    const classes = target.classList;
+    const parent = target.parentNode;
+    let query = "";
 
-        if (
-            classes.contains("disabled") ||
-            (parent && parent.classList.contains("disabled"))
-        ) return;
+    if (
+        classes.contains("disabled") ||
+        (parent && parent.classList.contains("disabled"))
+    ) return;
 
-        if (classes.contains("to-prev")) {
-            hash = `before=${before}`;
-        } else if (classes.contains("to-next")) {
-            hash = `after=${after}`;
-        } else if (classes.contains("delete")) {
-            del(target);
-        }
+    if (classes.contains("to-prev")) {
+        query = `before=${before}`;
+    } else if (classes.contains("to-next")) {
+        query = `after=${after}`;
+    } else if (classes.contains("delete")) {
+        del(target);
+    }
 
-        if (hash) {
-            location.href = `${location.origin}${location.pathname}#${hash}`;
-        }
-    });
-    window.addEventListener("hashchange", handleHashChange);
+    if (query) {
+        window.__router__.push(`${location.pathname}?${hash}`);
+    }
 }
 
-async function init() {
-    await handleHashChange();
-    initEvents();
-    document.getElementById("pagination").classList.remove("d-none");
+export default class CommentPage extends HTMLElement {
+    async connectedCallback() {
+        document.title = "评论管理";
+
+        await onUpdate();
+
+        document.body.addEventListener("click", handleClick);
+        document.getElementById("pagination").classList.remove("d-none");
+    }
+
+    disconnectedCallback() {
+        document.body.removeEventListener("click", handleClick);
+    }
 }
 
-init();
+defineEl("comment-page", CommentPage);

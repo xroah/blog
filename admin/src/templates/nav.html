@@ -9,13 +9,13 @@
     </div>
     <ul class="item-list">
         <li>
-            <a href="/" class="home">首页</a>
+            <nav-link to="/" class="nav-link home">首页</nav-link>
         </li>
         <li>
-            <a href="/category.html" class="category">分类管理</a>
+            <nav-link to="/category" class="nav-link category">分类管理</nav-link>
         </li>
         <li>
-            <a href="/comment.html" class="comment">评论管理</a>
+            <nav-link to="/comment" class="nav-link comment">评论管理</nav-link>
         </li>
     </ul>
 
@@ -42,8 +42,8 @@
         padding: 0;
     }
 
-    a {
-        text-decoration: none;
+    nav-link {
+        cursor: pointer;
     }
 
     .sys-nav {
@@ -79,6 +79,12 @@
 
     .operation a {
         color: var(--color);
+        text-decoration: none;
+        transition: all .3s;
+    }
+
+    .operation a:hover {
+        color: var(--info);
     }
 
     .operation a:first-child::after {
@@ -96,7 +102,7 @@
         display: flex;
     }
 
-    .item-list a {
+    .item-list .nav-link {
         flex: 1;
         padding: 10px 15px 10px 45px;
         color: var(--color);
@@ -116,12 +122,12 @@
         background-image: url("../images/comment.svg");
     }
 
-    .item-list a:hover {
+    .item-list .nav-link:hover {
         background-color: rgba(255, 255, 255, .1);
     }
 
-    .item-list a:active,
-    .item-list a.active {
+    .item-list .nav-link:active,
+    .item-list .nav-link.active {
         background-color: #1899ff;
     }
 </style>

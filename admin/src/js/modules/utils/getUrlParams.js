@@ -1,5 +1,5 @@
-export default function getUrlParams(key, hash = false) {
-    const search = ( hash ? location.hash : location.search).substring(1).split("&");
+export default function getUrlParams(key, qs = location.search.substring(1)) {
+    const search = qs.split("&");
     const ret = {};
 
     for (let s of search) {
