@@ -53,7 +53,7 @@ function CommentUser(props: UserProps) {
         return `//${url}`;
     };
     const url = handleUrl(homepage);
-    const cls = isAuthor ? " text-danger rounded" : url ? " text-info" : "";
+    const cls = isAuthor ? " text-danger" : url ? " text-info" : "";
     
     return (
         <a
@@ -81,22 +81,22 @@ export default function CommentItem(props: ItemProps) {
         updateVisible(true);
         evt.preventDefault();
     };
-    const getEl = (homepage: string, username: string) => (
+    const getEl = (comment: any) => (
         <CommentUser
-            homepage={homepage}
+            homepage={comment.homepage}
             isAuthor={comment.isAuthor}
-            username={username} />
+            username={comment.username} />
     )
     
     const renderUser = () => {
-        let el = getEl(comment.homepage, comment.username);
+        let el = getEl(comment);
 
         if (isChild) {
             el = (
                 <>
                     {el}
                     <span className="ml-2 mr-2 text-secondary align-middle">回复</span>
-                    {getEl(replyTo.homepage, replyTo.username)}
+                    {getEl(replyTo)}
                 </>
             );
         }
