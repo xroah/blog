@@ -63,8 +63,8 @@ function* publishComment(action: any) {
             }
         });
 
-        yield put(insertComment(ret));
         onSuccess();
+        yield put(insertComment(ret));
     } catch (error) {
         onFail(error);
     }

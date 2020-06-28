@@ -39,7 +39,7 @@ export default (
             } else { //sub comment
                 for (let l of _state.list) {
                     if (c.root === l._id) {
-                        if (l.children) {
+                        if (!l.children) {
                             l.children = [];
                         }
 
