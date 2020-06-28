@@ -11,3 +11,25 @@
 .article-container .title {
     font-size: 18px;
 }
+
+.text-red {
+    color: var(--red);
+}
+
+.comment-list {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.comment-item a {
+    text-decoration: none;
+}
+
+.comment-item {
+    border-bottom: 1px solid #ccc;
+}
+
+.sub-comment-list {
+    padding-left: 20px;
+}

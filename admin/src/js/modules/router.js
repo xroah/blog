@@ -59,22 +59,6 @@ export default class Router {
         this.to(url);
     }
 
-    updateQuery(url) {
-        let query = url.split("?")[1];
-        const queryObj = {};
-        this.query = queryObj;
-
-        if (query) {
-            query = query.split("&");
-
-            for (let q of query) {
-                let tmp = q.split("=");
-
-                queryObj[tmp[0]] = tmp[1];
-            }
-        }
-    }
-
     to(url) {
         url = cleanPath(url);
 

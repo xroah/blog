@@ -7,6 +7,7 @@ import dialog from "./modules/dialog.js";
 import message from "./modules/message.js";
 import loading from "./modules/loading.js";
 import defineEl from "./modules/utils/defineEl.js";
+import handleUrl from "./modules/utils/handleUrl.js";
 
 let dir = ""; //previous or next page
 let before = "";
@@ -32,16 +33,6 @@ async function fetchComments() {
     }
 
     render(ret);
-}
-
-function handleUrl(url) {
-    if (!url) return;
-
-    if (url.startsWith("http")) {
-        return url;
-    }
-
-    return `//${url}`;
 }
 
 function render(res) {

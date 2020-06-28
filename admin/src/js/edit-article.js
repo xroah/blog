@@ -10,7 +10,6 @@ import "./modules/layer.js";
 import defineEl from "./modules/utils/defineEl.js";
 import createEditor from "./modules/quill-editor.js";
 
-let saved = true;
 let editor = null;
 
 function setLayerVisible(visible) {
@@ -134,7 +133,6 @@ function cancelAutoSave() {
 }
 
 function autoSave() {
-    saved = false;
     cancelAutoSave();
 
     const _save = async () => {
@@ -228,8 +226,6 @@ async function save() {
         loading.hide();
     }
 
-    saved = true;
-
     dialog.confirm("保存成功，是否要继续写文章？", {
         onOk() {
             window.location.href = "/edit-article.html";
@@ -265,12 +261,6 @@ function initEvents() {
         secret,
         category
     ].forEach(el => el.addEventListener("change", autoSave));
-    window.addEventListener("beforeunload", e => {
-        if (!saved) {
-            e.preventDefault();
-            e.returnValue = "";
-        }
-    });
 }
 
 function initEdit(data) {
