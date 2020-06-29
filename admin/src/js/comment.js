@@ -117,7 +117,7 @@ async function del(target) {
                     });
 
                     message.success("删除成功!");
-                    setTimeout(() => location.href = "/comment.html", 1000);
+                    setTimeout(() => location.href = "/comment", 1000);
                 } catch (error) {
                     loading.hide();
                 }

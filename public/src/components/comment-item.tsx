@@ -68,9 +68,8 @@ function CommentUser(props: UserProps) {
             className={
                 `align-middle text-truncate home-link${cls}`
             }
-            target="_blank">
-            {isAuthor ? "博主" : username}
-        </a>
+            target="_blank"
+            dangerouslySetInnerHTML={{__html: isAuthor ? "博主" : username}}/>
     );
 }
 
@@ -113,13 +112,12 @@ export default function CommentItem(props: ItemProps) {
                 <div className="mt-2">
                     {
                         replyTo && (
-                            <div className="orig-comment">
-                                {getEl(replyTo)}：
-                                {replyTo.content}
-                            </div>
+                            <div 
+                            className="orig-comment" 
+                            dangerouslySetInnerHTML={{__html: `${getEl(replyTo)}：${replyTo.content}`}}/>
                         )
                     }
-                    {comment.content}
+                    <div dangerouslySetInnerHTML={{__html: comment.content}}/>
                 </div>
                 <div className="my-2">
                     <a href="#" onClick={handleReply}>回复</a>
