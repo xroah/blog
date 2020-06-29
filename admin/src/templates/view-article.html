@@ -14,7 +14,10 @@
     <div class="comment-item">
         <div class="reply-info mt-2 ">{{replyInfo}}</div>
         <div class="text-muted">{{createTime}}</div>
-        <div class="comment-content my-2">{{content}}</div>
+        <div class="comment-content my-2">
+            {{orig}}
+            <div>{{content}}</div>
+        </div>
         <div class="comment-links mb-1">
             <a href="#" data-id="{{_id}}" class="reply-link text-primary mr-2">回复</a>
             <a href="#" data-id="{{_id}}" class="delete-link text-danger">删除</a>

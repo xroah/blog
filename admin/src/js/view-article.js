@@ -66,19 +66,28 @@ async function fetchComments() {
     renderComments(ret);
 }
 
+
 function renderComments(ret) {
     const tpl = document.getElementById("commentItemTpl").innerHTML;
     const replyMap = new Map();
     const handler = (match, val, item) => {
         switch (match) {
             case "replyInfo":
-                return handleReply(item, replyMap);
+                return handleUser(item);
             case "createTime":
                 return formatDate(item.createTime, "YYYY-MM-DD HH:mm");
             case "root":
                 return item.root || item._id;
             case "sub":
                 return item.children ? renderToString(tpl, item.children, handler) : "";
+            case "orig":
+                const replyTo = replyMap.get(item.replyTo);
+
+                if (replyTo) {
+                    return `<div class="orig-comment">${handleUser(replyTo)}： ${replyTo.content}</div>`;
+                }
+
+                return "";
             default:
                 return val;
         }
@@ -104,25 +113,15 @@ function renderComments(ret) {
     document.getElementById("commentList").innerHTML = string;
 }
 
-function handleUser(username, homepage, isAuthor) {
+function handleUser(comment) {
+    const homepage = comment.homepage;
+    const username = comment.username;
+
     if (homepage) {
         return `<a class="text-info" target="_blank" href="${handleUrl(homepage)}">${username}</a>`;
     }
 
-    return isAuthor ? `<a style="color: var(--orange)">我</a>` : `<a>${username}</a>`;
-}
-
-function handleReply(comment, replayMap) {
-    let html = handleUser(comment.username, comment.homepage, comment.isAuthor);;
-    let replyTo = replayMap.get(comment.replyTo);
-
-    if (comment.root) {
-        let user = handleUser(replyTo.username, replyTo.homepage, replyTo.isAuthor);
-
-        html += `<span class="mx-2 text-secondary">回复</span>${user}`;
-    }
-
-    return html;
+    return comment.isAuthor ? `<a style="color: var(--orange)">我</a>` : `<a>${username}</a>`;
 }
 
 function handleClick(evt) {

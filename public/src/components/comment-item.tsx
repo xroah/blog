@@ -7,7 +7,6 @@ import { format } from "fecha";
 interface ItemProps {
     comment: any;
     articleId: string;
-    isChild?: boolean;
     replyTo: any;
 }
 
@@ -33,6 +32,14 @@ const useStyles = createUseStyles({
 
         "& a": {
             textDecoration: "none"
+        },
+
+        "& .orig-comment": {
+            padding: 10,
+            marginBottom: 10,
+            borderLeft: "3px solid #999",
+            color: "#999",
+            backgroundColor: "#f2f2f2"
         }
     }
 });
@@ -45,16 +52,16 @@ function CommentUser(props: UserProps) {
     } = props;
     const handleUrl = (url?: string) => {
         if (!url) return;
-        
+
         if (url.startsWith("http") || url.startsWith("//")) {
             return url;
         }
-        
+
         return `//${url}`;
     };
     const url = handleUrl(homepage);
     const cls = isAuthor ? " text-danger" : url ? " text-info" : "";
-    
+
     return (
         <a
             href={handleUrl(homepage)}
@@ -71,7 +78,6 @@ export default function CommentItem(props: ItemProps) {
     const {
         comment,
         articleId,
-        isChild = false,
         replyTo
     } = props;
     const classes = useStyles();
@@ -86,23 +92,7 @@ export default function CommentItem(props: ItemProps) {
             homepage={comment.homepage}
             isAuthor={comment.isAuthor}
             username={comment.username} />
-    )
-    
-    const renderUser = () => {
-        let el = getEl(comment);
-
-        if (isChild) {
-            el = (
-                <>
-                    {el}
-                    <span className="ml-2 mr-2 text-secondary align-middle">回复</span>
-                    {getEl(replyTo)}
-                </>
-            );
-        }
-
-        return <div>{el}</div>;
-    };
+    );
     let dateStr = "";
 
     try {
@@ -115,15 +105,25 @@ export default function CommentItem(props: ItemProps) {
         <>
             <div className={classes["comment-item"]}>
                 <div>
-                    {renderUser()}
+                    {getEl(comment)}
                     <div className="text-muted publish-time">
                         {dateStr}
                     </div>
                 </div>
-                <p className="mt-2">{comment.content}</p>
-                <p className="mt-2">
+                <div className="mt-2">
+                    {
+                        replyTo && (
+                            <div className="orig-comment">
+                                {getEl(replyTo)}：
+                                {replyTo.content}
+                            </div>
+                        )
+                    }
+                    {comment.content}
+                </div>
+                <div className="my-2">
                     <a href="#" onClick={handleReply}>回复</a>
-                </p>
+                </div>
                 <Collapse isOpen={visible}>
                     <Comment
                         articleId={articleId}

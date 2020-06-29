@@ -58,8 +58,7 @@ class CommentList extends React.Component<Props & { classes: any }> {
                     <CommentItem
                         comment={l}
                         replyTo={map.get(l.replyTo)}
-                        articleId={articleId}
-                        isChild={isChild} />
+                        articleId={articleId} />
                     {
                         !!c.length && (
                             <div className={classes["sub-comment-wrapper"]}>
