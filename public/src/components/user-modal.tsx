@@ -14,6 +14,8 @@ interface Props {
     onHidden?: Cancel;
 }
 
+const TEMPORARY_SAVED = "temporary_info";
+
 export default function UserModal(props: Props) {
     const {
         visible,
@@ -21,9 +23,10 @@ export default function UserModal(props: Props) {
         onCancel = noop,
         onHidden = noop
     } = props;
+    const saved: any = JSON.parse(sessionStorage.getItem(TEMPORARY_SAVED) as any) || {};
     const usernameRef = createRef<HTMLInputElement>();
-    const [username, updateUsername] = useState("");
-    const [homepage, updateHomepage] = useState("");
+    const [username, updateUsername] = useState(saved.username || "");
+    const [homepage, updateHomepage] = useState(saved.homepage || "");
     const [remember, updateRemember] = useState(false);
     const handleOk = () => {
         if (!username.trim()) {
@@ -31,7 +34,7 @@ export default function UserModal(props: Props) {
         }
 
         onOk(username, homepage, remember);
-    }
+    };
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
         const target = evt.target;
         const id = target.id;
@@ -49,10 +52,16 @@ export default function UserModal(props: Props) {
                 break;
         }
     };
+    const handleKeyDown = (evt: React.KeyboardEvent<HTMLInputElement>) => {
+        const key = evt.key.toLowerCase();
+
+        if (key === "enter") handleOk();
+    };
 
     return (
         <Modal
             visible={visible}
+            backdrop="static"
             onOk={handleOk}
             onCancel={onCancel}
             onHidden={onHidden}
@@ -68,6 +77,7 @@ export default function UserModal(props: Props) {
                     className="form-control"
                     value={username}
                     ref={usernameRef}
+                    onKeyDown={handleKeyDown}
                     onChange={handleChange} />
             </div>
             <div className="form-group">
@@ -77,6 +87,7 @@ export default function UserModal(props: Props) {
                     id="homepage"
                     className="form-control"
                     value={homepage}
+                    onKeyDown={handleKeyDown}
                     onChange={handleChange} />
             </div>
             <div className="form-group">
@@ -104,6 +115,14 @@ export function renderDialog(
     ) => {
         onOk(username, homepage, remember);
         hideDialog();
+
+        sessionStorage.setItem(
+            TEMPORARY_SAVED,
+            JSON.stringify({
+                username,
+                homepage
+            })
+        );
     };
     const handleCancel = () => {
         onCancel();
