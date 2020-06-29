@@ -3,8 +3,8 @@ import ToTopIcon from "./icons/arrow-up-circle";
 import MessageIcon from "./icons/message-circle";
 import { createUseStyles } from "react-jss";
 import { throttle } from "reap-ui/lib/utils";
-import getScrollTop from "../utils/getScrollTop";
-import backToTop from "../utils/backToTop";
+import getScrollTop from "../utils/get-scroll-top";
+import backToTop from "../utils/back-to-top";
 
 interface Props {
     toTopVisible: boolean;

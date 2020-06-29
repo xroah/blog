@@ -2,7 +2,7 @@ import React from "react";
 import ArticleCard from "./article-card";
 import Spinner from "reap-ui/lib/Spinner";
 import throttle from "reap-ui/lib/utils/throttle";
-import getScrollTop from "../utils/getScrollTop";
+import getScrollTop from "../utils/get-scroll-top";
 
 interface Props {
     page: number,
