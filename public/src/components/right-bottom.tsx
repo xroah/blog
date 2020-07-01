@@ -36,6 +36,7 @@ const useStyle = createUseStyles({
 });
 
 class RightBottom extends React.Component<Props & { classes: any }> {
+    private cancel: Function | null = null;
 
     constructor(props: any) {
         super(props);
@@ -45,10 +46,14 @@ class RightBottom extends React.Component<Props & { classes: any }> {
 
     componentDidMount() {
         window.addEventListener("scroll", this.handleScroll);
+        window.addEventListener("wheel", this.cancelScroll);
+        window.addEventListener("keydown", this.handleKeyDown);
     }
 
     componentWillUnmount() {
         window.removeEventListener("scroll", this.handleScroll);
+        window.removeEventListener("wheel", this.cancelScroll);
+        window.removeEventListener("keydown", this.handleKeyDown);
     }
 
     handleClickFeedback = (evt: React.MouseEvent) => {
@@ -57,9 +62,27 @@ class RightBottom extends React.Component<Props & { classes: any }> {
     };
 
     handleClickToTop = (evt: React.MouseEvent) => {
-        backToTop();
+        this.cancel = backToTop(() => this.cancel = null);
+
         evt.preventDefault();
     };
+
+    handleKeyDown = (evt: KeyboardEvent) => {
+        if (!this.cancel) return;
+
+        const key = evt.key.toLowerCase();
+        const keySet = new Set(["arrowup", "arrowdown"]);
+
+        if (keySet.has(key)) {
+            this.cancelScroll();
+        }
+    }
+
+    cancelScroll = () => {
+        if (this.cancel) {
+            this.cancel();
+        }
+    }
 
     handleScroll() {
         const sTop = getScrollTop();
