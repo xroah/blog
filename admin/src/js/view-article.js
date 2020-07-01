@@ -66,7 +66,6 @@ async function fetchComments() {
     renderComments(ret);
 }
 
-
 function renderComments(ret) {
     const tpl = document.getElementById("commentItemTpl").innerHTML;
     const replyMap = new Map();
@@ -78,8 +77,6 @@ function renderComments(ret) {
                 return formatDate(item.createTime, "YYYY-MM-DD HH:mm");
             case "root":
                 return item.root || item._id;
-            case "sub":
-                return item.children ? renderToString(tpl, item.children, handler) : "";
             case "orig":
                 const replyTo = replyMap.get(item.replyTo);
 

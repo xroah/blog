@@ -15,9 +15,6 @@ const useStyles = createUseStyles({
     "comment-wrapper": {
         borderTop: "1px solid #eee",
         marginTop: 20
-    },
-    "sub-comment-wrapper": {
-        paddingLeft: 20
     }
 });
 
@@ -31,44 +28,22 @@ class CommentList extends React.Component<Props & { classes: any }> {
         fetchComments(articleId);
     }
 
-    renderList(list: any, isChild = false, parent: any = null) {
-        const {
-            articleId,
-            classes
-        } = this.props;
+    renderList(list: any) {
+        const { articleId } = this.props;
         const map = new Map();
-
-        if (parent) {
-            map.set(parent._id, parent);
-        }
 
         list.forEach((l: any) => {
             map.set(l._id, l);
         });
 
-        return list.map((l: any) => {
-            const c = l.children || [];
-
-            if (isChild && !map.has(l.replyTo)) {
-                return null;
-            }
-
-            return (
-                <div key={l._id}>
-                    <CommentItem
-                        comment={l}
-                        replyTo={map.get(l.replyTo)}
-                        articleId={articleId} />
-                    {
-                        !!c.length && (
-                            <div className={classes["sub-comment-wrapper"]}>
-                                {this.renderList(c as any, true, l)}
-                            </div>
-                        )
-                    }
-                </div>
-            );
-        });
+        return list.map((l: any) => (
+            <div key={l._id}>
+                <CommentItem
+                    comment={l}
+                    replyTo={map.get(l.replyTo)}
+                    articleId={articleId} />
+            </div>
+        ));
     }
 
     render() {
@@ -80,7 +55,10 @@ class CommentList extends React.Component<Props & { classes: any }> {
 
         return (
             <div className={classes["comment-wrapper"]}>
-                <h4 className="mt-3">全部评论</h4>
+                <div className="mt-3 d-flex align-items-center">
+                    <strong>全部评论</strong> 
+                    <span className="ml-2">{list.length}</span>
+                </div>
                 {this.renderList(list)}
                 {
                     loading && (
