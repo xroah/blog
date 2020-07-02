@@ -5,6 +5,7 @@ import { createUseStyles } from "react-jss";
 import HomeIcon from "./icons/home";
 import GridIcon from "./icons/grid";
 import GithubIcon from "./icons/github";
+import InfoIcon from "./icons/info";
 
 const useStyles = createUseStyles({
     "vertical-text-bottom": {
@@ -29,11 +30,15 @@ export default function Header() {
     const links = [{
         to: "/",
         name: "首页",
-        icon: <HomeIcon/>
-    }, {
+        icon: <HomeIcon />
+    }, /* {
         to: "/category",
         name: "分类",
-        icon: <GridIcon/>
+        icon: <GridIcon />
+    } */{
+        to: "about",
+        name: "关于",
+        icon: <InfoIcon/>
     }].map(l => (
         <NavLink
             key={l.to}
@@ -57,12 +62,12 @@ export default function Header() {
         <header className="bg-primary mb-3">
             <Container className="d-flex align-items-center">
                 {links}
-                <a 
-                href="https://github.com/xroah"
-                target="_blank" 
-                className="ml-auto">
+                {/* <a
+                    href="https://github.com/xroah"
+                    target="_blank"
+                    className="ml-auto">
                     <GithubIcon color="#fff" />
-                </a>
+                </a> */}
             </Container>
         </header>
     );
