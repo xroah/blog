@@ -17,7 +17,7 @@ export default () => {
         <>
             <div>
                 <h3 className={classes["info-title"]}>关于</h3>
-                <div>我叫饶万斌，一个前端程序员。</div>
+                <div>本人前端程序员一名。</div>
                 <div>建立本站主要用于记录学习，分享技术。</div>
             </div>
             <div className="mt-3">

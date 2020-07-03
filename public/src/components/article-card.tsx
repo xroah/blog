@@ -10,11 +10,15 @@ import Tag from "./icons/tag";
 const useStyle = createUseStyles({
     "article-card": {
         transition: "all .3s",
-        marginTop: 15,
+        marginTop: 20,
 
         "&:hover": {
             transform: "translateY(-5px)",
             boxShadow: "1px 1px 5px 0 rgba(0, 0, 0, .3)"
+        },
+
+        "& .card-footer": {
+            border: "none"
         }
     },
     "article-tag": {

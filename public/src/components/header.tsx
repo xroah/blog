@@ -36,7 +36,7 @@ export default function Header() {
         name: "分类",
         icon: <GridIcon />
     } */{
-        to: "about",
+        to: "/about",
         name: "关于",
         icon: <InfoIcon/>
     }].map(l => (

@@ -58,6 +58,8 @@ export default class ViewArticle extends React.Component<Props> {
             updateArticle(null);
             fetchArticle(id);
             fetchPrevNext(id);
+        } else if(!id) {
+            updateArticle(-1);
         }
 
         if (article && article !== prevProps.article) {

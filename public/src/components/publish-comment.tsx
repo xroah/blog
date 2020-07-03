@@ -101,6 +101,7 @@ export default function Comment(props: Props) {
     return (
         <div className="mb-3">
             <textarea
+                maxLength={150}
                 style={{ height: 100 }}
                 ref={ref}
                 onChange={handleChange}
