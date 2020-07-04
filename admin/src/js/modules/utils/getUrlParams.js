@@ -3,10 +3,11 @@ export default function getUrlParams(key, qs = location.search.substring(1)) {
     const ret = {};
 
     for (let s of search) {
+        if  (!s) continue;
+
         const arr = s.split("=");
 
         ret[arr[0]] = arr[1];
     }
-
     return key == undefined ? ret : ret[key];
 }
