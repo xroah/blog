@@ -81,7 +81,12 @@ function renderComments(ret) {
                 const replyTo = replyMap.get(item.replyTo);
 
                 if (replyTo) {
-                    return `<div class="orig-comment">${handleUser(replyTo)}： ${replyTo.content}</div>`;
+                    return `
+                        <div class="orig-comment">
+                            ${handleUser(replyTo)}：
+                            ${replyTo.content}
+                        </div>
+                    `;
                 }
 
                 return "";
@@ -128,11 +133,12 @@ function handleClick(evt) {
         target.parentNode.nextElementSibling.show();
         evt.preventDefault();
     } else if (target.classList.contains("delete-link")) {
-        const content = target.parentNode.previousElementSibling.innerHTML;
+        const prev = target.parentNode.previousElementSibling;
+        const content = prev.querySelector(".content").innerHTML;
 
         dialog.confirm(
             `
-            确定要删除 <span class="text-danger">${content}</span> 吗？
+            确定要删除 <span class="text-danger d-inline-block">${content}</span> 吗？
             这将删除该评论以及回复的所有评论。
             `,
             {
@@ -149,14 +155,14 @@ async function del(id) {
     loading.show();
 
     try {
-       await request(COMMENT, {
-           method: "delete",
-           body: JSON.stringify({
-               commentId: id
-           })
-       });
+        await request(COMMENT, {
+            method: "delete",
+            body: JSON.stringify({
+                commentId: id
+            })
+        });
 
-       message.success("删除成功");
+        message.success("删除成功");
     } catch (error) {
         return;
     } finally {
@@ -166,19 +172,8 @@ async function del(id) {
     for (let i = comments.length - 1; i >= 0; i--) {
         let c = comments[i];
 
-        if (c._id === id) {
+        if (c._id === id || c.replyTo === id) {
             comments.splice(i, 1);
-            break;
-        } else {
-            const children = c.children || [];
-
-            for (let i = children.length - 1; i >= 0; i--) {
-                let c = children[i];
-
-                if (c._id === id || c.replyTo === id) {
-                    children.splice(i, 1);
-                }
-            }
         }
     }
 

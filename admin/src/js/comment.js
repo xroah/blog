@@ -153,7 +153,7 @@ function handleClick(evt) {
     }
 
     if (query) {
-        window.__router__.push(`${location.pathname}?${hash}`);
+        window.__router__.push(`${location.pathname}?${query}`);
     }
 }
 
