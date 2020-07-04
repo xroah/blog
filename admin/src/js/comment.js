@@ -126,13 +126,6 @@ async function del(target) {
     );
 }
 
-async function onUpdate() {
-    ({ before, after } = window.__router__);
-
-    dir = before ? "before" : after ? "after" : "";
-    await fetchComments();
-}
-
 function handleClick(evt) {
     const target = evt.target;
     const classes = target.classList;
@@ -158,10 +151,18 @@ function handleClick(evt) {
 }
 
 export default class CommentPage extends HTMLElement {
+    async onUpdate() {
+        ({ before, after } = window.__router__.query);
+
+        dir = before ? "before" : after ? "after" : "";
+
+        await fetchComments();
+    }
+
     async connectedCallback() {
         document.title = "评论管理";
 
-        await onUpdate();
+        await this.onUpdate();
 
         document.body.addEventListener("click", handleClick);
         document.getElementById("pagination").classList.remove("d-none");
