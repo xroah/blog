@@ -40,10 +40,10 @@ function renderArticle(res) {
     con.innerHTML = res.content;
     title.innerHTML = res.title;
     sub.innerHTML = `
-    发布于：${formatDate(res.createTime, "YYYY-MM-DD HH:mm")}
-    &nbsp;&nbsp;分类： ${res.categoryName}
-    &nbsp;&nbsp;阅读${res.totalViewed}次
-    &nbsp;&nbsp;今日阅读${res.todayViewed}次
+        发布于：${formatDate(res.createTime, "YYYY-MM-DD HH:mm")}
+        &nbsp;&nbsp;分类： ${res.categoryName}
+        &nbsp;&nbsp;阅读${res.totalViewed}次
+        &nbsp;&nbsp;今日阅读${res.todayViewed}次
     `;
     document.title = `查看--${res.title}`;
 }

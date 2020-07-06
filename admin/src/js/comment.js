@@ -8,92 +8,8 @@ import message from "./modules/message.js";
 import loading from "./modules/loading.js";
 import defineEl from "./modules/utils/defineEl.js";
 import handleUrl from "./modules/utils/handleUrl.js";
-
-let dir = ""; //previous or next page
-let before = "";
-let after = "";
-
-async function fetchComments() {
-    const tbody = document.querySelector(".comment-table tbody");
-    let query = "";
-    let ret;
-
-    if (dir === "before") {
-        query = `before=${before}`;
-    } else if (dir === "after") {
-        query = `after=${after}`;
-    }
-
-    tbody.innerHTML = `<tr><td colspan="5"><inline-loading></inline-loading></td></tr>`;
-
-    try {
-        ret = await request(`${COMMENT}?${query}`);
-    } catch (error) {
-        return;
-    }
-
-    render(ret);
-}
-
-function render(res) {
-    const tbody = document.querySelector(".comment-table tbody");
-    const tpl = document.getElementById("listTpl").innerHTML;
-    const prevEl = document.querySelector(".prev");
-    const nextEl = document.querySelector(".next");
-    const {
-        hasMore,
-        list = []
-    } = res;
-    const len = list.length;
-
-    nextEl.classList.remove("disabled");
-    prevEl.classList.remove("disabled");
-
-    if (!hasMore) {
-        //page just loaded
-        if (!dir) {
-            prevEl.classList.add("disabled");
-            nextEl.classList.add("disabled");
-        } else {
-
-            if (dir === "before") {
-                prevEl.classList.add("disabled");
-            } else if (dir === "after") {
-                nextEl.classList.add("disabled");
-            }
-        }
-    } else if (!dir) {
-        prevEl.classList.add("disabled");
-    }
-
-    if (!len) {
-        return tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted h5">无记录</td></tr>';
-    }
-
-    before = list[0]._id;
-    after = list[len - 1]._id;
-
-    renderList(
-        tbody,
-        tpl,
-        list,
-        (match, val, item) => {
-            if (match === "createTime") {
-                return formatDate(val, "YYYY-MM-DD HH:mm");
-            }
-
-            if (match === "username") {
-                let h = item.homepage;
-                val = item.isAuthor ? '<span class="text-orange">我</span>' : val;;
-
-                return h && !item.isAuthor ? `<a target="_blank" href="${handleUrl(h)}">${val}</a>` : val;
-
-            }
-
-            return val || "";
-        }
-    );
-}
+import { noResult, rowLoading } from "./modules/utils/row.js";
+import { createPagination, DATA_UPDATE } from "./modules/another-pagination.js";
 
 async function del(target) {
     const tr = target.parentNode.parentNode;
@@ -129,38 +45,63 @@ async function del(target) {
 function handleClick(evt) {
     const target = evt.target;
     const classes = target.classList;
-    const parent = target.parentNode;
-    let query = "";
-
-    if (
-        classes.contains("disabled") ||
-        (parent && parent.classList.contains("disabled"))
-    ) return;
-
-    if (classes.contains("to-prev")) {
-        query = `before=${before}`;
-    } else if (classes.contains("to-next")) {
-        query = `after=${after}`;
-    } else if (classes.contains("delete")) {
+    
+    if (classes.contains("delete")) {
         del(target);
-    }
-
-    if (query) {
-        window.__router__.push(`${location.pathname}?${query}`);
     }
 }
 
+function render(evt) {
+    const data = evt.detail || [];
+    const tbody = document.querySelector(".comment-table tbody");
+    const tpl = document.getElementById("listTpl").innerHTML;
+    const len = data.length;
+
+    if (!len) {
+        return noResult(tbody, 5);
+    }
+
+    renderList(
+        tbody,
+        tpl,
+        data,
+        (match, val, item) => {
+            if (match === "createTime") {
+                return formatDate(val, "YYYY-MM-DD HH:mm");
+            }
+
+            if (match === "username") {
+                let h = item.homepage;
+                val = item.isAuthor ? '<span class="text-orange">我</span>' : val;;
+
+                return h && !item.isAuthor ? `<a target="_blank" href="${handleUrl(h)}">${val}</a>` : val;
+
+            }
+
+            return val || "";
+        }
+    );
+}
+
+const pagination = createPagination({
+    url: COMMENT,
+    handleLoading() {
+        const tbody = document.querySelector(".comment-table tbody");
+        
+        rowLoading(tbody, 5);
+    }
+});
+
 export default class CommentPage extends HTMLElement {
     async onUpdate() {
-        ({ before, after } = window.__router__.query);
-
-        dir = before ? "before" : after ? "after" : "";
-
-        await fetchComments();
+        await pagination.fetchData();
     }
 
     async connectedCallback() {
         document.title = "评论管理";
+
+        this.appendChild(pagination);
+        pagination.addEventListener(DATA_UPDATE, render);
 
         await this.onUpdate();
 
@@ -170,6 +111,9 @@ export default class CommentPage extends HTMLElement {
 
     disconnectedCallback() {
         document.body.removeEventListener("click", handleClick);
+        pagination.removeEventListener(DATA_UPDATE, render);
+
+        pagination = null;
     }
 }
 
