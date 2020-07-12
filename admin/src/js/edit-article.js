@@ -320,6 +320,8 @@ async function fetchArticle(id) {
         loading.hide();
     }
 
+    editor = createEditor();
+
     initCategory(category);
     ret && initEdit(ret);
 }
@@ -327,7 +329,6 @@ async function fetchArticle(id) {
 export default class EditArticle extends HTMLElement {
     async connectedCallback() {
         const articleId = window.__router__.query.articleId || "";
-        editor = createEditor();
 
         await fetchArticle(document.getElementById("articleId").value = articleId);
         initEvents();

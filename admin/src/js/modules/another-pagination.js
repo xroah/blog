@@ -60,7 +60,7 @@ class AnotherPagination extends HTMLElement {
         }
 
         try {
-            ret = await request(`${this.url}?pageSize=2&${query}`);
+            ret = await request(`${this.url}?pageSize=20&${query}`);
         } catch (error) {
             this.style.display = "none";
             return;
