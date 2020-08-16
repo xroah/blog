@@ -11,10 +11,10 @@
   "author": "xroah",
   "license": "MIT",
   "devDependencies": {
-    "browser-sync": "^2.26.7",
+    "browser-sync": "^2.26.12",
     "gulp": "^4.0.2",
     "gulp-clean-css": "^4.3.0",
     "gulp-uglify-es": "^2.0.0",
-    "http-proxy-middleware": "^1.0.4"
+    "http-proxy-middleware": "^1.0.5"
   }
 }
