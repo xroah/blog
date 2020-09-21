@@ -4,7 +4,7 @@ import { hot } from "react-hot-loader/root";
 import Header from "./header";
 import Routes from "./routes";
 import RightBottom from "../containers/right-bottom";
-import Feedback from "../containers/feedback";
+// import Feedback from "../containers/feedback";
 
 export default hot(
     () => (
@@ -14,7 +14,7 @@ export default hot(
                 <Routes />
             </Container>
             <RightBottom />
-            <Feedback />
+            {/* <Feedback /> */}
         </>
     )
 )
