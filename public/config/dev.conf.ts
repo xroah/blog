@@ -1,12 +1,12 @@
 import getConf from "./base.conf";
 import webpack from "webpack";
+import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin";
 
 const baseConf = getConf("development");
 const conf: webpack.Configuration = {
     ...baseConf,
     devtool: "source-map",
     entry: [
-        "react-hot-loader/patch",
         "webpack-hot-middleware/client",
         baseConf.entry as string
     ]
@@ -20,6 +20,9 @@ conf.module!.rules.push({
         "sass-loader"
     ]
 });
-conf.plugins!.push(new webpack.HotModuleReplacementPlugin())
+conf.plugins!.push(
+    new webpack.HotModuleReplacementPlugin(),
+    new ReactRefreshWebpackPlugin()
+)
 
 export default conf;

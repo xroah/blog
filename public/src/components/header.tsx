@@ -54,7 +54,7 @@ export default function Header() {
                     }
                 )
             }
-            <span>{l.name}</span>
+        <span>{l.name}</span>
         </NavLink>
     ));
 
