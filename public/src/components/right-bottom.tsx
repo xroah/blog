@@ -1,6 +1,6 @@
 import React from "react";
 import ToTopIcon from "./icons/arrow-up-circle";
-import MessageIcon from "./icons/message-circle";
+// import MessageIcon from "./icons/message-circle";
 import { createUseStyles } from "react-jss";
 import { throttle } from "reap-ui/lib/utils";
 import getScrollTop from "../utils/get-scroll-top";
@@ -107,12 +107,12 @@ class RightBottom extends React.Component<Props & { classes: any }> {
                         <ToTopIcon size={32} />
                     </a>
                 }
-                <a
+                {/* <a
                     href="#"
                     title="给博主留言"
                     onClick={this.handleClickFeedback}>
                     <MessageIcon size={32} />
-                </a>
+                </a> */}
             </div>
         );
     }
