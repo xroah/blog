@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import reducers from "./reducers";
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "./sagas";
+import {loadableReady} from "@loadable/component";
 
 //server side state
 const initialStateScript = document.getElementById("reduxInitialState") as HTMLScriptElement;
@@ -52,8 +53,5 @@ if (process.env.NODE_ENV === "development") {
         serverRenderedStyle.parentNode?.removeChild(serverRenderedStyle);
     }
 
-    hydrate(
-        _App,
-        root
-    );
+    loadableReady(() => hydrate(_App, root));
 }

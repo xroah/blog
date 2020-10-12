@@ -4,12 +4,12 @@ import {
     Route,
     Redirect
 } from "react-router-dom";
-import Home from "../containers/home";
-import Category from "./category";
+// import Category from "./category";
 import About from "./about";
 import Page404 from "./404";
 import loadable from "@loadable/component";
 
+const Home = loadable(() => import("../containers/home"));
 const ViewArticle = loadable(() => import("../containers/view-articles"));
 
 export default () => {

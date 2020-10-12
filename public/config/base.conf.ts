@@ -3,6 +3,7 @@ import HTMLWebpackPlugin from "html-webpack-plugin";
 import path from "path";
 
 export default function getConf(mode: "development" | "production") {
+    process.env.NODE_ENV = mode;
     const conf: webpack.Configuration = {
         mode,
         entry: path.resolve(__dirname, "../src/index.tsx"),

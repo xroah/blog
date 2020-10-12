@@ -9,8 +9,6 @@ import createProxy from "./proxy";
 const app = express();
 const compiler = webpack(conf);
 
-process.env.NODE_ENV = "development";
-
 createProxy(app);
 app.use(history());
 app.use(devMiddleware(compiler));

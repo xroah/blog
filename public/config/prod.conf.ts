@@ -4,6 +4,7 @@ import OptimizeCSS from "optimize-css-assets-webpack-plugin";
 import TerserPlugin from "terser-webpack-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import { Configuration } from "webpack";
+import LoadablePlugin from "@loadable/webpack-plugin";
 
 const baseConf = getConf("production");
 const conf: Configuration = {
@@ -49,7 +50,8 @@ conf.module!.rules.push({
 
 conf.plugins!.push(
     new MiniCSSExtractPlugin(),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    new LoadablePlugin()
 );
 
 export default conf;
