@@ -1,9 +1,9 @@
 import React from "react";
 import NoArticle from "./no-article";
-import { RouteComponentProps } from "react-router-dom";
+import {RouteComponentProps} from "react-router-dom";
 import Spinner from "reap-ui/lib/Spinner";
 import xhr from "../utils/xhr";
-import { UPDATE_VIEWED_COUNTS } from "./api";
+import {UPDATE_VIEWED_COUNTS} from "./api";
 import ArticleContainer from "./article-container";
 import "quill/dist/quill.snow.css";
 import "highlight.js/scss/atom-one-dark.scss";
@@ -58,7 +58,7 @@ export default class ViewArticle extends React.Component<Props> {
             updateArticle(null);
             fetchArticle(id);
             fetchPrevNext(id);
-        } else if(!id) {
+        } else if (!id) {
             updateArticle(-1);
         }
 
@@ -92,7 +92,7 @@ export default class ViewArticle extends React.Component<Props> {
     getId() {
         const {
             match: {
-                params: { id }
+                params: {id}
             }
         } = this.props as any;
 
@@ -126,40 +126,32 @@ export default class ViewArticle extends React.Component<Props> {
         this.to(evt, "next");
     }
 
-    renderArticle() {
+    render() {
         const {
             article,
             next,
             prev
         } = this.props;
+        const articleId = this.getId()
 
-        if (!article || article === -1) return null;
-
-        return (
-            <>
-                <ArticleContainer
-                    prev={prev}
-                    next={next}
-                    toPrev={this.toPrev}
-                    toNext={this.toNext}
-                    article={article} />
-            </>
-        );
-    }
-
-    render() {
-        const { article } = this.props;
-
-        return (
-            <>
+        //loading
+        if (!article && articleId) {
+            return (
                 <div className="d-flex justify-content-center">
-                    {!article && this.getId() && <Spinner variant="primary" animation="grow" />}
+                    <Spinner variant="primary" animation="grow" />
                 </div>
-                {
-                    (article === -1 || !this.getId()) && (<NoArticle />)
-                }
-                {this.renderArticle()}
-            </>
+            )
+        } else if (!article || article === -1) {
+            return <NoArticle />
+        }
+
+        return (
+            <ArticleContainer
+                prev={prev}
+                next={next}
+                toPrev={this.toPrev}
+                toNext={this.toNext}
+                article={article} />
         );
     }
 }
