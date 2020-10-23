@@ -5,8 +5,16 @@ import {
     UPDATE_ERROR
 } from "../actions";
 
+export interface ArticleState {
+    list: any[]
+    page: number
+    error: boolean
+    loading: boolean
+    totalPages: number
+}
+
 export default (
-    state = {
+    state: ArticleState = {
         list: [],
         page: 1,
         error: false,
