@@ -10,7 +10,10 @@ import Tag from "./icons/tag";
 const useStyle = createUseStyles({
     "article-card": {
         transition: "all .3s",
-        marginTop: 20,
+        
+        "& + .card": {
+            marginTop: 20
+        },
 
         "&:hover": {
             transform: "translateY(-5px)",

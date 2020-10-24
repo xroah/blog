@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "reap-ui/lib/Layout/Container";
-import { NavLink } from "react-router-dom";
-import { createUseStyles } from "react-jss";
+import {NavLink} from "react-router-dom";
+import {createUseStyles} from "react-jss";
 import HomeIcon from "./icons/home";
 import GridIcon from "./icons/grid";
 import GithubIcon from "./icons/github";
@@ -38,7 +38,7 @@ export default function Header() {
     } */{
         to: "/about",
         name: "关于",
-        icon: <InfoIcon/>
+        icon: <InfoIcon />
     }].map(l => (
         <NavLink
             key={l.to}
@@ -54,13 +54,15 @@ export default function Header() {
                     }
                 )
             }
-        <span>{l.name}</span>
+            <span>{l.name}</span>
         </NavLink>
     ));
 
     return (
         <header className="bg-primary mb-3">
-            <Container className="d-flex align-items-center">
+            <Container
+                style={{flexDirection: "row"}}
+                className="d-flex align-items-center">
                 {links}
                 {/* <a
                     href="https://github.com/xroah"

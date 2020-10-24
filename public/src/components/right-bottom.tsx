@@ -65,6 +65,7 @@ class RightBottom extends React.Component<Props & { classes: any }> {
         this.cancel = backToTop(() => this.cancel = null);
 
         evt.preventDefault();
+        evt.stopPropagation();
     };
 
     handleKeyDown = (evt: KeyboardEvent) => {

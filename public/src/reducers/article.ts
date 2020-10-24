@@ -2,7 +2,9 @@ import {
     UPDATE_ARTICLE,
     UPDATE_PAGE,
     UPDATE_LOADING,
-    UPDATE_ERROR
+    UPDATE_ERROR,
+    EMPTY_ARTICLE,
+    UPDATE_PULL_REFRESH_STATE
 } from "../actions";
 
 export interface ArticleState {
@@ -11,6 +13,7 @@ export interface ArticleState {
     error: boolean
     loading: boolean
     totalPages: number
+    pullRefreshState?: string
 }
 
 export default (
@@ -30,6 +33,12 @@ export default (
                 list: state.list.concat(action.data.list),
                 totalPages: Math.ceil(action.data.total / 10)
             };
+        case EMPTY_ARTICLE:
+            return {
+                ...state,
+                list: [],
+                totalPages: 1
+            }
         case UPDATE_PAGE:
             return {
                 ...state,
@@ -44,6 +53,11 @@ export default (
             return {
                 ...state,
                 loading: action.loading
+            }
+        case UPDATE_PULL_REFRESH_STATE:
+            return {
+                ...state,
+                pullRefreshState: action.state
             }
         default:
             return state;

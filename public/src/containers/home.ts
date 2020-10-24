@@ -1,5 +1,9 @@
-import { connect } from "react-redux";
-import { WATCH_FETCH_ARTICLE } from "../actions";
+import {connect} from "react-redux";
+import {
+    emptyArticle,
+    updatePullRefreshState,
+    WATCH_FETCH_ARTICLE
+} from "../actions";
 import HomePage from "../components/home";
 
 export default connect(
@@ -8,21 +12,31 @@ export default connect(
         error: state.article.error,
         list: state.article.list,
         totalPages: state.article.totalPages,
-        loading: state.article.loading
+        loading: state.article.loading,
+        pullRefreshState: state.article.pullRefreshState
     }),
     dispatch => ({
         fetchArticles(
             page: number,
             category: string,
-            onSuccess?: () => void) {
+            onSuccess?: () => void,
+            onError?: () => void
+        ) {
             dispatch({
                 type: WATCH_FETCH_ARTICLE,
                 payload: {
                     page,
                     category,
-                    onSuccess
+                    onSuccess,
+                    onError
                 }
             })
+        },
+        emptyArticle() {
+            dispatch(emptyArticle())
+        },
+        updatePullFreshState(state: string) {
+            dispatch(updatePullRefreshState(state))
         }
     })
 )(HomePage as any);

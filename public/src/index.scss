@@ -16,6 +16,7 @@
 
 html,
 body {
+    height: 100%;
     background-color: #f9f9f9;
     font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
 }
@@ -141,6 +142,20 @@ body {
 .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="36px"]::before,
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="36px"]::before {
     content: "36px";
+}
+
+#root {
+    @mixin flex-column {
+        display: flex;
+        flex-direction: column;
+    }
+    @include flex-column();
+    height: 100%;
+
+    .container {
+        @include flex-column();
+        flex: 1;
+    }
 }
 
 .message-wrapper {

@@ -12,11 +12,13 @@ import {
 } from "../actions";
 import xhr from "../utils/xhr";
 import { ARTICLE_LIST } from "../components/api";
+import noop from "../utils/noop";
 
 function* fetchArticles(action: any) {
     const {
         page,
-        onSuccess
+        onSuccess = noop,
+        onError = noop
     } = action.payload;
 
     yield put(updateLoading(true));
@@ -27,14 +29,13 @@ function* fetchArticles(action: any) {
                 page
             }
         });
+
+        onSuccess()
+        yield put((updatePage(page)));
         yield put(updateArticles(data));
         yield put(updateError(false));
-        yield put((updatePage(page)));
-
-        if (typeof onSuccess === "function") {
-            onSuccess();
-        }
     } catch (error) {
+        onError()
         yield put(updateError(true));
     }
 
