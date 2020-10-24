@@ -1,14 +1,33 @@
-import express from "express";
-import path from "path";
-import createProxy from "./proxy";
+import express, {
+    Request,
+    Response,
+    NextFunction
+} from "express"
+import path from "path"
+import createProxy from "./proxy"
 import render from "./render"
 
-const app = express();
-const context = path.resolve(__dirname, "../dist");
+const app = express()
+const context = path.resolve(__dirname, "../dist")
 
-createProxy(app);
-app.use(express.static(context, {index: false}));
+declare global {
+    namespace Express {
+        interface Request {
+            requestParams: any
+        }
+    }
+}
 
-app.use(render);
+function route(req: Request, _: Response, next: NextFunction) {
+    req.requestParams = req.params
 
-app.listen(8888);
+    next()
+}
+
+createProxy(app)
+app.use(express.static(context, {index: false}))
+app.get("/", route)
+app.get("/view/:articleId", route)
+app.use(render)
+
+app.listen(8888)

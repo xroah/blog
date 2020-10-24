@@ -144,7 +144,7 @@ export default class ViewArticle extends React.Component<Props> {
         } else if (!article || article === -1) {
             return <NoArticle />
         }
-
+        
         return (
             <ArticleContainer
                 prev={prev}

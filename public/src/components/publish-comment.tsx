@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Button from "reap-ui/lib/Button";
-import { createUseStyles } from "react-jss";
+import {createUseStyles} from "react-jss";
 import noop from "../utils/noop";
-import { renderDialog } from "./user-modal";
+import {renderDialog} from "./user-modal";
 import message from "./message";
 
 const LOCAL_USER_INFO_KEY = "SAVED_USER_INFO";
@@ -37,7 +37,9 @@ export default function Comment(props: Props) {
     } = props;
     const [value, updateValue] = React.useState("");
     const [loading, updateStatus] = useState(false);
-    const userInfo = JSON.parse(localStorage.getItem(LOCAL_USER_INFO_KEY) as any);
+    const userInfo = typeof localStorage !== "undefined" ? //undefined on node(SSR)
+        JSON.parse(localStorage.getItem(LOCAL_USER_INFO_KEY) as any)
+        : null;
     const ref = React.createRef<HTMLTextAreaElement>();
     const classes = useStyles();
     const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -74,7 +76,7 @@ export default function Comment(props: Props) {
         if (remember) {
             localStorage.setItem(
                 LOCAL_USER_INFO_KEY,
-                JSON.stringify({ username, homepage })
+                JSON.stringify({username, homepage})
             );
         }
     };
@@ -102,7 +104,7 @@ export default function Comment(props: Props) {
         <div className="mb-3">
             <textarea
                 maxLength={150}
-                style={{ height: 100 }}
+                style={{height: 100}}
                 ref={ref}
                 onChange={handleChange}
                 disabled={loading}
