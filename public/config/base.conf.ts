@@ -9,8 +9,8 @@ export default function getConf(mode: "development" | "production") {
         entry: path.resolve(__dirname, "../src/index.tsx"),
         output: {
             path: path.resolve(__dirname, "../dist"),
-            filename: "index.js",
-            chunkFilename: "[name]-[hash].js",
+            filename: "js/index.js",
+            chunkFilename: "js/[name]-[hash].js",
             publicPath: "/"
         },
         resolve: {

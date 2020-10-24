@@ -16,7 +16,14 @@ const conf: Configuration = {
     },
     optimization: {
         minimizer: [
-            new TerserPlugin(),
+            new TerserPlugin({
+                extractComments: false,
+                terserOptions: {
+                    output: {
+                        comments: false
+                    }
+                }
+            }),
             new OptimizeCSS()
         ],
         splitChunks: {
@@ -49,7 +56,9 @@ conf.module!.rules.push({
 });
 
 conf.plugins!.push(
-    new MiniCSSExtractPlugin(),
+    new MiniCSSExtractPlugin({
+        filename: "css/[name]-[hash].css"
+    }),
     new CleanWebpackPlugin(),
     new LoadablePlugin()
 );
