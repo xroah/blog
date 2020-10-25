@@ -1,4 +1,5 @@
 import React from "react";
+import Helmet from "react-helmet";
 import { createUseStyles } from "react-jss";
 import GithubIcon from "./icons/github";
 import MailIcon from "./icons/mail";
@@ -15,6 +16,9 @@ export default () => {
 
     return (
         <>
+            <Helmet>
+                <title>关于</title>
+            </Helmet>
             <div>
                 <h3 className={classes["info-title"]}>关于</h3>
                 <div>记录学习，分享技术。</div>

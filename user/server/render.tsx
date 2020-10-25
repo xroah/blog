@@ -12,6 +12,7 @@ import {Provider} from "react-redux";
 import {ChunkExtractor} from "@loadable/server"
 import App from "../src/components/app";
 import reducers from "../src/reducers";
+import Helmet from "react-helmet"
 import {fetchArticle, fetchArticles} from "./request"
 
 const context = path.resolve(__dirname, "../dist");
@@ -35,6 +36,7 @@ function _render(req: Request, res: Response, preloadState: any = {}) {
             </StaticRouter>
         )
     );
+    const helmet = Helmet.renderStatic()
     const CDN = "https://unpkg.com/"
     const content = `
         <!DOCTYPE html>
@@ -43,7 +45,7 @@ function _render(req: Request, res: Response, preloadState: any = {}) {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Blog</title>
+            ${helmet.title.toString()}
             <link rel="icon" href="/logo.png?9dacdd8b6a6d1ff120cc">
             <style id="serverRenderedStyle">
                 ${sheets.toString()}
@@ -62,6 +64,7 @@ function _render(req: Request, res: Response, preloadState: any = {}) {
             <script crossorigin src="${CDN}react@16/umd/react.production.min.js"></script>
             <script crossorigin src="${CDN}react-dom@16/umd/react-dom.production.min.js"></script>
             <script crossorigin src="${CDN}react-router-dom@5.2.0/umd/react-router-dom.min.js"></script>
+            <script crossorigin src="${CDN}jss@10.4.0/dist/jss.min.js"></script>
             ${extractor.getScriptTags()}
         </body>
 

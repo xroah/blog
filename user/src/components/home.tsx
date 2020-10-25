@@ -5,6 +5,7 @@ import throttle from "reap-ui/lib/utils/throttle";
 import getScrollTop from "../utils/get-scroll-top";
 import PullRefreshMessage from "./pull-refresh-message"
 import message from "./message";
+import Helmet from "react-helmet"
 
 const PULL_REFRESH_THRESHOLD = 50
 
@@ -122,7 +123,7 @@ export default class HomePage extends React.Component<Props> {
 
         const y = evt.touches[0].clientY
         let dis = y - this.startY - sTop
-        
+
         if (dis > 0) {
 
             this.updateTransform(dis)
@@ -252,6 +253,9 @@ export default class HomePage extends React.Component<Props> {
                     overflow: "hidden"
                 }}
                 ref={this.wrapperRef}>
+                <Helmet>
+                    <title>首页</title>
+                </Helmet>
                 <div ref={this.divRef}
                     style={{
                         flex: 1,

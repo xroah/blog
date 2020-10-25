@@ -5,6 +5,7 @@ import ChevronLeft from "./icons/chevron-left";
 import ChevronRight from "./icons/chevron-right";
 import Comment from "../containers/publish-comment";
 import CommentList from "../containers/comment-list";
+import Helmet from "react-helmet"
 
 const useStyles = createUseStyles({
     "article-container": {
@@ -55,6 +56,9 @@ export default function ArticleContainer(props: ContainerProps) {
 
     return (
         <>
+            <Helmet>
+                <title>{article.title}</title>
+            </Helmet>
             <div>
                 <a href="#"
                     className={`${classes.chevrons} btn right${next ? "" : " disabled"}`}
