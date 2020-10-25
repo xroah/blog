@@ -12,7 +12,8 @@ const conf: Configuration = {
     externals: {
         "react": "React",
         "react-dom": "ReactDOM",
-        "react-router-dom": "ReactRouterDOM"
+        "react-router-dom": "ReactRouterDOM",
+        "jss": "jss"
     },
     optimization: {
         minimizer: [
