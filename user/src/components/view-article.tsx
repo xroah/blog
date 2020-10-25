@@ -7,6 +7,7 @@ import {UPDATE_VIEWED_COUNTS} from "./api";
 import ArticleContainer from "./article-container";
 import "quill/dist/quill.snow.css";
 import "highlight.js/scss/atom-one-dark.scss";
+import "../styles/view-article.scss"
 
 const hljs = require("highlight.js/lib/core");
 

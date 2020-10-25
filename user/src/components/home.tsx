@@ -6,6 +6,7 @@ import getScrollTop from "../utils/get-scroll-top";
 import PullRefreshMessage from "./pull-refresh-message"
 import message from "./message";
 import Helmet from "react-helmet"
+import "../styles/home.scss"
 
 const PULL_REFRESH_THRESHOLD = 50
 
@@ -243,24 +244,11 @@ export default class HomePage extends React.Component<Props> {
         const hasMore = page < totalPages;
 
         return (
-            <div
-                style={{
-                    display: "flex",
-                    flex: 1,
-                    flexDirection: "column",
-                    position: "relative",
-                    paddingBottom: 20,
-                    overflow: "hidden"
-                }}
-                ref={this.wrapperRef}>
+            <div className="articles-wrapper" ref={this.wrapperRef}>
                 <Helmet>
                     <title>首页</title>
                 </Helmet>
-                <div ref={this.divRef}
-                    style={{
-                        flex: 1,
-                        paddingTop: 5
-                    }}>
+                <div ref={this.divRef} className="article-list">
                     <PullRefreshMessage state={pullRefreshState} />
                     {this.renderArticles()}
                     {

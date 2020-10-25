@@ -1,5 +1,4 @@
 import React from "react";
-import { createUseStyles } from "react-jss";
 import Spinner from "reap-ui/lib/Spinner";
 import CommentItem from "./comment-item";
 
@@ -11,14 +10,7 @@ interface Props {
     articleId: string;
 }
 
-const useStyles = createUseStyles({
-    "comment-wrapper": {
-        borderTop: "1px solid #eee",
-        marginTop: 20
-    }
-});
-
-class CommentList extends React.Component<Props & { classes: any }> {
+export default class CommentList extends React.Component<Props> {
     componentDidMount() {
         const {
             articleId,
@@ -29,7 +21,7 @@ class CommentList extends React.Component<Props & { classes: any }> {
     }
 
     renderList(list: any) {
-        const { articleId } = this.props;
+        const {articleId} = this.props;
         const map = new Map();
 
         list.forEach((l: any) => {
@@ -49,14 +41,13 @@ class CommentList extends React.Component<Props & { classes: any }> {
     render() {
         const {
             loading,
-            list,
-            classes
+            list
         } = this.props;
 
         return (
-            <div className={classes["comment-wrapper"]}>
+            <div className="comment-wrapper">
                 <div className="mt-3 d-flex align-items-center">
-                    <strong>全部评论</strong> 
+                    <strong>全部评论</strong>
                     <span className="ml-2">{list.length}</span>
                 </div>
                 {this.renderList(list)}
@@ -70,10 +61,4 @@ class CommentList extends React.Component<Props & { classes: any }> {
             </div>
         )
     }
-}
-
-export default (props: Props) => {
-    const classes = useStyles();
-
-    return <CommentList classes={classes} {...props} />
 }

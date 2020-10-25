@@ -1,5 +1,5 @@
 import React, { useState, createRef } from "react";
-import Modal from "reap-ui/lib/Modal";
+import Modal from "reap-ui/lib/Modal/Modal";
 import { render, unmountComponentAtNode } from "react-dom";
 import noop from "../utils/noop";
 import { Checkbox } from "reap-ui/lib/CustomControl";

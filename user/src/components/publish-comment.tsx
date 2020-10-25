@@ -1,6 +1,5 @@
 import React, {useState} from "react";
-import Button from "reap-ui/lib/Button";
-import {createUseStyles} from "react-jss";
+import Button from "reap-ui/lib/Button/Button";
 import noop from "../utils/noop";
 import {renderDialog} from "./user-modal";
 import message from "./message";
@@ -17,12 +16,6 @@ interface Props {
     articleId: string;
     publish: (data: any, onSuccess: () => void, onFail: (error: any) => void) => void;
 }
-
-const useStyles = createUseStyles({
-    "comment-content": {
-        resize: "none"
-    }
-});
 
 export default function Comment(props: Props) {
     const {
@@ -41,7 +34,6 @@ export default function Comment(props: Props) {
         JSON.parse(localStorage.getItem(LOCAL_USER_INFO_KEY) as any)
         : null;
     const ref = React.createRef<HTMLTextAreaElement>();
-    const classes = useStyles();
     const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
         updateValue(evt.target.value);
     };
@@ -108,7 +100,7 @@ export default function Comment(props: Props) {
                 ref={ref}
                 onChange={handleChange}
                 disabled={loading}
-                className={`form-control ${classes["comment-content"]}`}
+                className={`form-control comment-content`}
                 placeholder="发表你的评论"
                 value={value} />
             <div className="mt-3 d-flex justify-content-end">

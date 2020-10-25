@@ -1,6 +1,6 @@
 import React from "react";
 import FrownIcon from "./icons/frown";
-import Button from "reap-ui/lib/Button";
+import Button from "reap-ui/lib/Button/Button";
 import { RouteComponentProps } from "react-router-dom";
 
 export default function Page404(props: RouteComponentProps) {

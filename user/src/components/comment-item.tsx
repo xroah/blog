@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { createUseStyles } from "react-jss";
 import Comment from "../containers/publish-comment";
-import { Collapse } from "reap-ui/lib/Collapse";
+import Collapse from "reap-ui/lib/Collapse/Collapse";
 import { format } from "fecha";
 
 interface ItemProps {
@@ -15,34 +14,6 @@ interface UserProps {
     username: string;
     homepage: string;
 }
-
-const useStyles = createUseStyles({
-    "comment-item": {
-        borderBottom: "1px solid #eee",
-        marginTop: 15,
-
-        "& .publish-time": {
-            fontSize: 12
-        },
-
-        "& .home-link": {
-            display: "inline-block",
-            maxWidth: 100
-        },
-
-        "& a": {
-            textDecoration: "none"
-        },
-
-        "& .orig-comment": {
-            padding: 10,
-            marginBottom: 10,
-            borderLeft: "3px solid #999",
-            color: "#999",
-            backgroundColor: "#f2f2f2"
-        }
-    }
-});
 
 function CommentUser(props: UserProps) {
     const {
@@ -79,7 +50,6 @@ export default function CommentItem(props: ItemProps) {
         articleId,
         replyTo
     } = props;
-    const classes = useStyles();
     const [visible, updateVisible] = useState(false);
     const handleCancel = () => updateVisible(false);
     const handleReply = (evt: React.MouseEvent) => {
@@ -102,7 +72,7 @@ export default function CommentItem(props: ItemProps) {
 
     return (
         <>
-            <div className={classes["comment-item"]}>
+            <div className="comment-item">
                 <div>
                     {getUser(comment)}
                     <div className="text-muted publish-time">

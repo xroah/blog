@@ -1,22 +1,8 @@
 import React, { ReactElement, ReactNode } from "react";
 import Alert from "reap-ui/lib/Alert";
 import CSSTransition from "reap-ui/lib/Common/CSSTransition";
-import { createUseStyles } from "react-jss";
 import { render, unmountComponentAtNode } from "react-dom";
 import noop from "../utils/noop";
-
-const useStyles = createUseStyles({
-    "message-item": {
-        transition: "all .3s",
-        marginTop: -30,
-        opacity: 0,
-
-        "&.visible": {
-            marginTop: 10,
-            opacity: 1
-        }
-    },
-});
 
 let uuid = 0;
 
@@ -36,7 +22,6 @@ function Message(props: Props) {
         onExited = noop,
         ...rest
     } = props;
-    const classes = useStyles();
 
     return (
         <CSSTransition
@@ -47,7 +32,7 @@ function Message(props: Props) {
             unmountOnExit>
             {
                 status => {
-                    let _class = classes["message-item"];
+                    let _class = "message-item";
 
                     if (status === "entering" || status === "entered") {
                         _class += " visible"

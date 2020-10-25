@@ -1,8 +1,7 @@
 import React from "react";
 import ToTopIcon from "./icons/arrow-up-circle";
 // import MessageIcon from "./icons/message-circle";
-import { createUseStyles } from "react-jss";
-import { throttle } from "reap-ui/lib/utils";
+import throttle from "reap-ui/lib/utils/throttle";
 import getScrollTop from "../utils/get-scroll-top";
 import backToTop from "../utils/back-to-top";
 
@@ -12,30 +11,7 @@ interface Props {
     showFeedback: () => void;
 }
 
-const useStyle = createUseStyles({
-    "right-bottom-icons": {
-        display: "flex",
-        flexDirection: "column",
-        position: "fixed",
-        right: 15,
-        bottom: 15,
-
-        "& .back-to-top": {
-            transform: "scale(0)",
-            marginBottom: 15,
-
-            "&.visible": {
-                transform: "scale(1)"
-            }
-        },
-
-        "& a": {
-            transition: "all .3s"
-        }
-    }
-});
-
-class RightBottom extends React.Component<Props & { classes: any }> {
+export default class RightBottom extends React.Component<Props> {
     private cancel: Function | null = null;
 
     constructor(props: any) {
@@ -93,12 +69,11 @@ class RightBottom extends React.Component<Props & { classes: any }> {
 
     render() {
         const {
-            toTopVisible,
-            classes
+            toTopVisible
         } = this.props;
 
         return (
-            <div className={classes["right-bottom-icons"]}>
+            <div className="right-bottom-icons">
                 {
                     <a
                         href="#"
@@ -117,10 +92,4 @@ class RightBottom extends React.Component<Props & { classes: any }> {
             </div>
         );
     }
-}
-
-export default function RightBottomWrapper(props: Props) {
-    const classes = useStyle();
-
-    return <RightBottom classes={classes} {...props} />;
 }

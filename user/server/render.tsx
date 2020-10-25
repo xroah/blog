@@ -4,7 +4,6 @@ import {
 } from "express";
 import path from "path";
 import React from "react";
-import {JssProvider, SheetsRegistry, createGenerateId} from "react-jss";
 import {renderToString} from "react-dom/server";
 import {StaticRouter} from "react-router-dom";
 import {createStore} from "redux";
@@ -21,18 +20,14 @@ const statsFile = path.resolve(context, "loadable-stats.json");
 const extractor = new ChunkExtractor({statsFile});
 
 function _render(req: Request, res: Response, preloadState: any = {}) {
-    const sheets = new SheetsRegistry();
-    const generateId = createGenerateId();
     const ctx: any = {};
     const store = createStore(reducers, preloadState);
     const compString = renderToString(
         extractor.collectChunks(
             <StaticRouter location={req.url} context={ctx}>
-                <JssProvider registry={sheets} generateId={generateId}>
-                    <Provider store={store}>
-                        <App />
-                    </Provider>
-                </JssProvider>
+                <Provider store={store}>
+                    <App />
+                </Provider>
             </StaticRouter>
         )
     );
@@ -47,9 +42,6 @@ function _render(req: Request, res: Response, preloadState: any = {}) {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             ${helmet.title.toString()}
             <link rel="icon" href="/logo.png?9dacdd8b6a6d1ff120cc">
-            <style id="serverRenderedStyle">
-                ${sheets.toString()}
-            </style>
             ${extractor.getLinkTags()}
             ${extractor.getStyleTags()}
         </head>
@@ -64,7 +56,6 @@ function _render(req: Request, res: Response, preloadState: any = {}) {
             <script crossorigin src="${CDN}react@16/umd/react.production.min.js"></script>
             <script crossorigin src="${CDN}react-dom@16/umd/react-dom.production.min.js"></script>
             <script crossorigin src="${CDN}react-router-dom@5.2.0/umd/react-router-dom.min.js"></script>
-            <script crossorigin src="${CDN}jss@10.4.0/dist/jss.min.js"></script>
             ${extractor.getScriptTags()}
         </body>
 

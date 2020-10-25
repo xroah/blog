@@ -5,6 +5,7 @@ import TerserPlugin from "terser-webpack-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import { Configuration } from "webpack";
 import LoadablePlugin from "@loadable/webpack-plugin";
+import {BundleAnalyzerPlugin} from "webpack-bundle-analyzer"
 
 const baseConf = getConf("production");
 const conf: Configuration = {
@@ -12,8 +13,7 @@ const conf: Configuration = {
     externals: {
         "react": "React",
         "react-dom": "ReactDOM",
-        "react-router-dom": "ReactRouterDOM",
-        "jss": "jss"
+        "react-router-dom": "ReactRouterDOM"
     },
     optimization: {
         minimizer: [
@@ -61,7 +61,8 @@ conf.plugins!.push(
         filename: "css/[name]-[hash].css"
     }),
     new CleanWebpackPlugin(),
-    new LoadablePlugin()
+    new LoadablePlugin(),
+    new BundleAnalyzerPlugin()
 );
 
 export default conf;

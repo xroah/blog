@@ -1,32 +1,12 @@
 import React from "react";
 import Container from "reap-ui/lib/Layout/Container";
 import {NavLink} from "react-router-dom";
-import {createUseStyles} from "react-jss";
 import HomeIcon from "./icons/home";
 import GridIcon from "./icons/grid";
 import GithubIcon from "./icons/github";
 import InfoIcon from "./icons/info";
 
-const useStyles = createUseStyles({
-    "vertical-text-bottom": {
-        verticalAlign: "text-bottom"
-    },
-    "nav-link": {
-        transition: "all .3s",
-        padding: ".8rem 1.5rem",
-
-        "&:hover": {
-            textDecoration: "none",
-            backgroundColor: "rgba(0, 0, 0, .15)"
-        },
-        "&.active": {
-            backgroundColor: "rgba(0, 0, 0, .3)"
-        }
-    }
-});
-
 export default function Header() {
-    const classes = useStyles();
     const links = [{
         to: "/",
         name: "首页",
@@ -44,12 +24,12 @@ export default function Header() {
             key={l.to}
             to={l.to}
             exact
-            className={`text-white ${classes["nav-link"]}`}>
+            className="text-white nav-link">
             {
                 React.cloneElement(
                     l.icon,
                     {
-                        className: `mr-1 ${classes["vertical-text-bottom"]}`,
+                        className: "mr-1 vertical-text-bottom",
                         size: 16
                     }
                 )
@@ -59,10 +39,8 @@ export default function Header() {
     ));
 
     return (
-        <header className="bg-primary mb-3">
-            <Container
-                style={{flexDirection: "row"}}
-                className="d-flex align-items-center">
+        <header className="bg-primary mb-3 header-nav">
+            <Container className="d-flex align-items-center">
                 {links}
                 {/* <a
                     href="https://github.com/xroah"

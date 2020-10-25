@@ -1,40 +1,11 @@
 import React from "react";
-import { createUseStyles } from "react-jss";
-import { format } from "fecha";
+import {format} from "fecha";
 import ChevronLeft from "./icons/chevron-left";
 import ChevronRight from "./icons/chevron-right";
 import Comment from "../containers/publish-comment";
 import CommentList from "../containers/comment-list";
 import Helmet from "react-helmet"
-
-const useStyles = createUseStyles({
-    "article-container": {
-        lineHeight: 1.5
-    },
-    "chevrons": {
-        position: "fixed",
-        top: "36%",
-        padding: 0,
-        color: "#999",
-        boxShadow: "none",
-        cursor: "pointer",
-        "&:focus": {
-            boxShadow: "none"
-        },
-
-        "&.left": {
-            left: -5
-        },
-
-        "&.right": {
-            right: -5
-        },
-
-        "&:hover": {
-            color: "#666"
-        }
-    }
-});
+import classNames from "reap-ui/lib/utils/classNames";
 
 interface ContainerProps {
     article: any;
@@ -45,7 +16,6 @@ interface ContainerProps {
 }
 
 export default function ArticleContainer(props: ContainerProps) {
-    const classes = useStyles();
     const {
         article,
         next,
@@ -59,15 +29,29 @@ export default function ArticleContainer(props: ContainerProps) {
             <Helmet>
                 <title>{article.title}</title>
             </Helmet>
-            <div>
+            <div className="article-switch-wrapper">
                 <a href="#"
-                    className={`${classes.chevrons} btn right${next ? "" : " disabled"}`}
+                    className={
+                        classNames(
+                            "chevrons",
+                            "btn",
+                            "right",
+                            next ? "" : " disabled"
+                        )
+                    }
                     title="下一篇"
                     onClick={toNext}>
                     <ChevronRight size={36} />
                 </a>
                 <a href="#"
-                    className={`${classes.chevrons} btn left${prev ? "" : " disabled"}`}
+                    className={
+                        classNames(
+                            "chevrons",
+                            "btn",
+                            "left",
+                            prev ? "" : " disabled"
+                        )
+                    }
                     title="上一篇"
                     onClick={toPrev}>
                     <ChevronLeft size={36} />
@@ -86,8 +70,8 @@ export default function ArticleContainer(props: ContainerProps) {
                     <span className="mr-2">总共浏览{article.totalViewed}次</span>
                 </h5>
                 <div
-                    className={`ql-editor  ${classes["article-container"]}`}
-                    dangerouslySetInnerHTML={{ __html: article.content }} />
+                    className={`ql-editor "article-container"`}
+                    dangerouslySetInnerHTML={{__html: article.content}} />
             </div>
             <div className="mt-3 mb-3 bg-white p-4 rounded">
                 <Comment articleId={article._id} />

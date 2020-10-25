@@ -2,7 +2,7 @@ import React, { useState, createRef } from "react";
 import XIcon from "./icons/x";
 import { createUseStyles } from "react-jss";
 import CSSTransition from "reap-ui/lib/Common/CSSTransition";
-import Button from "reap-ui/lib/Button";
+import Button from "reap-ui/lib/Button/Button";
 import Spinner from "reap-ui/lib/Spinner";
 import message from "./message";
 import xhr from "../utils/xhr";

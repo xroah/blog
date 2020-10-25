@@ -1,54 +1,10 @@
 import React from "react";
 import Card from "reap-ui/lib/Card";
-import Button from "reap-ui/lib/Button";
+import Button from "reap-ui/lib/Button/Button";
 import EyeIcon from "./icons/eye";
 import MessageSquare from "./icons/message-square";
-import { createUseStyles } from "react-jss";
 import { format } from "fecha";
 import Tag from "./icons/tag";
-
-const useStyle = createUseStyles({
-    "article-card": {
-        transition: "all .3s",
-        
-        "& + .card": {
-            marginTop: 20
-        },
-
-        "&:hover": {
-            transform: "translateY(-5px)",
-            boxShadow: "1px 1px 5px 0 rgba(0, 0, 0, .3)"
-        },
-
-        "& .card-footer": {
-            border: "none"
-        }
-    },
-    "article-tag": {
-        borderRadius: 3,
-        padding: 3,
-        marginLeft: 5,
-        fontSize: 12,
-        backgroundColor: "#eee",
-        color: "#666"
-    },
-    "article-title": {
-        "& .card-title": {
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            fontSize: 14,
-            whiteSpace: "nowrap",
-            marginBottom: 5
-        },
-
-        "& .card-subtitle": {
-            fontSize: 12
-        }
-    },
-    "footer-icon": {
-        color: "#666"
-    }
-});
 
 interface ArticleCardProps {
     children: React.ReactNode;
@@ -61,7 +17,6 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard(props: ArticleCardProps) {
-    const classes = useStyle();
     const {
         viewed,
         comments,
@@ -74,7 +29,7 @@ export default function ArticleCard(props: ArticleCardProps) {
     const viewArticle = () => window.open(`/view/${articleId}`);
     const tags = tag.filter(t => t)
         .map(
-            t => !!t && <span key={t} className={classes["article-tag"]}>{t}</span>
+            t => !!t && <span key={t} className="article-tag">{t}</span>
         );
     const formatStr = "YYYY-MM-DD HH:mm";
     let timeStr = "";
@@ -89,10 +44,10 @@ export default function ArticleCard(props: ArticleCardProps) {
     return (
         <Card
             body
-            className={classes["article-card"]}
+            className="article-card"
             footer={
                 <div className="d-flex align-items-center">
-                    <div className={classes["footer-icon"]}>
+                    <div className="footer-icon">
                         <EyeIcon />
                         <span className="ml-1">{viewed}</span>
                         <MessageSquare className="ml-3" />
@@ -104,7 +59,7 @@ export default function ArticleCard(props: ArticleCardProps) {
                 </div>
             }>
             <Card.Title
-                className={classes["article-title"]}
+                className="article-title"
                 subtitle={timeStr}>
                 {title}
             </Card.Title>
