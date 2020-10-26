@@ -53,8 +53,8 @@ function _render(req: Request, res: Response, preloadState: any = {}) {
             <script type="application/json" id="reduxInitialState">
                 ${JSON.stringify(store.getState())}
             </script>
-            <script crossorigin src="${CDN}react@16/umd/react.production.min.js"></script>
-            <script crossorigin src="${CDN}react-dom@16/umd/react-dom.production.min.js"></script>
+            <script crossorigin src="${CDN}react@17/umd/react.production.min.js"></script>
+            <script crossorigin src="${CDN}react-dom@17/umd/react-dom.production.min.js"></script>
             <script crossorigin src="${CDN}react-router-dom@5.2.0/umd/react-router-dom.min.js"></script>
             ${extractor.getScriptTags()}
         </body>
