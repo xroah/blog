@@ -31,7 +31,7 @@ body {
     background-color: #999;
 }
 
-#root {
+.root {
     @mixin flex-column {
         display: flex;
         flex-direction: column;
