@@ -41,7 +41,7 @@ function _render(req: Request, res: Response, preloadState: any = {}) {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             ${helmet.title.toString()}
-            <link rel="icon" href="/logo.png?9dacdd8b6a6d1ff120cc">
+            <link rel="icon" href="/logo.png">
             ${extractor.getLinkTags()}
             ${extractor.getStyleTags()}
         </head>

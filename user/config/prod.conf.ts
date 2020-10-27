@@ -10,11 +10,6 @@ import {BundleAnalyzerPlugin} from "webpack-bundle-analyzer"
 const baseConf = getConf("production");
 const conf: Configuration = {
     ...baseConf,
-    externals: {
-        "react": "React",
-        "react-dom": "ReactDOM",
-        "react-router-dom": "ReactRouterDOM"
-    },
     optimization: {
         minimizer: [
             new TerserPlugin({

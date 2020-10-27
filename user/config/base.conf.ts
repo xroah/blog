@@ -16,12 +16,17 @@ export default function getConf(mode: "development" | "production") {
         resolve: {
             extensions: [".ts", ".tsx", ".js", ".jsx"]
         },
+        externals: {
+            "react": "React",
+            "react-dom": "ReactDOM",
+            "react-router-dom": "ReactRouterDOM"
+        },
         stats: "minimal",
         plugins: [
             new HTMLWebpackPlugin({
                 template: path.resolve(
                     __dirname,
-                    mode === "development" ? "../index.dev.html" : "../index.html"
+                    "../index.html"
                 ),
                 minify: false,
                 hash: true,

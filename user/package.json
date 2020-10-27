@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node ./server/dev",
+    "start": "ts-node ./config/dev-server",
     "build": "webpack --config ./config/prod.conf.ts",
     "server": "node ./server/bootstrap"
   },
@@ -72,6 +72,7 @@
     "html-webpack-plugin": "^4.3.0",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.14.1",
+    "open": "^7.3.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "react-refresh": "^0.8.3",
     "sass-loader": "^8.0.2",
