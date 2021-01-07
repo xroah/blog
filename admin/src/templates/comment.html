@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="/styles/comment.css">
+<div class="top-title">评论管理</div>
+<table class="comment-table table table-striped">
+    <thead>
+        <tr>
+            <th>原文章</th>
+            <th>评论内容</th>
+            <th>评论人</th>
+            <th>评论时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+<template id="listTpl">
+    <tr>
+        <td>
+            <a target="_blank" href="view-article?articleId={{articleId}}" class="text-primary">
+                {{articleName}}
+            </a>
+        </td>
+        <td class="content">{{content}}</td>
+        <td>{{username}} </td>
+        <td>{{createTime}}</td>
+        <td>
+            <a data-id="{{_id}}" href="javascript: void 0;" class="text-danger delete">删除</a>
+        </td>
+    </tr>
+</template>

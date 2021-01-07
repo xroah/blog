@@ -1,0 +1,58 @@
+.container {
+    position: relative;
+}
+
+.article-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.article-list article-card:nth-child(2n) {
+    margin-left: 2%;
+}
+
+.article-list article-card {
+    position: relative;
+    width: 49%;
+    flex-shrink: 0;
+    flex-grow: 0;
+    margin-top: 20px;
+    transition: all .3s;
+    overflow: hidden;
+}
+
+.article-list article-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 5px 5px 5px 0 rgba(0,0,0,.1);
+}
+
+.article-list article-card:hover .close {
+    display: inline-block;
+}
+
+.article-list article-card .close {
+    --size: 24px;
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: var(--size);
+    height: var(--size);
+}
+
+.article-list article-card .close:hover {
+    color: #fff;
+}
+
+.article-list article-card .status {
+    position: absolute;
+    left: -3px;
+    top: 3px;
+    padding: 1px 5px;
+    transform: rotate(-45deg);
+    font-size: 12px;
+}
+
+.form-inline select.form-control {
+    width: 130px;  
+}

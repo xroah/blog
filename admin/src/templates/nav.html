@@ -1,0 +1,133 @@
+<nav class="sys-nav">
+    <div class="info">
+        <img src="/images/avatar.svg" />
+        <span class="username">Admin</span>
+        <div class="operation">
+            <a href="javascript: void 0" id="changePwd">修改密码</a>
+            <a href="javascript: void 0;" id="exit">退出</a>
+        </div>
+    </div>
+    <ul class="item-list">
+        <li>
+            <nav-link to="/" class="nav-link home">首页</nav-link>
+        </li>
+        <li>
+            <nav-link to="/category" class="nav-link category">分类管理</nav-link>
+        </li>
+        <li>
+            <nav-link to="/comment" class="nav-link comment">评论管理</nav-link>
+        </li>
+    </ul>
+
+    <form id="pwdForm" style="display: none;">
+        <div class="form-group">
+            <label for="origPwd">原密码：</label>
+            <input type="password" class="form-control" id="origPwd">
+        </div>
+        <div class="form-group">
+            <label for="origPwd">新密码：</label>
+            <input type="password" class="form-control" id="newPwd">
+        </div>
+        <div class="form-group">
+            <label for="origPwd">确认密码：</label>
+            <input type="password" class="form-control" id="confirm">
+        </div>
+    </form>
+</nav>
+
+<style>
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    nav-link {
+        cursor: pointer;
+    }
+
+    .sys-nav {
+        --color: #f2f2f2;
+        display: block;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        background-color: #081630;
+        color: var(--color);
+        font-weight: 600;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 10px;
+        text-align: center;
+        
+    }
+
+    .info .username {
+        margin: 10px 0;
+    }
+
+    .operation {
+        --color: skyblue;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .operation a {
+        color: var(--color);
+        text-decoration: none;
+        transition: all .3s;
+    }
+
+    .operation a:hover {
+        color: var(--info);
+    }
+
+    .operation a:first-child::after {
+        content: "";
+        display: inline-block;
+        width: 2px;
+        height: 15px;
+        padding-right: 10px;
+        margin-right: 10px;
+        border-right: 2px solid var(--color);
+        vertical-align: text-bottom;
+    }
+
+    .item-list li {
+        display: flex;
+    }
+
+    .item-list .nav-link {
+        flex: 1;
+        padding: 10px 15px 10px 45px;
+        color: var(--color);
+        transition: all .3s;
+        background: no-repeat 20px center / 20px 20px;
+    }
+
+    .item-list .home {
+        background-image: url("../images/home.svg");
+    }
+
+    .item-list .category {
+        background-image: url("../images/category.svg");
+    }
+
+    .item-list .comment {
+        background-image: url("../images/comment.svg");
+    }
+
+    .item-list .nav-link:hover {
+        background-color: rgba(255, 255, 255, .1);
+    }
+
+    .item-list .nav-link:active,
+    .item-list .nav-link.active {
+        background-color: #1899ff;
+    }
+</style>

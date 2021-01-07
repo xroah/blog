@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <link rel="stylesheet" href="./vendors/styles/bootstrap.min.css">
+    <link rel="stylesheet" href="./styles/common.css">
+    <link rel="stylesheet" href="./styles/login.css">
+</head>
+
+<body>
+    <div class="background"></div>
+    <div class="copyright"></div>
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="login-wrapper p-3">
+            <div class="text-center form-group">
+                <img src="./images/user.svg">
+            </div>
+            <form id="loginForm">
+                <div class="form-group text-white">
+                    <label for="username">用户名</label>
+                    <input type="text" autocomplete="off" class="form-control" id="username">
+                </div>
+                <div class="form-group text-white">
+                    <label for="password">密码</label>
+                    <input type="password" autocomplete="off" class="form-control" id="password">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary btn-block login-btn" id="login">登录</button>
+                </div>
+                <div class="form-group text-center">
+                    <div class="custom-control  custom-control-inline custom-checkbox text-white">
+                        <input type="checkbox" class="custom-control-input" id="remember">
+                        <label class="custom-control-label" for="remember">记住用户名</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="module" src="./js/login.js"></script>
+</body>
+
+</html>

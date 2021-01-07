@@ -1,0 +1,65 @@
+.article-container {
+    line-height: 1.5
+}
+
+.article-switch-wrapper {
+    .chevrons {
+        position: fixed;
+        top: 36%;
+        padding: 0;
+        color: #999;
+        box-shadow: none;
+        cursor: pointer;
+
+        &:focus {
+            box-shadow: none
+        }
+
+        &.left {
+            left: -5px;
+        }
+
+        &.right {
+            right: -5px;
+        }
+
+        &:hover {
+            color: #666;
+        }
+    }
+}
+
+.comment-wrapper {
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+
+    .comment-item {
+        border-bottom: 1px solid #eee;
+        margin-top: 15px;
+
+        & .publish-time {
+            font-size: 12px
+        }
+
+        & .home-link {
+            display: inline-block;
+            max-width: 100px
+        }
+
+        & a {
+            text-decoration: none;
+        }
+
+        & .orig-comment {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid #999;
+            color: #999;
+            background-color: #f2f2f2;
+        }
+    }
+}
+
+.comment-content {
+    resize: none;
+}

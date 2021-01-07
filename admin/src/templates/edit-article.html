@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="/vendors/styles/quill.snow.css">
+<link rel="stylesheet" href="/styles/edit-article.css">
+<div class="top-title">编辑文章</div>
+<form class="mt-3">
+    <input type="hidden" id="articleId">
+    <div class="form-group">
+        <label for="title">文章标题：</label>
+        <input type="text" class="form-control" id="title" autocomplete="off" maxlength="50">
+    </div>
+    <div class="form-group">
+        <label for="category">文章分类：</label>
+        <select class="form-control" id="category">
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="tag">文章标签：</label>
+        <input type="text" class="form-control" id="tag" autocomplete="off" placeholder="文章标签，以分号分隔">
+    </div>
+    <div class="form-group">
+        <label>文章内容：</label>
+        <div class="editor-container flex-fill">
+            <div id="toolbar"></div>
+            <div id="editor"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="custom-control custom-checkbox">
+            <input class="custom-control-input" type="checkbox" id="secret">
+            <label class="custom-control-label" for="secret">仅自己可见</label>
+        </div>
+    </div>
+    <div class="mb-3">
+        <button type="button" class="btn btn-primary mr-2" id="save">保存</button>
+        <a href="javascript: window.close();" class="btn btn-light">取消</a>
+    </div>
+</form>
+<layer-comp>
+    <div class="upload-image-wrapper">
+        <div class="preview-wrapper">
+            <div class="preview">
+                <input type="file" class="file-input" id="pickImage" accept="image/jpeg,image/png">
+                <img id="imgViewer">
+            </div>
+            <div class="bg-white text-right p-2">
+                <button class="btn btn-primary" id="upload">确定</button>
+            </div>
+            <div class="progress-wrapper">
+                <div class="progress w-100">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</layer-comp>

@@ -1,0 +1,42 @@
+.ql-editor {
+    overflow: visible;
+    height: auto;
+    padding: 0;
+}
+
+.article-container {
+    margin-bottom: 10px;
+}
+
+.article-container .title {
+    font-size: 18px;
+}
+
+.text-red {
+    color: var(--red);
+}
+
+.comment-list {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.comment-item a {
+    text-decoration: none;
+}
+
+.comment-item {
+    border-bottom: 1px solid #ccc;
+}
+
+.sub-comment-list {
+    padding-left: 20px;
+}
+
+.orig-comment {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-left: 3px solid #999;
+    background-color: #f2f2f2;
+}
